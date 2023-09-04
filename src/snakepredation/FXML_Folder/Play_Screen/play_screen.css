@@ -5,3 +5,7 @@
 .mainFxmlClass {
 
 }
+
+#stackPane{ 
+   -fx-background-color: white;
+}
