@@ -20,6 +20,13 @@ public class Play_ScreenController implements Initializable {
     private StackPane stackPane;
     @FXML
     private Canvas bg__Snake;
+    
+    /**
+     * Initializes the Getter/ Setter
+     */
+    public Canvas getBg__Snake() {
+        return bg__Snake;
+    }
 
     /**
      * Initializes the controller class.

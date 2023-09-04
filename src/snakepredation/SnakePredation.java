@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.skin.TextInputControlSkin.Direction;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
@@ -23,22 +24,12 @@ public class SnakePredation extends Application {
 
     private static Color RandomColor_FOOD;
     private GraphicsContext gc;
-    private List<Point> snakeBody = new ArrayList();
-    private Point snakeHead;
-    private int foodX;
-    private int foodY;
+//    private List<Point> snakeBody = new ArrayList();
+//    private Point snakeHead;
+//    private int foodX;
+//    private int foodY;
     // Xác định hướng di chuyển của rắn dựa trên key code
     Direction direction = null;
-
-    
-    
-    
-    
-    // MAIN
-    public static void main(String[] args) {
-        launch(args);
-    }
-    // MAIN
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -46,7 +37,7 @@ public class SnakePredation extends Application {
         // Load file fxml -> scene builder
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.fxml"));
         Parent root = loader.load();
-        // Lấy file CONTROLLER
+        // Lấy file controller Play_Screen
         Play_ScreenController controller = loader.getController();
 
         Scene scene = new Scene(root);
@@ -63,9 +54,34 @@ public class SnakePredation extends Application {
 
         // Kết nối sự kiện keyPressed với phương thức HandleSnakeMove trong controller
         scene.setOnKeyPressed(controller::HandleSnakeMove);
-
+        
+        // Lấy canvas ra từ controller
+        Canvas bgSnake_Canvas = controller.getBg__Snake();
+        
+        gc = bgSnake_Canvas.getGraphicsContext2D();
+        
+        run(gc);
     }
-    
+
+    // Hàm xử lý run
+    private static void run(GraphicsContext gc) {
+        DrawBackground(gc);
+    }
+
+    // Draw background
+    private static void DrawBackground(GraphicsContext gc) {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLUMNS; j++) {
+                if ((i + j) % 2 == 0) {
+                    gc.setFill(Color.web("AAD751"));
+                } else {
+                    gc.setFill(Color.web("A2D149"));
+                }
+                gc.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+            }
+        }
+    }
+
     //Tạo màu ngẫu nhiên
     public static Color generateRandomColor() {
         double red = Math.random(); // Giá trị từ 0.0 đến 1.0 cho thành phần màu đỏ
@@ -77,4 +93,9 @@ public class SnakePredation extends Application {
         return randomColor;
     }
 
+    // MAIN
+    public static void main(String[] args) {
+        launch(args);
+    }
+    // MAIN
 }
