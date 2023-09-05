@@ -20,7 +20,9 @@ public class Play_ScreenController implements Initializable {
     private StackPane stackPane;
     @FXML
     private Canvas bg__Snake;
-    
+    @FXML
+    private StackPane stackPane_Canvas;
+
     /**
      * Initializes the Getter/ Setter
      */
@@ -34,6 +36,7 @@ public class Play_ScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+      
     }
 
     @FXML

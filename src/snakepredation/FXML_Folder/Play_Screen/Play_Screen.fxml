@@ -8,33 +8,33 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<!--<AnchorPane id="Play_Screen" prefHeight="720.0" prefWidth="1280.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snakepredation.FXML_Folder.Play_Screen.Play_ScreenController">
-    <stylesheets>
-        <URL value="@play_screen.css" />
-    </stylesheets>
-   <children>
-      <Button fx:id="ClickMeBtn" layoutX="289.0" layoutY="258.0" mnemonicParsing="false" onAction="#HandleClick" prefHeight="34.0" prefWidth="72.0" text="Click Me" />
-   </children>
-</AnchorPane>-->
 
-<AnchorPane fx:id="anchorPane" maxHeight="700.0" maxWidth="700.0" onKeyPressed="#HandleSnakeMove" prefHeight="700.0" prefWidth="700.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snakepredation.FXML_Folder.Play_Screen.Play_ScreenController">
+<AnchorPane fx:id="anchorPane" onKeyPressed="#HandleSnakeMove" prefHeight="800.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snakepredation.FXML_Folder.Play_Screen.Play_ScreenController">
     <StackPane fx:id="stackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <stylesheets>
             <URL value="@play_screen.css" />
         </stylesheets>
       <children>
-         <Canvas fx:id="bg__Snake" height="600.0" width="665.0" StackPane.alignment="CENTER" />
-         <Label prefHeight="53.0" prefWidth="134.0" text="SCORE: 0" textAlignment="CENTER" StackPane.alignment="TOP_LEFT">
+         <Label prefHeight="59.0" prefWidth="130.0" text="SCORE: 0" textAlignment="CENTER" StackPane.alignment="TOP_LEFT">
             <StackPane.margin>
-               <Insets />
+               <Insets bottom="5.0" left="20.0" />
             </StackPane.margin>
             <padding>
                <Insets left="30.0" />
             </padding>
             <font>
-               <Font name="Segoe UI Semibold" size="17.0" />
+               <Font name="Segoe UI Semibold" size="20.0" />
             </font>
          </Label>
+         <AnchorPane prefHeight="700.0" prefWidth="700.0">
+            <children>
+               <StackPane fx:id="stackPane_Canvas" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
+                  <children>
+                     <Canvas fx:id="bg__Snake" height="700.0" nodeOrientation="INHERIT" width="700.0" StackPane.alignment="CENTER" />
+                  </children>
+               </StackPane>
+            </children>
+         </AnchorPane>
       </children>
     </StackPane>
 </AnchorPane>
