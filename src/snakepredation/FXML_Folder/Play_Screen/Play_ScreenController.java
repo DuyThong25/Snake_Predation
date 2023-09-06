@@ -38,35 +38,4 @@ public class Play_ScreenController implements Initializable {
         // TODO
       
     }
-
-    @FXML
-    public void HandleSnakeMove(KeyEvent event) {
-        KeyCode keyCode = event.getCode();
-        switch (keyCode) {
-            case UP:
-            case W:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển lên ở đây
-                break;
-            case DOWN:
-            case S:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển xuống ở đây
-                break;
-            case LEFT:
-            case A:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển qua trái ở đây
-                break;
-            case RIGHT:
-            case D:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển qua phải ở đây
-                break;
-            default:
-                // Xử lý các trường hợp khác nếu cần
-                break;
-        }
-    }
-
 }

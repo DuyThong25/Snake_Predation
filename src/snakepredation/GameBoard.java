@@ -1,10 +1,8 @@
 package snakepredation;
 
 import java.awt.Point;
-import java.awt.Rectangle;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.paint.Color;
 import snakepredation.Food;
 import snakepredation.Snake;
@@ -27,6 +25,10 @@ public class GameBoard extends Canvas {
         this.width = tempWidth;
         this.height = tempHeight;
         this.gc = getGraphicsContext2D();
+    }
+
+    public static int getSQUARE_SIZE() {
+        return SQUARE_SIZE;
     }
 
     public GraphicsContext getGc() {
