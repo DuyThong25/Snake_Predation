@@ -45,21 +45,18 @@ public class SnakePredation extends Application {
 
         // Kết nối sự kiện keyPressed với phương thức HandleSnakeMove trong controller
         //scene.setOnKeyPressed(controller::HandleSnakeMove);
-
         // Lấy canvas ra từ controller
         Canvas bgSnake_Canvas = controller.getBg__Snake();
 
         // Khởi tạo GameBoard
         GameBoard gameBoard = new GameBoard(700, 700);
         gameBoard.setGc(bgSnake_Canvas.getGraphicsContext2D());
-        
+
         // Khởi tạo Snake
-        List<Point> listSnakeBody = new ArrayList<>();
-        Snake snake = new Snake(listSnakeBody);
-        snake.CreateSnake();
-        
-        // Xử lý Event 
-        scene.setOnKeyPressed(e -> snake.HandleSnakeMove(e));
+        Snake snake = new Snake(3);
+
+        // Handle Event for Snakeee
+        scene.setOnKeyPressed(e -> snake.HandeleDirection(e));
         
         run(gameBoard, snake);
     }
@@ -70,6 +67,7 @@ public class SnakePredation extends Application {
         gameBoard.DrawRandomFood(snake);
         snake.DrawSnake(gameBoard, gameBoard.getGc());
         
+        snake.FindPreviousPosition();
 
     }
 

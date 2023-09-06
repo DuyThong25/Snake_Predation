@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" onKeyPressed="#HandleSnakeMove" prefHeight="800.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snakepredation.FXML_Folder.Play_Screen.Play_ScreenController">
+<AnchorPane fx:id="anchorPane" prefHeight="800.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snakepredation.FXML_Folder.Play_Screen.Play_ScreenController">
     <StackPane fx:id="stackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <stylesheets>
             <URL value="@play_screen.css" />

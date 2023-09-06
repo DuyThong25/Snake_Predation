@@ -1,6 +1,7 @@
 package snakepredation;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.skin.TextInputControlSkin.Direction;
@@ -19,14 +20,18 @@ import javafx.scene.paint.Color;
 public class Snake {
 
     private List<Point> snakeBody; // Danh sách các phần của con rắn
-    private Direction direction = null; // Hướng di chuyển hiện tại
+    private Direction currentDirection = null; // Hướng di chuyển hiện tại
     private Point headPosition; // Tọa độ của đầu con rắn
     private int length; // Chiều dài của con rắn
     private int speed; // Tốc độ di chuyển
     private boolean isAlive; // Trạng thái sống/mất
 
-    public Snake(List<Point> body) {
-        this.snakeBody = body;
+    public Snake(int snakeLengt) {
+        snakeBody = new ArrayList<>();
+        for (int i = 0; i < snakeLengt; i++) {
+            snakeBody.add(new Point(5, 5));
+        }
+        this.headPosition = this.snakeBody.get(0);
     }
 
     public List<Point> getBody() {
@@ -37,12 +42,12 @@ public class Snake {
         this.snakeBody = body;
     }
 
-    public Direction getDirection() {
-        return direction;
+    public Direction getCurrentDirection() {
+        return currentDirection;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void setCurrentDirection(Direction currentDirection) {
+        this.currentDirection = currentDirection;
     }
 
     public Point getHeadPosition() {
@@ -69,12 +74,13 @@ public class Snake {
         this.isAlive = isAlive;
     }
 
-    public void CreateSnake() {
-        for (int i = 0; i < 3; i++) {
-            this.snakeBody.add(new Point(5, 5));
-        }
-        this.headPosition = this.snakeBody.get(0);
-    }
+//    public void InitSnake() {
+//        // Khởi tạo con rắn có độ dài là 3 tại một vị trí cố định
+//        for (int i = 0; i < 3; i++) {
+//            this.snakeBody.add(new Point(5, 5));
+//        }
+//        this.headPosition = this.snakeBody.get(0);
+//    }
 
     public void DrawSnake(GameBoard gameboard, GraphicsContext gc) {
         // Vẽ đầu con rắn
@@ -92,33 +98,53 @@ public class Snake {
         }
     }
 
-    public void HandleSnakeMove(KeyEvent event) {
+    // Handle Event của người dùng và cập nhật biến currentDirection
+    public void HandeleDirection(KeyEvent event) {
         KeyCode keyCode = event.getCode();
         switch (keyCode) {
             case UP:
             case W:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển lên ở đây
+                // Xử lý di chuyển lên
+                if (getCurrentDirection() != currentDirection.DOWN) {
+                    this.currentDirection = this.currentDirection.UP;
+                }
                 break;
             case DOWN:
             case S:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển xuống ở đây
+                // Xử lý di chuyển xuống
+                if (getCurrentDirection() != currentDirection.UP) {
+                    this.currentDirection = this.currentDirection.DOWN;
+                }
                 break;
             case LEFT:
             case A:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển qua trái ở đây
+                // Xử lý di chuyển qua trái
+                if (getCurrentDirection() != currentDirection.RIGHT) {
+                    this.currentDirection = this.currentDirection.LEFT;
+                }
                 break;
             case RIGHT:
             case D:
-                System.out.println("Key Code: " + keyCode.toString());
-                // Xử lý di chuyển qua phải ở đây
-                break;
-            default:
-                // Xử lý các trường hợp khác nếu cần
+                // Xử lý di chuyển qua phải
+                if (getCurrentDirection() != currentDirection.LEFT) {
+                    this.currentDirection = this.currentDirection.RIGHT;
+                }
                 break;
         }
+    }
+  // Find and update the snake's previous position
+    public void FindPreviousPosition() {
+        // Tìm vị trí trước đó của con rắn  
+        for (int i = this.snakeBody.size() - 1; i >= 1; i--) {
+            /*
+                    i-1 (vị trí trước đó) -> vị trí trước đó của con rắn
+             */
+            this.snakeBody.get(i).x = this.snakeBody.get(i - 1).x;
+            this.snakeBody.get(i).y = this.snakeBody.get(i - 1).y;
+        }
+    }
+    public void HandleSnakeMove() {
+        
     }
 
 }
