@@ -1,5 +1,8 @@
 package snakepredation;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
@@ -45,17 +48,27 @@ public class SnakePredation extends Application {
 
         // Lấy canvas ra từ controller
         Canvas bgSnake_Canvas = controller.getBg__Snake();
-        
-        // Khởi tạo gameboard
-        GameBoard gameBoard = new GameBoard(950, 950);
+
+        // Khởi tạo GameBoard
+        GameBoard gameBoard = new GameBoard(700, 700);
         gameBoard.setGc(bgSnake_Canvas.getGraphicsContext2D());
         
-        run(gameBoard);
+        // Khởi tạo Snake
+        List<Point> listSnakeBody = new ArrayList<>();
+        Snake snake = new Snake(listSnakeBody);
+        for (int i = 0; i < 3; i++) {
+            listSnakeBody.add(new Point(5, gameBoard.getROWS() / 2));
+            snake.setBody(listSnakeBody);
+        }
+
+        run(gameBoard, snake);
     }
 
     // Hàm xử lý run
-    private static void run(GameBoard gameBoard) {
-        gameBoard.DrawBackground(gameBoard.getGc());
+    private static void run(GameBoard gameBoard, Snake snakeBody) {
+        gameBoard.DrawBackground();
+        gameBoard.DrawRandomFood(snakeBody);
+
     }
 
     // MAIN

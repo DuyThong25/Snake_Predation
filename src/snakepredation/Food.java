@@ -1,6 +1,7 @@
 package snakepredation;
 
 import java.awt.Point;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Food {
@@ -13,14 +14,6 @@ public class Food {
         this.position = position;
     }
 
-    public static Color getRandomColor_FOOD() {
-        return RandomColor_FOOD;
-    }
-
-    public static void setRandomColor_FOOD(Color RandomColor_FOOD) {
-        Food.RandomColor_FOOD = RandomColor_FOOD;
-    }
-
     public Point getPosition() {
         return position;
     }
@@ -29,6 +22,14 @@ public class Food {
         this.position = position;
     }
 
+    public Color getRandomColor_FOOD() {
+        return RandomColor_FOOD;
+    }
+
+    public Color setRandomColor_FOOD(Color RandomColor_FOOD) {
+        return this.RandomColor_FOOD = RandomColor_FOOD;
+    }
+    
     public boolean isExists() {
         return exists;
     }
