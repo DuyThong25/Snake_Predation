@@ -16,15 +16,19 @@ public class GameBoard extends Canvas {
     private static int SQUARE_SIZE;
     private static GraphicsContext gc;
 
-    public static int getROWS() {
-        return ROWS;
-    }
-
     public GameBoard(int tempWidth, int tempHeight) {
         super(tempWidth, tempHeight);
         this.width = tempWidth;
         this.height = tempHeight;
         this.gc = getGraphicsContext2D();
+    }
+
+    public static int getCOLUMNS() {
+        return COLUMNS;
+    }
+
+    public static int getROWS() {
+        return ROWS;
     }
 
     public static int getSQUARE_SIZE() {

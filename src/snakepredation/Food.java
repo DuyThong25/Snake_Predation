@@ -14,8 +14,6 @@ public class Food {
         this.position = position;
     }
 
-
-
     public Point getPosition() {
         return position;
     }
@@ -31,7 +29,7 @@ public class Food {
     public Color setRandomColor_FOOD(Color RandomColor_FOOD) {
         return this.RandomColor_FOOD = RandomColor_FOOD;
     }
-    
+
     public boolean isExists() {
         return exists;
     }
@@ -50,5 +48,5 @@ public class Food {
         Color randomColor = new Color(red, green, blue, 1.0); // 1.0 ở đây đại diện cho độ trong suốt (alpha)
         return randomColor;
     }
-
+   
 }

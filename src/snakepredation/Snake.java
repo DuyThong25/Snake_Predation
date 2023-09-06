@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
 public class Snake {
 
     private List<Point> snakeBody; // Danh sách các phần của con rắn
-    private Direction currentDirection = null; // Hướng di chuyển hiện tại
+    private Direction currentDirection = Direction.RIGHT; // Hướng di chuyển hiện tại
     private Point headPosition; // Tọa độ của đầu con rắn
     private int length; // Chiều dài của con rắn
     private int speed; // Tốc độ di chuyển
@@ -81,7 +81,6 @@ public class Snake {
 //        }
 //        this.headPosition = this.snakeBody.get(0);
 //    }
-
     public void DrawSnake(GameBoard gameboard, GraphicsContext gc) {
         // Vẽ đầu con rắn
         gc.setFill(Color.web("4674E9"));
@@ -90,7 +89,7 @@ public class Snake {
 
         // Vẽ thân con rắn
         for (int i = 1; i < this.snakeBody.size(); i++) {
-            int sizeRect = gameboard.getSQUARE_SIZE() - 5;
+            int sizeRect = gameboard.getSQUARE_SIZE() - 2;
             double positionSnale_X = this.snakeBody.get(i).getX() * gameboard.getSQUARE_SIZE();
             double positionSnale_Y = this.snakeBody.get(i).getY() * gameboard.getSQUARE_SIZE();
 
@@ -105,34 +104,35 @@ public class Snake {
             case UP:
             case W:
                 // Xử lý di chuyển lên
-                if (getCurrentDirection() != currentDirection.DOWN) {
-                    this.currentDirection = this.currentDirection.UP;
+                if (this.currentDirection != Direction.DOWN) {
+                    this.currentDirection = Direction.UP;
                 }
                 break;
             case DOWN:
             case S:
                 // Xử lý di chuyển xuống
-                if (getCurrentDirection() != currentDirection.UP) {
-                    this.currentDirection = this.currentDirection.DOWN;
+                if (this.currentDirection != Direction.UP) {
+                    this.currentDirection = Direction.DOWN;
                 }
                 break;
             case LEFT:
             case A:
                 // Xử lý di chuyển qua trái
-                if (getCurrentDirection() != currentDirection.RIGHT) {
-                    this.currentDirection = this.currentDirection.LEFT;
+                if (this.currentDirection != Direction.RIGHT) {
+                    this.currentDirection = Direction.LEFT;
                 }
                 break;
             case RIGHT:
             case D:
                 // Xử lý di chuyển qua phải
-                if (getCurrentDirection() != currentDirection.LEFT) {
-                    this.currentDirection = this.currentDirection.RIGHT;
+                if (this.currentDirection != Direction.LEFT) {
+                    this.currentDirection = Direction.RIGHT;
                 }
                 break;
         }
     }
-  // Find and update the snake's previous position
+    // Find and update the snake's previous position
+
     public void FindPreviousPosition() {
         // Tìm vị trí trước đó của con rắn  
         for (int i = this.snakeBody.size() - 1; i >= 1; i--) {
@@ -143,8 +143,31 @@ public class Snake {
             this.snakeBody.get(i).y = this.snakeBody.get(i - 1).y;
         }
     }
+
     public void HandleSnakeMove() {
-        
+
+        switch (this.currentDirection) {
+            case RIGHT:
+                // Xử lý khi currentDirection là RIGHT
+                this.headPosition.x++;
+                break;
+            case LEFT:
+                // Xử lý khi currentDirection là LEFT
+                this.headPosition.x--;
+                break;
+            case UP:
+                // Xử lý khi currentDirection là UP
+                this.headPosition.y--;
+                break;
+            case DOWN:
+                // Xử lý khi currentDirection là DOWN
+                this.headPosition.y++;
+                break;
+        }
+//        // Xóa bỏ phần tử cuối cùng của danh sách (phần đuôi của con rắn)
+//        if (this.snakeBody.size() > 0) {
+//            this.snakeBody.remove(snakeBody.size() - 1);
+//        }
     }
 
 }
