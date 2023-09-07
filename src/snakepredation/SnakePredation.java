@@ -12,13 +12,14 @@ import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 
 public class SnakePredation extends Application {
-
-    private boolean isRandomFood = false;
 
 //    private static Color RandomColor_FOOD;
 //    private GraphicsContext gc;
@@ -49,36 +50,42 @@ public class SnakePredation extends Application {
         primaryStage.setMinWidth(primaryStage.getWidth());
         primaryStage.setMinHeight(primaryStage.getHeight());
 
-        // Kết nối sự kiện keyPressed với phương thức HandleSnakeMove trong controller
-        //scene.setOnKeyPressed(controller::HandleSnakeMove);
         // Lấy canvas ra từ controller
         Canvas bgSnake_Canvas = controller.getBg__Snake();
 
         // Khởi tạo GameBoard
         GameBoard gameBoard = new GameBoard(700, 700);
         gameBoard.setGc(bgSnake_Canvas.getGraphicsContext2D());
-        gameBoard.DrawBackground();
+
         // Khởi tạo vị trí Snake
-        Snake snake = new Snake(3);
+        Snake snake = new Snake(5);
         
-        // Khởi tạo thức ăn và background
-        gameBoard.DrawRandomFood(snake);
-        
+        // Khởi tạo thức ăn và màu thức ăn
+        Food food = gameBoard.GenerateRandomFood(snake);
+
         // Handle Event for Snakeee
         scene.setOnKeyPressed(e -> snake.HandeleDirection(e));
 
-//        run(gameBoard, snake);
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(150), e -> run(gameBoard, snake)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> run(gameBoard, snake, food)));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
     // Hàm xử lý run
-    private void run(GameBoard gameBoard, Snake snake) {
+    private void run(GameBoard gameBoard, Snake snake, Food food) {
+        if (snake.isIsAlive() == false) {
+            gameBoard.getGc().setFill(Color.RED);
+            gameBoard.getGc().setFont(new Font("Digital-7", 70));
+            gameBoard.getGc().fillText("Game Over!!!", gameBoard.getWidth() / 3.5, gameBoard.getHeight() / 2);
+            return;
+        }
 
+        gameBoard.DrawBackground();
+        gameBoard.DrawFood(food);
         snake.DrawSnake(gameBoard, gameBoard.getGc());
-        snake.FindPreviousPosition();
-        snake.HandleSnakeMove();
+
+        snake.FindPreviousPosition(gameBoard.getGc(), gameBoard);
+        snake.HandleSnakeMove(gameBoard);
     }
 
     // MAIN

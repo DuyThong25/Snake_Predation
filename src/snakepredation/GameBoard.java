@@ -21,6 +21,9 @@ public class GameBoard extends Canvas {
         this.width = tempWidth;
         this.height = tempHeight;
         this.gc = getGraphicsContext2D();
+        this.ROWS = 20;
+        this.COLUMNS = this.ROWS;
+        this.SQUARE_SIZE = this.width / this.ROWS;
     }
 
     public static int getCOLUMNS() {
@@ -44,10 +47,7 @@ public class GameBoard extends Canvas {
     }
 
     // Draw background
-    public static void DrawBackground() {
-        ROWS = 20;
-        COLUMNS = ROWS;
-        SQUARE_SIZE = width / ROWS;
+    public static void DrawBackground() {  
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 gc.setFill(Color.web("7F8487"));
@@ -59,12 +59,11 @@ public class GameBoard extends Canvas {
     }
 
     // Generate food
-    public static void DrawRandomFood(Snake snake) {
+    public static Food GenerateRandomFood(Snake snake) {
+        double foodX = (int) (Math.random() * ROWS);
+        double foodY = (int) (Math.random() * COLUMNS);
+        Food food = new Food(new Point((int) foodX, (int) foodY));
         while (true) {
-            double foodX = (int) (Math.random() * ROWS);
-            double foodY = (int) (Math.random() * COLUMNS);
-            Food food = new Food(new Point((int) foodX, (int) foodY));
-
             for (Point snakeBody : snake.getBody()) {
                 /*
                     Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
@@ -74,12 +73,13 @@ public class GameBoard extends Canvas {
                     continue;
                 }
             }
-            // Tạo ra màu ngẫu nhiên
-            Color randomColor = food.generateRandomColor();
-            Color newColor = food.setRandomColor_FOOD(randomColor);
-            gc.setFill(newColor);
-            gc.fillRect(food.getPosition().getX() * SQUARE_SIZE, food.getPosition().getY() * SQUARE_SIZE, SQUARE_SIZE - 5, SQUARE_SIZE - 5);
             break;
         }
+        return food;
+    }
+
+    public void DrawFood(Food food) {
+        gc.setFill(food.getRandomColor_FOOD());
+        gc.fillRect(food.getPosition().getX() * SQUARE_SIZE, food.getPosition().getY() * SQUARE_SIZE, SQUARE_SIZE - 5, SQUARE_SIZE - 5);
     }
 }

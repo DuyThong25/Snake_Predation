@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
 public class Snake {
 
     private List<Point> snakeBody; // Danh sách các phần của con rắn
-    private Direction currentDirection = Direction.RIGHT; // Hướng di chuyển hiện tại
+    private Direction currentDirection;// Hướng di chuyển hiện tại
     private Point headPosition; // Tọa độ của đầu con rắn
     private int length; // Chiều dài của con rắn
     private int speed; // Tốc độ di chuyển
@@ -32,6 +32,10 @@ public class Snake {
             snakeBody.add(new Point(5, 5));
         }
         this.headPosition = this.snakeBody.get(0);
+        this.currentDirection = Direction.RIGHT;
+        this.length = snakeBody.size();
+        this.isAlive = true; // Còn sống
+        this.speed = 130;
     }
 
     public List<Point> getBody() {
@@ -74,13 +78,6 @@ public class Snake {
         this.isAlive = isAlive;
     }
 
-//    public void InitSnake() {
-//        // Khởi tạo con rắn có độ dài là 3 tại một vị trí cố định
-//        for (int i = 0; i < 3; i++) {
-//            this.snakeBody.add(new Point(5, 5));
-//        }
-//        this.headPosition = this.snakeBody.get(0);
-//    }
     public void DrawSnake(GameBoard gameboard, GraphicsContext gc) {
         // Vẽ đầu con rắn
         gc.setFill(Color.web("4674E9"));
@@ -92,7 +89,7 @@ public class Snake {
             int sizeRect = gameboard.getSQUARE_SIZE() - 2;
             double positionSnale_X = this.snakeBody.get(i).getX() * gameboard.getSQUARE_SIZE();
             double positionSnale_Y = this.snakeBody.get(i).getY() * gameboard.getSQUARE_SIZE();
-
+            gc.setFill(Color.BLACK);
             gc.fillRoundRect(positionSnale_X, positionSnale_Y, sizeRect, sizeRect, 20, 20);
         }
     }
@@ -133,19 +130,19 @@ public class Snake {
     }
     // Find and update the snake's previous position
 
-    public void FindPreviousPosition() {
+    public void FindPreviousPosition(GraphicsContext gc, GameBoard gameboard) {
         // Tìm vị trí trước đó của con rắn  
         for (int i = this.snakeBody.size() - 1; i >= 1; i--) {
             /*
                     i-1 (vị trí trước đó) -> vị trí trước đó của con rắn
              */
+
             this.snakeBody.get(i).x = this.snakeBody.get(i - 1).x;
             this.snakeBody.get(i).y = this.snakeBody.get(i - 1).y;
         }
     }
 
-    public void HandleSnakeMove() {
-
+    public void HandleSnakeMove(GameBoard gameboard) {
         switch (this.currentDirection) {
             case RIGHT:
                 // Xử lý khi currentDirection là RIGHT
@@ -164,10 +161,42 @@ public class Snake {
                 this.headPosition.y++;
                 break;
         }
-//        // Xóa bỏ phần tử cuối cùng của danh sách (phần đuôi của con rắn)
-//        if (this.snakeBody.size() > 0) {
-//            this.snakeBody.remove(snakeBody.size() - 1);
-//        }
+        // Kiểm tra còn sống không
+        if (isSnakeAlive(gameboard) == true) {
+            this.isAlive = true;
+        } else {
+            this.isAlive = false;
+        }
     }
 
+    public boolean isSnakeAlive(GameBoard gameboard) {
+        int currentWidthX = this.headPosition.x * gameboard.getSQUARE_SIZE();
+        int currentHeightY = this.headPosition.y * gameboard.getSQUARE_SIZE();
+        System.out.println("cur Width:" + currentWidthX);
+        System.out.println("cur Height:" + currentHeightY);
+        System.out.println("Height:" + gameboard.getHeight());
+        System.out.println("Width:" + gameboard.getWidth());
+        System.out.println("Head X:" + this.headPosition.getX());
+        System.out.println("Head y:" + this.headPosition.getY());
+
+        // Dap dau vao tuong
+        /*
+            || Xét rắn đi qua trái headPosition.getX() < 0
+            || Dùng current Height để xét rắn đi xuống dưới đập vào tường currentHeightY >= gameboard.getHeight() - Độ cao nên xét trục y
+            || Dùng current Width để xét rắn đi qua phải đập vào tường currentWidthX >= gameboard.getWidth() - Độ dài nên xét trục x
+            || Xét rắn đi lên trên đập vào tường headPosition.getY < 0 
+        */
+        if (this.headPosition.getX() < 0 || currentHeightY >= gameboard.getHeight() || this.headPosition.getY() < 0  || currentWidthX >= gameboard.getWidth() ) {
+            return false;
+        }
+        
+        // Kill Myselft
+        for (int i = 1; i < this.snakeBody.size(); i++) {
+            // Xét rắn tự va vào đuôi
+            if (this.headPosition.getX() == this.snakeBody.get(i).getX() && this.headPosition.getY() == this.snakeBody.get(i).getY()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

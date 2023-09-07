@@ -12,6 +12,8 @@ public class Food {
 
     public Food(Point position) {
         this.position = position;
+        this.RandomColor_FOOD = generateRandomColor(); // Tạo ra màu ngẫu nhiên
+        this.exists = true; // Mồi chưa bị ăn
     }
 
     public Point getPosition() {
