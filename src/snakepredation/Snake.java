@@ -3,7 +3,9 @@ package snakepredation;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.control.skin.TextInputControlSkin.Direction;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.A;
@@ -16,16 +18,17 @@ import static javafx.scene.input.KeyCode.UP;
 import static javafx.scene.input.KeyCode.W;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 
 public class Snake {
 
     private List<Point> snakeBody; // Danh sách các phần của con rắn
     private Direction currentDirection;// Hướng di chuyển hiện tại
     private Point headPosition; // Tọa độ của đầu con rắn
-    private int length; // Chiều dài của con rắn
     private int speed; // Tốc độ di chuyển
     private boolean isAlive; // Trạng thái sống/mất
     private int scores = 0;
+
     public Snake(int snakeLength) {
         snakeBody = new ArrayList<>();
         for (int i = 0; i < snakeLength; i++) {
@@ -33,9 +36,17 @@ public class Snake {
         }
         this.headPosition = this.snakeBody.get(0);
         this.currentDirection = Direction.RIGHT;
-        this.length = snakeBody.size();
-        this.isAlive = true; // Còn sống
+        this.isAlive = true; // rắn còn sống
         this.speed = 130;
+        this.scores = 0;
+    }
+
+    public int getScores() {
+        return scores;
+    }
+
+    public void setScores(int scores) {
+        this.scores = scores;
     }
 
     public List<Point> getBody() {
@@ -87,18 +98,35 @@ public class Snake {
     }
 
     public void DrawSnake(GameBoard gameboard, GraphicsContext gc) {
-        // Vẽ đầu con rắn
-        gc.setFill(Color.web("4674E9"));
-        gc.fillRoundRect(this.headPosition.getX() * gameboard.getSQUARE_SIZE(), this.headPosition.getY() * gameboard.getSQUARE_SIZE(),
-                gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5, 35, 35);
+        // Kích thước đầu con rắn
+        double headSize = gameboard.getSQUARE_SIZE() - 5;
+        // Vị trí x và y cho đầu con rắn
+        double headX = this.headPosition.getX() * gameboard.getSQUARE_SIZE();
+        double headY = this.headPosition.getY() * gameboard.getSQUARE_SIZE();
 
+        // Vẽ đầu con rắn
+        gc.setFill(Color.web("017A26"));
+        gc.fillRoundRect(headX, headY, headSize, headSize, 25, 25);
+
+        // Kích thước và vị trí cho mắt
+        double eyeSize = 8; // Kích thước mắt
+        double eyeX = headX + (headSize - eyeSize) / 2; // Vị trí x cho mắt
+        double eyeY = headY + (headSize - eyeSize) / 2; // Vị trí y cho mắt
+
+        // Vẽ mắt 1
+        gc.setFill(Color.BLACK);
+        gc.fillRoundRect(eyeX + 2, eyeY + 5, eyeSize, eyeSize, 50, 50);
+        // Vẽ mắt 2
+        gc.setFill(Color.BLACK);
+        gc.fillRoundRect(eyeX + 2, eyeY - 5, eyeSize, eyeSize, 50, 50);
+        
         // Vẽ thân con rắn
         for (int i = 1; i < this.snakeBody.size(); i++) {
-            int sizeRect = gameboard.getSQUARE_SIZE() - 2;
+            int sizeRect = gameboard.getSQUARE_SIZE() - 4;
             double positionSnale_X = this.snakeBody.get(i).getX() * gameboard.getSQUARE_SIZE();
             double positionSnale_Y = this.snakeBody.get(i).getY() * gameboard.getSQUARE_SIZE();
-            gc.setFill(Color.BLACK);
-            gc.fillRoundRect(positionSnale_X, positionSnale_Y, sizeRect, sizeRect, 20, 20);
+            gc.setFill(Color.web("056622"));
+            gc.fillRect(positionSnale_X, positionSnale_Y, sizeRect, sizeRect);
         }
     }
 
@@ -179,9 +207,10 @@ public class Snake {
 
         // Kiểm tra ran an moi chưa
         if (isSnakeEat(food)) {
+            this.scores += 5;
             this.snakeBody.add(new Point(-1, -1));
-            food.setExists(false);         
-            System.out.println("size" + this.snakeBody.size());
+            food.setExists(false);
+            System.out.println("diem: " + scores);
         } else {
             food.setExists(true);
         }

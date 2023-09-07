@@ -22,16 +22,6 @@ import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 
 public class SnakePredation extends Application {
 
-    private int count = 0;
-//    private static Color RandomColor_FOOD;
-//    private GraphicsContext gc;
-//    private List<Point> snakeBody = new ArrayList();
-//    private Point snakeHead;
-//    private int foodX;
-//    private int foodY;
-    // Xác định hướng di chuyển của rắn dựa trên key code
-//    Direction direction = null;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -69,22 +59,30 @@ public class SnakePredation extends Application {
         // Handle Event for Snakeee
         scene.setOnKeyPressed(e -> snake.HandeleDirection(e));
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> run(gameBoard, snake, food)));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> run(gameBoard, snake, food, controller)));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
     // Hàm xử lý run
-    private void run(GameBoard gameBoard, Snake snake, Food food) {
+    private void run(GameBoard gameBoard, Snake snake, Food food, Play_ScreenController controller) {
         if (snake.isIsAlive() == false) {
             gameBoard.getGc().setTextAlign(TextAlignment.CENTER);
+
+            // Vẽ văn bản "Game Over!!!" với kích thước font 70 và màu đỏ
             gameBoard.getGc().setFill(Color.RED);
-            gameBoard.getGc().setFont(new Font("Digital-7", 70));
+            gameBoard.getGc().setFont(new Font("Digital-7", 80));
             gameBoard.getGc().fillText("Game Over!!!", gameBoard.getWidth() / 2, gameBoard.getHeight() / 2);
+
+            // Vẽ văn bản "Total Scores" với kích thước font 20 và màu trắng
+            gameBoard.getGc().setFill(Color.WHITE);
+            gameBoard.getGc().setFont(new Font("Digital-7", 30));
+            gameBoard.getGc().fillText("Total Scores: " + snake.getScores(), gameBoard.getWidth() / 2, gameBoard.getHeight() / 2 + 50);
             return;
         }
+        controller.setHandleScoresLabel("Scrores: " + snake.getScores());
         gameBoard.DrawBackground();
-        
+
         // Kiểm tra mồi
         if (food.isExists() == false) {
             Point newPoint = gameBoard.GenerateRandomFood(snake).getPosition();
