@@ -77,9 +77,4 @@ public class GameBoard extends Canvas {
         }
         return food;
     }
-
-    public void DrawFood(Food food) {
-        gc.setFill(food.getRandomColor_FOOD());
-        gc.fillRect(food.getPosition().getX() * SQUARE_SIZE, food.getPosition().getY() * SQUARE_SIZE, SQUARE_SIZE - 5, SQUARE_SIZE - 5);
-    }
 }

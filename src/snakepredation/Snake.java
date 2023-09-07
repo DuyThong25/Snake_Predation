@@ -25,10 +25,10 @@ public class Snake {
     private int length; // Chiều dài của con rắn
     private int speed; // Tốc độ di chuyển
     private boolean isAlive; // Trạng thái sống/mất
-
-    public Snake(int snakeLengt) {
+    private int scores = 0;
+    public Snake(int snakeLength) {
         snakeBody = new ArrayList<>();
-        for (int i = 0; i < snakeLengt; i++) {
+        for (int i = 0; i < snakeLength; i++) {
             snakeBody.add(new Point(5, 5));
         }
         this.headPosition = this.snakeBody.get(0);
@@ -76,6 +76,14 @@ public class Snake {
 
     public void setIsAlive(boolean isAlive) {
         this.isAlive = isAlive;
+    }
+
+    public List<Point> getSnakeBody() {
+        return snakeBody;
+    }
+
+    public void setSnakeBody(List<Point> snakeBody) {
+        this.snakeBody = snakeBody;
     }
 
     public void DrawSnake(GameBoard gameboard, GraphicsContext gc) {
@@ -142,7 +150,7 @@ public class Snake {
         }
     }
 
-    public void HandleSnakeMove(GameBoard gameboard) {
+    public void HandleSnakeMove(GameBoard gameboard, Food food, Snake snake) {
         switch (this.currentDirection) {
             case RIGHT:
                 // Xử lý khi currentDirection là RIGHT
@@ -161,35 +169,44 @@ public class Snake {
                 this.headPosition.y++;
                 break;
         }
+
         // Kiểm tra còn sống không
         if (isSnakeAlive(gameboard) == true) {
             this.isAlive = true;
         } else {
             this.isAlive = false;
         }
+
+        // Kiểm tra ran an moi chưa
+        if (isSnakeEat(food)) {
+            this.snakeBody.add(new Point(-1, -1));
+            food.setExists(false);         
+            System.out.println("size" + this.snakeBody.size());
+        } else {
+            food.setExists(true);
+        }
     }
 
     public boolean isSnakeAlive(GameBoard gameboard) {
         int currentWidthX = this.headPosition.x * gameboard.getSQUARE_SIZE();
         int currentHeightY = this.headPosition.y * gameboard.getSQUARE_SIZE();
-        System.out.println("cur Width:" + currentWidthX);
-        System.out.println("cur Height:" + currentHeightY);
-        System.out.println("Height:" + gameboard.getHeight());
-        System.out.println("Width:" + gameboard.getWidth());
-        System.out.println("Head X:" + this.headPosition.getX());
-        System.out.println("Head y:" + this.headPosition.getY());
+//        System.out.println("cur Width:" + currentWidthX);
+//        System.out.println("cur Height:" + currentHeightY);
+//        System.out.println("Height:" + gameboard.getHeight());
+//        System.out.println("Width:" + gameboard.getWidth());
+//        System.out.println("Head X:" + this.headPosition.getX());
+//        System.out.println("Head y:" + this.headPosition.getY());
 
-        // Dap dau vao tuong
-        /*
+        /* //  Kiểm tra rắn dap dau vao tuong
             || Xét rắn đi qua trái headPosition.getX() < 0
             || Dùng current Height để xét rắn đi xuống dưới đập vào tường currentHeightY >= gameboard.getHeight() - Độ cao nên xét trục y
             || Dùng current Width để xét rắn đi qua phải đập vào tường currentWidthX >= gameboard.getWidth() - Độ dài nên xét trục x
             || Xét rắn đi lên trên đập vào tường headPosition.getY < 0 
-        */
-        if (this.headPosition.getX() < 0 || currentHeightY >= gameboard.getHeight() || this.headPosition.getY() < 0  || currentWidthX >= gameboard.getWidth() ) {
+         */
+        if (this.headPosition.getX() < 0 || currentHeightY >= gameboard.getHeight() || this.headPosition.getY() < 0 || currentWidthX >= gameboard.getWidth()) {
             return false;
         }
-        
+
         // Kill Myselft
         for (int i = 1; i < this.snakeBody.size(); i++) {
             // Xét rắn tự va vào đuôi
@@ -198,5 +215,15 @@ public class Snake {
             }
         }
         return true;
+    }
+
+    // Snake eat food 
+    public boolean isSnakeEat(Food food) {
+        // Xet ran da an tra ve true
+        if (this.headPosition.getX() == food.getPosition().getX() && this.headPosition.getY() == food.getPosition().getY()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

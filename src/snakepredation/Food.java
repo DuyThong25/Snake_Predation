@@ -13,7 +13,7 @@ public class Food {
     public Food(Point position) {
         this.position = position;
         this.RandomColor_FOOD = generateRandomColor(); // Tạo ra màu ngẫu nhiên
-        this.exists = true; // Mồi chưa bị ăn
+        this.exists = false; // Moi chua xuat hien
     }
 
     public Point getPosition() {
@@ -50,5 +50,15 @@ public class Food {
         Color randomColor = new Color(red, green, blue, 1.0); // 1.0 ở đây đại diện cho độ trong suốt (alpha)
         return randomColor;
     }
-   
+
+    public void DrawFood(GameBoard gameboard) {
+        gameboard.getGc().setFill(getRandomColor_FOOD());
+        gameboard.getGc().fillRect(getPosition().getX() * gameboard.getSQUARE_SIZE(), getPosition().getY() * gameboard.getSQUARE_SIZE(),
+                gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5);
+    }
+
+    public void clear() {
+        this.position = null; // Đặt lại tọa độ của mồi
+        this.RandomColor_FOOD = generateRandomColor(); // Tạo màu ngẫu nhiên mới cho thức ăn
+    }
 }
