@@ -1,25 +1,32 @@
 package snakepredation.FXML_Folder.Play_Screen;
 
-import java.awt.Point;
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import snakepredation.Food;
 import snakepredation.GameBoard;
+import snakepredation.ScreenUtil;
 import snakepredation.Snake;
+import snakepredation.SnakePredation;
 
 public class Play_ScreenController implements Initializable {
 
@@ -39,6 +46,14 @@ public class Play_ScreenController implements Initializable {
     private Snake snake;
     private Food food;
     private GameBoard gameBoard;
+    @FXML
+    private Button homeBtn1;
+    @FXML
+    private Button restartBtn1;
+    @FXML
+    private FlowPane GameOver_FlowPane;
+    @FXML
+    private FlowPane Pause_FlowPane;
 
     public void setSnake(Snake snake) {
         this.snake = snake;
@@ -139,7 +154,13 @@ public class Play_ScreenController implements Initializable {
     @FXML
     private void MouseClick_Pause(MouseEvent event) {
         this.isPause = true;
+        // Xét label
+        Pause_FlowPane.setVisible(true);
         continueBtn.setVisible(true);
+        homeBtn1.setVisible(true);
+        restartBtn1.setVisible(true);
+
+        // Xét timeline
         this.timeline.pause();
     }
 
@@ -147,7 +168,13 @@ public class Play_ScreenController implements Initializable {
     @FXML
     private void MouseClick_Continue(MouseEvent event) {
         this.isPause = false;
-        this.continueBtn.setVisible(false);
+        // Xét label
+        Pause_FlowPane.setVisible(false);
+        continueBtn.setVisible(false);
+        homeBtn1.setVisible(false);
+        restartBtn1.setVisible(false);
+
+        // Xét timeline
         this.timeline.setCycleCount(Animation.INDEFINITE);
         this.timeline.play();
     }
@@ -155,24 +182,46 @@ public class Play_ScreenController implements Initializable {
     // Kiểm tra rắn còn sống không
     public boolean checkGameOver(GameBoard gameBoard, Snake snake) {
         if (snake.isIsAlive() == false) {
+            // Xét flow pane
+            this.GameOver_FlowPane.setVisible(true);
             // Set label
             setlabelForGameOver(true);
-            // Set cho button pause bằng disable
             return true;
         }
         return false;
     }
 
+    // Trở về Home Screen
     @FXML
-    private void MouseClick_Home(MouseEvent event) {
+    private void MouseClick_Home(MouseEvent event) throws IOException {
+        //Load file fxml của Play_Screen -> scene builder
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Home_Screen/Home_Screen.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        // Lấy file CSS
+        scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/Home_Screen/Home_Screen.css").toExternalForm());
 
+        // Lấy primary stage từ SnakePredation.java
+        Stage home_Stage = SnakePredation.getPrimaryStage();
+        home_Stage.setScene(scene);
+        home_Stage.show();
+
+        // Set cho nằm giữa màn hình
+        ScreenUtil.centerScreen(home_Stage);
+
+        // Set max width/height
+        home_Stage.setMinWidth(home_Stage.getWidth());
+        home_Stage.setMinHeight(home_Stage.getHeight());
     }
 
+    // Restar game
     @FXML
     private void MouseClick_Restart(MouseEvent event) {
+
+        // Xét flow pane
+        this.Pause_FlowPane.setVisible(false);
         // Set label
         setlabelForGameOver(false);
-
 
         // Dừng hẳn time line
         this.timeline.stop();
@@ -199,5 +248,9 @@ public class Play_ScreenController implements Initializable {
         // Set cho button pause 
         this.pauseBtn.setDisable(check);
 
+    }
+
+    @FXML
+    private void KeyPress_Continue(KeyEvent event) {
     }
 }

@@ -34,7 +34,7 @@
                <StackPane fx:id="stackPane_Canvas" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="50.0">
                   <children>
                      <Canvas fx:id="bg__Snake" height="700.0" nodeOrientation="INHERIT" width="700.0" StackPane.alignment="CENTER" />
-                     <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="257.0" prefWidth="106.0">
+                     <FlowPane fx:id="GameOver_FlowPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="257.0" prefWidth="106.0" visible="false">
                         <children>
                            <Label fx:id="gameoverLabel" text="Game Over :D" textAlignment="CENTER" textFill="#d40000" visible="false">
                               <font>
@@ -77,11 +77,28 @@
                            <Insets />
                         </StackPane.margin>
                      </FlowPane>
-                     <Button fx:id="continueBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#MouseClick_Continue" prefHeight="80.0" prefWidth="154.0" text="CONTINUE" textAlignment="CENTER" visible="false">
-                        <font>
-                           <Font name="Comic Sans MS Bold Italic" size="20.0" />
-                        </font>
-                     </Button>
+                     <FlowPane fx:id="Pause_FlowPane" alignment="CENTER" prefHeight="200.0" prefWidth="200.0" visible="false" StackPane.alignment="CENTER">
+                        <children>
+                           <Button fx:id="homeBtn1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#MouseClick_Home" prefHeight="80.0" prefWidth="154.0" text="HOME" textAlignment="CENTER" visible="false">
+                              <font>
+                                 <Font name="Comic Sans MS Bold Italic" size="20.0" />
+                              </font>
+                           </Button>
+                           <Button fx:id="restartBtn1" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#MouseClick_Restart" prefHeight="80.0" prefWidth="154.0" text="RESTART" textAlignment="CENTER" visible="false">
+                              <font>
+                                 <Font name="Comic Sans MS Bold Italic" size="20.0" />
+                              </font>
+                              <FlowPane.margin>
+                                 <Insets left="25.0" right="25.0" />
+                              </FlowPane.margin>
+                           </Button>
+                           <Button fx:id="continueBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onKeyPressed="#KeyPress_Continue" onMouseClicked="#MouseClick_Continue" prefHeight="80.0" prefWidth="154.0" text="CONTINUE" textAlignment="CENTER" visible="false">
+                              <font>
+                                 <Font name="Comic Sans MS Bold Italic" size="20.0" />
+                              </font>
+                           </Button>
+                        </children>
+                     </FlowPane>
                   </children>
                </StackPane>
                <ImageView fx:id="pauseBtn" fitHeight="41.0" fitWidth="70.0" layoutX="725.0" layoutY="9.0" onMouseClicked="#MouseClick_Pause" pickOnBounds="true" preserveRatio="true">
