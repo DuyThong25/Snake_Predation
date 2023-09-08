@@ -41,6 +41,12 @@ public class Play_ScreenController implements Initializable {
     private Button continueBtn;
     @FXML
     private ImageView pauseBtn;
+    @FXML
+    private Button restartBtn;
+    @FXML
+    private Label gameoverLabel;
+    @FXML
+    private Label totalScoresLabel;
 
     public boolean isIsPause() {
         return isPause;
@@ -81,22 +87,8 @@ public class Play_ScreenController implements Initializable {
 
     // Hàm xử lý run
     public void run(GameBoard gameBoard, Snake snake, Food food) {
-
-        if (snake.isIsAlive() == false) {
-            gameBoard.getGc().setTextAlign(TextAlignment.CENTER);
-
-            // Vẽ văn bản "Game Over!!!" với kích thước font 70 và màu đỏ
-            gameBoard.getGc().setFill(Color.RED);
-            gameBoard.getGc().setFont(new Font("Digital-7", 80));
-            gameBoard.getGc().fillText("Game Over!!!", gameBoard.getWidth() / 2, gameBoard.getHeight() / 2);
-
-            // Vẽ văn bản "Total Scores" với kích thước font 20 và màu trắng
-            gameBoard.getGc().setFill(Color.WHITE);
-            gameBoard.getGc().setFont(new Font("Digital-7", 30));
-            gameBoard.getGc().fillText("Total Scores: " + snake.getScores(), gameBoard.getWidth() / 2, gameBoard.getHeight() / 2 + 50);
-            
-            // Set cho button pause bằng disable
-            this.pauseBtn.setDisable(true);
+        // Kiểm tra có game over không -> rắn còn sống? 
+        if (checkGameOver(gameBoard, snake)) {
             return;
         }
         setHandleScoresLabel("Scrores: " + snake.getScores());
@@ -113,26 +105,41 @@ public class Play_ScreenController implements Initializable {
 
         snake.FindPreviousPosition(gameBoard.getGc(), gameBoard);
         snake.HandleSnakeMove(gameBoard, food, snake);
-        System.out.println( "1"+this.isPause);
-
     }
 
+    // Nhấn vào button pause
     @FXML
     private void MouseClick_Pause(MouseEvent event) {
         this.isPause = true;
         continueBtn.setVisible(true);
         this.timeline.pause();
-        System.out.println( "2"+this.isPause);
     }
 
+    // Nhấn vào button continue
     @FXML
     private void MouseClick_Continue(MouseEvent event) {
         this.isPause = false;
         this.continueBtn.setVisible(false);
         this.timeline.setCycleCount(Animation.INDEFINITE);
         this.timeline.play();
-        System.out.println( "3"+this.isPause);
+    }
 
+    // Kiểm tra rắn còn sống không
+    public boolean checkGameOver(GameBoard gameBoard, Snake snake) {
+        if (snake.isIsAlive() == false) {
+            // Set label Game Over
+            this.gameoverLabel.setVisible(true);
+            // Set label Total Scores
+            this.totalScoresLabel.setVisible(true);
+            this.totalScoresLabel.setText("Total Scores: " + snake.getScores());
+            // Hiển thị button reset
+            this.restartBtn.setVisible(true);
+            
+            // Set cho button pause bằng disable
+            this.pauseBtn.setDisable(true);
+            return true;
+        }
+        return false;
     }
 
 }
