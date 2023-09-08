@@ -52,11 +52,26 @@
                                  <Insets bottom="15.0" />
                               </FlowPane.margin>
                            </Label>
-                           <Button fx:id="restartBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#MouseClick_Continue" prefHeight="80.0" prefWidth="154.0" text="RESTART" textAlignment="CENTER" visible="false">
-                              <font>
-                                 <Font name="Comic Sans MS Bold Italic" size="20.0" />
-                              </font>
-                           </Button>
+                           <FlowPane alignment="CENTER" columnHalignment="CENTER" prefHeight="140.0" prefWidth="531.0">
+                              <children>
+                                 <Button fx:id="homeBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#MouseClick_Home" prefHeight="80.0" prefWidth="154.0" text="HOME" textAlignment="CENTER" visible="false">
+                                    <font>
+                                       <Font name="Comic Sans MS Bold Italic" size="20.0" />
+                                    </font>
+                                 </Button>
+                                 <Button fx:id="restartBtn" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onMouseClicked="#MouseClick_Restart" prefHeight="80.0" prefWidth="154.0" text="RESTART" textAlignment="CENTER" visible="false">
+                                    <font>
+                                       <Font name="Comic Sans MS Bold Italic" size="20.0" />
+                                    </font>
+                                    <FlowPane.margin>
+                                       <Insets left="50.0" />
+                                    </FlowPane.margin>
+                                 </Button>
+                              </children>
+                              <FlowPane.margin>
+                                 <Insets />
+                              </FlowPane.margin>
+                           </FlowPane>
                         </children>
                         <StackPane.margin>
                            <Insets />

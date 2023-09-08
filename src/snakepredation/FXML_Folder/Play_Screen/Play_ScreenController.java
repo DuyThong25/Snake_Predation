@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +18,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 import snakepredation.Food;
 import snakepredation.GameBoard;
 import snakepredation.Snake;
@@ -47,6 +49,8 @@ public class Play_ScreenController implements Initializable {
     private Label gameoverLabel;
     @FXML
     private Label totalScoresLabel;
+    @FXML
+    private Button homeBtn;
 
     public boolean isIsPause() {
         return isPause;
@@ -83,6 +87,14 @@ public class Play_ScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+    }
+    
+    // Khởi tạo Timeline và bắt đầu game
+    public void startGame(GameBoard gameBoard, Snake snake, Food food) {
+        // Khởi tạo timeline và đặt vòng lặp game
+        timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> run(gameBoard, snake, food)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
     // Hàm xử lý run
@@ -134,12 +146,23 @@ public class Play_ScreenController implements Initializable {
             this.totalScoresLabel.setText("Total Scores: " + snake.getScores());
             // Hiển thị button reset
             this.restartBtn.setVisible(true);
-            
+            // Hiển thị button home
+            this.homeBtn.setVisible(true);
             // Set cho button pause bằng disable
             this.pauseBtn.setDisable(true);
             return true;
         }
         return false;
+    }
+
+    @FXML
+    private void MouseClick_Home(MouseEvent event) {
+
+    }
+
+    @FXML
+    private void MouseClick_Restart(MouseEvent event) {
+
     }
 
 }
