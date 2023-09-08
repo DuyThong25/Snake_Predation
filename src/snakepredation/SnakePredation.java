@@ -1,24 +1,10 @@
 package snakepredation;
 
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
-import javafx.util.Duration;
-
-import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 
 public class SnakePredation extends Application {
 

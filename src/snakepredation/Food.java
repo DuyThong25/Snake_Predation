@@ -57,8 +57,8 @@ public class Food {
                 gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5);
     }
 
-    public void clear() {
-        this.position = null; // Đặt lại tọa độ của mồi
-        this.RandomColor_FOOD = generateRandomColor(); // Tạo màu ngẫu nhiên mới cho thức ăn
+    public void resetFood(GameBoard gameBoard, Snake snake, Food food) {
+        Point newPoint = gameBoard.GenerateRandomFood(snake).getPosition();
+        food.setPosition(newPoint);
     }
 }

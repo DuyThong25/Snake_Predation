@@ -2,6 +2,7 @@ package snakepredation.FXML_Folder.Play_Screen;
 
 import java.awt.Point;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -15,9 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import snakepredation.Food;
 import snakepredation.GameBoard;
@@ -38,6 +36,21 @@ public class Play_ScreenController implements Initializable {
     @FXML
     private Label handleScores;
     private boolean isPause = false;
+    private Snake snake;
+    private Food food;
+    private GameBoard gameBoard;
+
+    public void setSnake(Snake snake) {
+        this.snake = snake;
+    }
+
+    public void setFood(Food food) {
+        this.food = food;
+    }
+
+    public void setGameBoard(GameBoard gameBoard) {
+        this.gameBoard = gameBoard;
+    }
     private Timeline timeline;
     @FXML
     private Button continueBtn;
@@ -88,35 +101,38 @@ public class Play_ScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
     }
-    
+
     // Khởi tạo Timeline và bắt đầu game
     public void startGame(GameBoard gameBoard, Snake snake, Food food) {
+        this.setSnake(snake);
+        this.setFood(food);
+        this.setGameBoard(gameBoard);
+
         // Khởi tạo timeline và đặt vòng lặp game
-        timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> run(gameBoard, snake, food)));
+        timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> run()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
     // Hàm xử lý run
-    public void run(GameBoard gameBoard, Snake snake, Food food) {
-        // Kiểm tra có game over không -> rắn còn sống? 
-        if (checkGameOver(gameBoard, snake)) {
+    public void run() {
+        // Kiểm tra game over không -> rắn còn sống? 
+        if (checkGameOver(this.gameBoard, this.snake)) {
             return;
         }
-        setHandleScoresLabel("Scrores: " + snake.getScores());
-        gameBoard.DrawBackground();
+        this.gameBoard.DrawBackground();
+        setHandleScoresLabel("Scrores: " + this.snake.getScores());
 
         // Kiểm tra mồi
-        if (food.isExists() == false) {
-            Point newPoint = gameBoard.GenerateRandomFood(snake).getPosition();
-            food.setPosition(newPoint);
+        if (this.food.isExists() == false) {
+            this.food.resetFood(this.gameBoard, this.snake, this.food);
         } else {
-            food.DrawFood(gameBoard);
+            this.food.DrawFood(this.gameBoard);
         }
-        snake.DrawSnake(gameBoard, gameBoard.getGc());
+        this.snake.DrawSnake(this.gameBoard, this.gameBoard.getGc());
 
-        snake.FindPreviousPosition(gameBoard.getGc(), gameBoard);
-        snake.HandleSnakeMove(gameBoard, food, snake);
+        this.snake.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
+        this.snake.HandleSnakeMove(this.gameBoard, this.food, this.snake);
     }
 
     // Nhấn vào button pause
@@ -139,15 +155,8 @@ public class Play_ScreenController implements Initializable {
     // Kiểm tra rắn còn sống không
     public boolean checkGameOver(GameBoard gameBoard, Snake snake) {
         if (snake.isIsAlive() == false) {
-            // Set label Game Over
-            this.gameoverLabel.setVisible(true);
-            // Set label Total Scores
-            this.totalScoresLabel.setVisible(true);
-            this.totalScoresLabel.setText("Total Scores: " + snake.getScores());
-            // Hiển thị button reset
-            this.restartBtn.setVisible(true);
-            // Hiển thị button home
-            this.homeBtn.setVisible(true);
+            // Set label
+            setlabelForGameOver(true);
             // Set cho button pause bằng disable
             this.pauseBtn.setDisable(true);
             return true;
@@ -157,12 +166,37 @@ public class Play_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Home(MouseEvent event) {
-
+        
     }
 
     @FXML
     private void MouseClick_Restart(MouseEvent event) {
+        // Set label
+        setlabelForGameOver(false);
+        // Set cho button pause bằng disable
+        this.pauseBtn.setDisable(true);
 
+        // Dừng hẳn time line
+        this.timeline.stop();
+        // Tạo lại rắn và handle move cho rắn
+        Snake snakeReset = new Snake(5);
+        stackPane_Canvas.getScene().setOnKeyPressed(e -> snakeReset.HandeleDirection(e));
+        // Tạo lại thức ăn
+        this.food.resetFood(this.gameBoard, snakeReset, this.food);
+        // Chạy lại game
+        startGame(this.gameBoard, snakeReset, this.food);
     }
 
+    public void setlabelForGameOver(boolean check) {
+        // Set label Game Over
+        this.gameoverLabel.setVisible(check);
+        // Set label Total Scores
+        this.totalScoresLabel.setVisible(check);
+        this.totalScoresLabel.setText("Total Scores: " + this.snake.getScores());
+
+        // Hiển thị button reset
+        this.restartBtn.setVisible(check);
+        // Hiển thị button home
+        this.homeBtn.setVisible(check);
+    }
 }
