@@ -3,9 +3,7 @@ package snakepredation;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.control.skin.TextInputControlSkin.Direction;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.A;
@@ -18,7 +16,6 @@ import static javafx.scene.input.KeyCode.UP;
 import static javafx.scene.input.KeyCode.W;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 
 public class Snake {
 
@@ -113,13 +110,22 @@ public class Snake {
         double eyeX = headX + (headSize - eyeSize) / 2; // Vị trí x cho mắt
         double eyeY = headY + (headSize - eyeSize) / 2; // Vị trí y cho mắt
 
-        // Vẽ mắt 1
-        gc.setFill(Color.BLACK);
-        gc.fillRoundRect(eyeX + 2, eyeY + 5, eyeSize, eyeSize, 50, 50);
-        // Vẽ mắt 2
-        gc.setFill(Color.BLACK);
-        gc.fillRoundRect(eyeX + 2, eyeY - 5, eyeSize, eyeSize, 50, 50);
-        
+        if (this.currentDirection == Direction.UP || this.currentDirection == Direction.DOWN) {
+            // Vẽ mắt 1
+            gc.setFill(Color.BLACK);
+            gc.fillRoundRect(eyeX - 5, eyeY - 2, eyeSize, eyeSize, 50, 50);
+            // Vẽ mắt 2
+            gc.setFill(Color.BLACK);
+            gc.fillRoundRect(eyeX + 5, eyeY - 2, eyeSize, eyeSize, 50, 50);
+        } else {
+            // Vẽ mắt 1
+            gc.setFill(Color.BLACK);
+            gc.fillRoundRect(eyeX + 2, eyeY + 5, eyeSize, eyeSize, 50, 50);
+            // Vẽ mắt 2
+            gc.setFill(Color.BLACK);
+            gc.fillRoundRect(eyeX + 2, eyeY - 5, eyeSize, eyeSize, 50, 50);
+        }
+
         // Vẽ thân con rắn
         for (int i = 1; i < this.snakeBody.size(); i++) {
             int sizeRect = gameboard.getSQUARE_SIZE() - 4;
@@ -172,7 +178,6 @@ public class Snake {
             /*
                     i-1 (vị trí trước đó) -> vị trí trước đó của con rắn
              */
-
             this.snakeBody.get(i).x = this.snakeBody.get(i - 1).x;
             this.snakeBody.get(i).y = this.snakeBody.get(i - 1).y;
         }
@@ -189,7 +194,7 @@ public class Snake {
                 this.headPosition.x--;
                 break;
             case UP:
-                // Xử lý khi currentDirection là UP
+                // Xử lý khi currentDirection là UP - Theo đồ họa game thì trục y thường đi xuống dưới
                 this.headPosition.y--;
                 break;
             case DOWN:
@@ -214,6 +219,7 @@ public class Snake {
         } else {
             food.setExists(true);
         }
+        System.out.println("" + this.currentDirection);
     }
 
     public boolean isSnakeAlive(GameBoard gameboard) {
