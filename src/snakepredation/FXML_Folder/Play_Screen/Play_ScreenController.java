@@ -3,18 +3,18 @@ package snakepredation.FXML_Folder.Play_Screen;
 import java.awt.Point;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.animation.Animation;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import snakepredation.FXML_Folder.Home_Screen.Home_ScreenController;
 import snakepredation.Food;
 import snakepredation.GameBoard;
 import snakepredation.Snake;
@@ -33,10 +33,25 @@ public class Play_ScreenController implements Initializable {
     private AnchorPane HandleScoresLabel;
     @FXML
     private Label handleScores;
+    private boolean isPause;
+    private Timeline timeline;
 
-    /**
-     * Initializes the Getter/ Setter
-     */
+        
+    public boolean isIsPause() {
+        return isPause;
+    }
+
+    public void setIsPause(boolean isPause) {
+        this.isPause = isPause;
+    }
+    public Timeline getTimeline() {
+        return timeline;
+    }
+
+    public void setTimeline(Timeline timeline) {
+        this.timeline = timeline;
+    }
+
     public Canvas getBg__Snake() {
         return bg__Snake;
     }
@@ -88,5 +103,16 @@ public class Play_ScreenController implements Initializable {
 
         snake.FindPreviousPosition(gameBoard.getGc(), gameBoard);
         snake.HandleSnakeMove(gameBoard, food, snake);
+        if (isIsPause()) {
+            timeline.pause();
+        } else {
+            timeline.setCycleCount(Animation.INDEFINITE);
+            timeline.play();
+        }
+    }
+
+    @FXML
+    private void MouseClick_Pause(MouseEvent event) {
+        this.isPause = true;
     }
 }

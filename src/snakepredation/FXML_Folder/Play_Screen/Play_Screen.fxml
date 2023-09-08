@@ -4,6 +4,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
@@ -32,6 +34,11 @@
                      <Canvas fx:id="bg__Snake" height="700.0" nodeOrientation="INHERIT" width="700.0" StackPane.alignment="CENTER" />
                   </children>
                </StackPane>
+               <ImageView fitHeight="41.0" fitWidth="70.0" layoutX="725.0" layoutY="9.0" onMouseClicked="#MouseClick_Pause" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../../asset/image/pause.png" />
+                  </image>
+               </ImageView>
             </children>
          </AnchorPane>
       </children>
