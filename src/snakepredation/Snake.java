@@ -219,7 +219,7 @@ public class Snake {
         } else {
             food.setExists(true);
         }
-        System.out.println("" + this.currentDirection);
+
     }
 
     public boolean isSnakeAlive(GameBoard gameboard) {

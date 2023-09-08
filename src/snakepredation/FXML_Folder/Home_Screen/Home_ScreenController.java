@@ -90,9 +90,11 @@ public class Home_ScreenController implements Initializable {
         root.getScene().setOnKeyPressed(e -> snake.HandeleDirection(e));
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> play_Controller.run(gameBoard, snake, food)));
-//        timeline.setCycleCount(Animation.INDEFINITE);
-//        timeline.play();
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+        
         play_Controller.setTimeline(timeline);
+        
         play_Controller.run(gameBoard, snake, food);
     }
 

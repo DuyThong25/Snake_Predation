@@ -8,7 +8,9 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -33,10 +35,13 @@ public class Play_ScreenController implements Initializable {
     private AnchorPane HandleScoresLabel;
     @FXML
     private Label handleScores;
-    private boolean isPause;
+    private boolean isPause = false;
     private Timeline timeline;
+    @FXML
+    private Button continueBtn;
+    @FXML
+    private ImageView pauseBtn;
 
-        
     public boolean isIsPause() {
         return isPause;
     }
@@ -44,6 +49,7 @@ public class Play_ScreenController implements Initializable {
     public void setIsPause(boolean isPause) {
         this.isPause = isPause;
     }
+
     public Timeline getTimeline() {
         return timeline;
     }
@@ -75,6 +81,7 @@ public class Play_ScreenController implements Initializable {
 
     // Hàm xử lý run
     public void run(GameBoard gameBoard, Snake snake, Food food) {
+
         if (snake.isIsAlive() == false) {
             gameBoard.getGc().setTextAlign(TextAlignment.CENTER);
 
@@ -87,6 +94,9 @@ public class Play_ScreenController implements Initializable {
             gameBoard.getGc().setFill(Color.WHITE);
             gameBoard.getGc().setFont(new Font("Digital-7", 30));
             gameBoard.getGc().fillText("Total Scores: " + snake.getScores(), gameBoard.getWidth() / 2, gameBoard.getHeight() / 2 + 50);
+            
+            // Set cho button pause bằng disable
+            this.pauseBtn.setDisable(true);
             return;
         }
         setHandleScoresLabel("Scrores: " + snake.getScores());
@@ -103,16 +113,26 @@ public class Play_ScreenController implements Initializable {
 
         snake.FindPreviousPosition(gameBoard.getGc(), gameBoard);
         snake.HandleSnakeMove(gameBoard, food, snake);
-        if (isIsPause()) {
-            timeline.pause();
-        } else {
-            timeline.setCycleCount(Animation.INDEFINITE);
-            timeline.play();
-        }
+        System.out.println( "1"+this.isPause);
+
     }
 
     @FXML
     private void MouseClick_Pause(MouseEvent event) {
         this.isPause = true;
+        continueBtn.setVisible(true);
+        this.timeline.pause();
+        System.out.println( "2"+this.isPause);
     }
+
+    @FXML
+    private void MouseClick_Continue(MouseEvent event) {
+        this.isPause = false;
+        this.continueBtn.setVisible(false);
+        this.timeline.setCycleCount(Animation.INDEFINITE);
+        this.timeline.play();
+        System.out.println( "3"+this.isPause);
+
+    }
+
 }
