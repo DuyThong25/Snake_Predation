@@ -33,7 +33,9 @@ public class SnakePredation extends Application {
         this.primaryStage.setTitle("Snake Predation");
         this.primaryStage.setScene(scene);
         this.primaryStage.show();
-
+        // Set cho nằm giữa màn hình
+        ScreenUtil.centerScreen(primaryStage);
+        
         // Set max width/height
         this.primaryStage.setMinWidth(this.primaryStage.getWidth());
         this.primaryStage.setMinHeight(this.primaryStage.getHeight());

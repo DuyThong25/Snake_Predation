@@ -158,7 +158,6 @@ public class Play_ScreenController implements Initializable {
             // Set label
             setlabelForGameOver(true);
             // Set cho button pause bằng disable
-            this.pauseBtn.setDisable(true);
             return true;
         }
         return false;
@@ -166,15 +165,14 @@ public class Play_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Home(MouseEvent event) {
-        
+
     }
 
     @FXML
     private void MouseClick_Restart(MouseEvent event) {
         // Set label
         setlabelForGameOver(false);
-        // Set cho button pause bằng disable
-        this.pauseBtn.setDisable(true);
+
 
         // Dừng hẳn time line
         this.timeline.stop();
@@ -198,5 +196,8 @@ public class Play_ScreenController implements Initializable {
         this.restartBtn.setVisible(check);
         // Hiển thị button home
         this.homeBtn.setVisible(check);
+        // Set cho button pause 
+        this.pauseBtn.setDisable(check);
+
     }
 }

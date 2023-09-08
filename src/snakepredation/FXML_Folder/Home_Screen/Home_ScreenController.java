@@ -15,10 +15,12 @@ import javafx.stage.Stage;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 import snakepredation.Food;
 import snakepredation.GameBoard;
+import snakepredation.ScreenUtil;
 import snakepredation.Snake;
 import snakepredation.SnakePredation;
 
 public class Home_ScreenController implements Initializable {
+
     @FXML
     private ImageView background_Home;
     @FXML
@@ -33,7 +35,7 @@ public class Home_ScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }
-    
+
     // Bấm vào nút play
     @FXML
     private void MoveTo_PlayScreen(MouseEvent event) throws Exception {
@@ -53,6 +55,9 @@ public class Home_ScreenController implements Initializable {
         Stage play_Stage = SnakePredation.getPrimaryStage();
         play_Stage.setScene(scene);
         play_Stage.show();
+
+        // Set cho nằm giữa màn hình
+        ScreenUtil.centerScreen(play_Stage);
 
         // Set max width/height
         play_Stage.setMinWidth(play_Stage.getWidth());
