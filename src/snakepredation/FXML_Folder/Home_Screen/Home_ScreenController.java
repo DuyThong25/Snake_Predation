@@ -7,6 +7,9 @@ package snakepredation.FXML_Folder.Home_Screen;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +21,12 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
+import snakepredation.Food;
+import snakepredation.GameBoard;
+import snakepredation.Snake;
+import snakepredation.SnakePredation;
 
 /**
  * FXML Controller class
@@ -48,23 +56,42 @@ public class Home_ScreenController implements Initializable {
         // Load file fxml của Play_Screen -> scene builder
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.fxml"));
         Parent root = loader.load();
-        
+
+        // Lấy file controller của Play_Screen
+        Play_ScreenController play_Controller = loader.getController();
+
         Scene scene = new Scene(root);
-        // Lấy file CSS
+        // Lấy file CSS của Play_Screen
         scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.css").toExternalForm());
-        
-        Stage playStage = new Stage();
-        playStage.setTitle("Snake Predation");
-        playStage.setScene(scene);
-        playStage.show();
+
+        // Lấy primary stage từ SnakePredation.java
+        Stage play_Stage = SnakePredation.getPrimaryStage();
+        play_Stage.setScene(scene);
+        play_Stage.show();
 
         // Set max width/height
-        playStage.setMinWidth(playStage.getWidth());
-        playStage.setMinHeight(playStage.getHeight());
-        System.out.println("3");
-                System.out.println(root.getScene());
+        play_Stage.setMinWidth(play_Stage.getWidth());
+        play_Stage.setMinHeight(play_Stage.getHeight());
 
+        // Lấy canvas background ra từ Play_Screen controller
+        Canvas bgSnake_Canvas = play_Controller.getBg__Snake();
 
+        // Khởi tạo GameBoard
+        GameBoard gameBoard = new GameBoard(700, 700);
+        gameBoard.setGc(bgSnake_Canvas.getGraphicsContext2D()); // Set cho Canvas = GraphicsContext2D
+
+        // Khởi tạo vị trí Snake
+        Snake snake = new Snake(5);
+
+        // Khởi tạo thức ăn và màu thức ăn
+        Food food = gameBoard.GenerateRandomFood(snake);
+
+        // Handle Event for Snakeee move
+        root.getScene().setOnKeyPressed(e -> snake.HandeleDirection(e));
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(snake.getSpeed()), e -> play_Controller.run(gameBoard, snake, food)));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
     }
 
     @FXML
