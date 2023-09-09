@@ -2,7 +2,9 @@ package snakepredation.FXML_Folder.Home_Screen;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -11,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
@@ -126,17 +129,30 @@ public class Home_ScreenController implements Initializable {
         // Khởi tạo chiều dài và vị trí Snake 1
         Snake snake1 = new Snake(2, 5, 5);
         // Khởi tạo chiều dài và vị trí Snake 1
-        Snake snake2 = new Snake(2,2 , 2);
+        Snake snake2 = new Snake(2, 2, 2);
 
         // Khởi tạo thức ăn và màu thức ăn
         Food food = gameBoard.GenerateRandomFoodFor2Player(snake1, snake2);
 
         // Handle Event for Snakeee move
-        // Xử lý người chơi 1
-        root.getScene().setOnKeyPressed(e -> snake1.HandeleDirectionFor2PlayerOfSnake1(e));
-        // Xử lý người chơi 2
-        root.getScene().setOnKeyPressed(e -> snake2.HandeleDirectionFor2PlayerOfSnake2(e));
+        Set<KeyCode> keysPressed = new HashSet<>(); // Lưu trữ danh sách phím được nhấn
+
+        root.getScene().setOnKeyPressed(e -> {
+            keysPressed.add(e.getCode()); // Thêm phím được nhấn vào danh sách
+            snake1.HandeleDirectionFor2PlayerOfSnake1(e);
+            snake2.HandeleDirectionFor2PlayerOfSnake2(e);
+        });
+
+        root.getScene().setOnKeyReleased(e -> {
+            keysPressed.remove(e.getCode()); // Xóa phím đã nhả ra khỏi danh sách
+        });
         
+//        // Handle Event for Snakeee move
+//        // Xử lý người chơi 1
+//        root.getScene().setOnKeyPressed(e -> snake1.HandeleDirectionFor2PlayerOfSnake1(e));
+//        // Xử lý người chơi 2
+//        root.getScene().setOnKeyPressed(e -> snake2.HandeleDirectionFor2PlayerOfSnake2(e));
+
         play_Controller.startGameFor2Player(gameBoard, snake1, snake2, food);
     }
 
