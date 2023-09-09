@@ -26,10 +26,10 @@ public class Snake {
     private boolean isAlive; // Trạng thái sống/mất
     private int scores = 0;
 
-    public Snake(int snakeLength) {
+    public Snake(int snakeLength, int x , int y) {
         snakeBody = new ArrayList<>();
         for (int i = 0; i < snakeLength; i++) {
-            snakeBody.add(new Point(5, 5));
+            snakeBody.add(new Point(x, y));
         }
         this.headPosition = this.snakeBody.get(0);
         this.currentDirection = Direction.RIGHT;

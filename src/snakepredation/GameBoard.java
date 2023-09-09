@@ -47,7 +47,7 @@ public class GameBoard extends Canvas {
     }
 
     // Draw background
-    public static void DrawBackground() {  
+    public static void DrawBackground() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 gc.setFill(Color.web("7F8487"));
@@ -64,12 +64,17 @@ public class GameBoard extends Canvas {
         double foodY = (int) (Math.random() * COLUMNS);
         Food food = new Food(new Point((int) foodX, (int) foodY));
         while (true) {
+            // Nếu trùng vị trí rắn thì định nghĩa lại
+            foodX = (int) (Math.random() * ROWS);
+            foodY = (int) (Math.random() * COLUMNS);
+            food = new Food(new Point((int) foodX, (int) foodY));
             for (Point snakeBody : snake.getBody()) {
                 /*
                     Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
                      => Không tạo ra thức ăn ngay vị trí của con rắn đang nằm 
                  */
                 if (snakeBody.getX() == food.getPosition().getX() && snakeBody.getY() == food.getPosition().getY()) {
+
                     continue;
                 }
             }
