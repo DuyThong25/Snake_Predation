@@ -81,8 +81,8 @@ public class Home_ScreenController implements Initializable {
 
         // Handle Event for Snakeee move
         // Xử lý 1 người chơi
-        root.getScene().setOnKeyPressed(e -> snake.HandeleDirection(e));
-        play_Controller.startGame(gameBoard, snake, food);
+        root.getScene().setOnKeyPressed(e -> snake.HandeleDirectionFor1Player(e));
+        play_Controller.startGameFor1Player(gameBoard, snake, food);
 
     }
 
@@ -126,16 +126,18 @@ public class Home_ScreenController implements Initializable {
         // Khởi tạo chiều dài và vị trí Snake 1
         Snake snake1 = new Snake(2, 5, 5);
         // Khởi tạo chiều dài và vị trí Snake 1
-        Snake snake2 = new Snake(2, 5, 8);
-        
+        Snake snake2 = new Snake(2,2 , 2);
+
         // Khởi tạo thức ăn và màu thức ăn
         Food food = gameBoard.GenerateRandomFoodFor2Player(snake1, snake2);
 
         // Handle Event for Snakeee move
-        // Xử lý 2 người chơi
-        root.getScene().setOnKeyPressed(e -> snake1.HandeleDirection(e));
+        // Xử lý người chơi 1
+        root.getScene().setOnKeyPressed(e -> snake1.HandeleDirectionFor2PlayerOfSnake1(e));
+        // Xử lý người chơi 2
+        root.getScene().setOnKeyPressed(e -> snake2.HandeleDirectionFor2PlayerOfSnake2(e));
         
-        play_Controller.startGame(gameBoard, snake1, food);
+        play_Controller.startGameFor2Player(gameBoard, snake1, snake2, food);
     }
 
 }

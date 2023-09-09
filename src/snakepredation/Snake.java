@@ -26,7 +26,7 @@ public class Snake {
     private boolean isAlive; // Trạng thái sống/mất
     private int scores = 0;
 
-    public Snake(int snakeLength, int x , int y) {
+    public Snake(int snakeLength, int x, int y) {
         snakeBody = new ArrayList<>();
         for (int i = 0; i < snakeLength; i++) {
             snakeBody.add(new Point(x, y));
@@ -137,7 +137,7 @@ public class Snake {
     }
 
     // Handle Event của người dùng và cập nhật biến currentDirection
-    public void HandeleDirection(KeyEvent event) {
+    public void HandeleDirectionFor1Player(KeyEvent event) {
         KeyCode keyCode = event.getCode();
         switch (keyCode) {
             case UP:
@@ -162,6 +162,68 @@ public class Snake {
                 }
                 break;
             case RIGHT:
+            case D:
+                // Xử lý di chuyển qua phải
+                if (this.currentDirection != Direction.LEFT) {
+                    this.currentDirection = Direction.RIGHT;
+                }
+                break;
+        }
+    }
+
+    // Handle Event của rắn 1 trong chế độ 2 người chơi của người dùng và cập nhật biến currentDirection
+    public void HandeleDirectionFor2PlayerOfSnake2(KeyEvent event) {
+        KeyCode keyCode = event.getCode();
+        switch (keyCode) {
+            case UP:
+                // Xử lý di chuyển lên
+                if (this.currentDirection != Direction.DOWN) {
+                    this.currentDirection = Direction.UP;
+                }
+                break;
+            case DOWN:
+                // Xử lý di chuyển xuống
+                if (this.currentDirection != Direction.UP) {
+                    this.currentDirection = Direction.DOWN;
+                }
+                break;
+            case LEFT:
+                // Xử lý di chuyển qua trái
+                if (this.currentDirection != Direction.RIGHT) {
+                    this.currentDirection = Direction.LEFT;
+                }
+                break;
+            case RIGHT:
+                // Xử lý di chuyển qua phải
+                if (this.currentDirection != Direction.LEFT) {
+                    this.currentDirection = Direction.RIGHT;
+                }
+                break;
+        }
+    }
+    // Handle Event của rắn 2 trong chế độ 2 người chơi của người dùng và cập nhật biến currentDirection
+
+    public void HandeleDirectionFor2PlayerOfSnake1(KeyEvent event) {
+        KeyCode keyCode = event.getCode();
+        switch (keyCode) {
+            case W:
+                // Xử lý di chuyển lên
+                if (this.currentDirection != Direction.DOWN) {
+                    this.currentDirection = Direction.UP;
+                }
+                break;
+            case S:
+                // Xử lý di chuyển xuống
+                if (this.currentDirection != Direction.UP) {
+                    this.currentDirection = Direction.DOWN;
+                }
+                break;
+            case A:
+                // Xử lý di chuyển qua trái
+                if (this.currentDirection != Direction.RIGHT) {
+                    this.currentDirection = Direction.LEFT;
+                }
+                break;
             case D:
                 // Xử lý di chuyển qua phải
                 if (this.currentDirection != Direction.LEFT) {

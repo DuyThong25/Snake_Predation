@@ -60,8 +60,12 @@ public class Play_ScreenController implements Initializable {
     private Food food;
     private GameBoard gameBoard;
 
-    public void setSnake1(Snake snake) {
-        this.snake1 = snake;
+    public void setSnake1(Snake snake1) {
+        this.snake1 = snake1;
+    }
+
+    public void setSnake2(Snake snake2) {
+        this.snake2 = snake2;
     }
 
     public void setFood(Food food) {
@@ -122,8 +126,8 @@ public class Play_ScreenController implements Initializable {
 
     }
 
-    // Khởi tạo Timeline và bắt đầu game
-    public void startGame(GameBoard gameBoard, Snake snake1, Food food) {
+    // Khởi tạo Timeline và bắt đầu game chế độ 1 người chơi
+    public void startGameFor1Player(GameBoard gameBoard, Snake snake1, Food food) {
         this.setSnake1(snake1);
         this.setFood(food);
         this.setGameBoard(gameBoard);
@@ -134,7 +138,21 @@ public class Play_ScreenController implements Initializable {
         timeline.play();
     }
 
-    // Hàm xử lý run
+    // Khởi tạo Timeline và bắt đầu game chế độ 2 người chơi
+    public void startGameFor2Player(GameBoard gameBoard, Snake snake1, Snake snake2, Food food) {
+        this.setSnake1(snake1);
+        this.setSnake2(snake2);
+
+        this.setFood(food);
+        this.setGameBoard(gameBoard);
+
+        // Khởi tạo timeline và đặt vòng lặp game
+        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> run()));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    // Hàm xử lý run cho chế độ 1 người chơi
     public void run() {
         // Kiểm tra game over không -> rắn còn sống? 
         if (checkGameOver(this.gameBoard, this.snake1)) {
@@ -231,12 +249,12 @@ public class Play_ScreenController implements Initializable {
         // Dừng hẳn time line
         this.timeline.stop();
         // Tạo lại rắn và handle move cho rắn
-        Snake snakeReset = new Snake(1, 5, 1);
-        stackPane_Canvas.getScene().setOnKeyPressed(e -> snakeReset.HandeleDirection(e));
+        Snake snakeReset = new Snake(2, 5, 1);
+        stackPane_Canvas.getScene().setOnKeyPressed(e -> snakeReset.HandeleDirectionFor1Player(e));
         // Tạo lại thức ăn
         this.food.resetFood(this.gameBoard, snakeReset, this.food);
         // Chạy lại game
-        startGame(this.gameBoard, snakeReset, this.food);
+        startGameFor1Player(this.gameBoard, snakeReset, this.food);
     }
 
     // Xét label cho game over
