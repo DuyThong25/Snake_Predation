@@ -231,7 +231,7 @@ public class Play_ScreenController implements Initializable {
         // Dừng hẳn time line
         this.timeline.stop();
         // Tạo lại rắn và handle move cho rắn
-        Snake snakeReset = new Snake(3, 5, 1);
+        Snake snakeReset = new Snake(1, 5, 1);
         stackPane_Canvas.getScene().setOnKeyPressed(e -> snakeReset.HandeleDirection(e));
         // Tạo lại thức ăn
         this.food.resetFood(this.gameBoard, snakeReset, this.food);

@@ -58,23 +58,55 @@ public class GameBoard extends Canvas {
         }
     }
 
-    // Generate food
+    // Generate food for 1 player
     public static Food GenerateRandomFood(Snake snake) {
         double foodX = (int) (Math.random() * ROWS);
         double foodY = (int) (Math.random() * COLUMNS);
         Food food = new Food(new Point((int) foodX, (int) foodY));
         while (true) {
-            // Nếu trùng vị trí rắn thì định nghĩa lại
-            foodX = (int) (Math.random() * ROWS);
-            foodY = (int) (Math.random() * COLUMNS);
-            food = new Food(new Point((int) foodX, (int) foodY));
             for (Point snakeBody : snake.getBody()) {
                 /*
                     Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
                      => Không tạo ra thức ăn ngay vị trí của con rắn đang nằm 
                  */
                 if (snakeBody.getX() == food.getPosition().getX() && snakeBody.getY() == food.getPosition().getY()) {
-
+                    foodX = (int) (Math.random() * ROWS);
+                    foodY = (int) (Math.random() * COLUMNS);
+                    food.setPosition(new Point((int) foodX, (int) foodY));
+                    continue;
+                }
+            }
+            break;
+        }
+        return food;
+    }
+    // Generate food for 2 player
+    public static Food GenerateRandomFoodFor2Player(Snake snake1, Snake snake2) {
+        double foodX = (int) (Math.random() * ROWS);
+        double foodY = (int) (Math.random() * COLUMNS);
+        Food food = new Food(new Point((int) foodX, (int) foodY));
+        while (true) {
+            for (Point snakeBody : snake1.getBody()) {
+                /*
+                    Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
+                     => Không tạo ra thức ăn ngay vị trí của con rắn đang nằm 
+                 */
+                if (snakeBody.getX() == food.getPosition().getX() && snakeBody.getY() == food.getPosition().getY()) {
+                    foodX = (int) (Math.random() * ROWS);
+                    foodY = (int) (Math.random() * COLUMNS);
+                    food.setPosition(new Point((int) foodX, (int) foodY));
+                    continue;
+                }
+            }
+            for (Point snakeBody : snake2.getBody()) {
+                /*
+                    Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
+                     => Không tạo ra thức ăn ngay vị trí của con rắn đang nằm 
+                 */
+                if (snakeBody.getX() == food.getPosition().getX() && snakeBody.getY() == food.getPosition().getY()) {
+                    foodX = (int) (Math.random() * ROWS);
+                    foodY = (int) (Math.random() * COLUMNS);
+                    food.setPosition(new Point((int) foodX, (int) foodY));
                     continue;
                 }
             }

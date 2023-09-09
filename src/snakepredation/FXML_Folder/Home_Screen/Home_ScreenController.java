@@ -1,5 +1,6 @@
 package snakepredation.FXML_Folder.Home_Screen;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -27,6 +28,8 @@ public class Home_ScreenController implements Initializable {
     private Button startBtn_Home;
     @FXML
     private Button ratingBtn_Home;
+    @FXML
+    private Button twoplayerBtn_Home1;
 
     /**
      * Initializes the controller class.
@@ -71,20 +74,68 @@ public class Home_ScreenController implements Initializable {
         gameBoard.setGc(bgSnake_Canvas.getGraphicsContext2D()); // Set cho Canvas = GraphicsContext2D
 
         // Khởi tạo chiều dài và vị trí Snake
-        Snake snake = new Snake(3,5,5);
+        Snake snake = new Snake(2, 5, 5);
 
         // Khởi tạo thức ăn và màu thức ăn
         Food food = gameBoard.GenerateRandomFood(snake);
 
         // Handle Event for Snakeee move
+        // Xử lý 1 người chơi
         root.getScene().setOnKeyPressed(e -> snake.HandeleDirection(e));
         play_Controller.startGame(gameBoard, snake, food);
+
     }
 
     @FXML
     private void MoveTo_RatingScreen(MouseEvent event) {
         System.out.println("ok");
+    }
 
+    @FXML
+    private void TwoPlayer_PlayScreen(MouseEvent event) throws IOException {
+        // Load file fxml của Play_Screen -> scene builder
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.fxml"));
+        Parent root = loader.load();
+
+        // Lấy file controller của Play_Screen
+        Play_ScreenController play_Controller = loader.getController();
+
+        Scene scene = new Scene(root);
+        // Lấy file CSS của Play_Screen
+        scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.css").toExternalForm());
+
+        // Lấy primary stage từ SnakePredation.java
+        Stage play_Stage = SnakePredation.getPrimaryStage();
+        play_Stage.setScene(scene);
+        play_Stage.show();
+
+        // Set cho nằm giữa màn hình
+        ScreenUtil.centerScreen(play_Stage);
+
+        // Set max width/height
+        play_Stage.setMinWidth(play_Stage.getWidth());
+        play_Stage.setMinHeight(play_Stage.getHeight());
+
+        // Lấy canvas background ra từ Play_Screen controller
+        Canvas bgSnake_Canvas = play_Controller.getBg__Snake();
+
+        // Khởi tạo GameBoard
+        GameBoard gameBoard = new GameBoard(700, 700);
+        gameBoard.setGc(bgSnake_Canvas.getGraphicsContext2D()); // Set cho Canvas = GraphicsContext2D
+
+        // Khởi tạo chiều dài và vị trí Snake 1
+        Snake snake1 = new Snake(2, 5, 5);
+        // Khởi tạo chiều dài và vị trí Snake 1
+        Snake snake2 = new Snake(2, 5, 8);
+        
+        // Khởi tạo thức ăn và màu thức ăn
+        Food food = gameBoard.GenerateRandomFoodFor2Player(snake1, snake2);
+
+        // Handle Event for Snakeee move
+        // Xử lý 2 người chơi
+        root.getScene().setOnKeyPressed(e -> snake1.HandeleDirection(e));
+        
+        play_Controller.startGame(gameBoard, snake1, food);
     }
 
 }
