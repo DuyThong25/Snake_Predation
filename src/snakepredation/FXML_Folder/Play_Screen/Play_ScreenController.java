@@ -1,5 +1,6 @@
 package snakepredation.FXML_Folder.Play_Screen;
 
+import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -14,6 +15,10 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import static javafx.scene.control.skin.TextInputControlSkin.Direction.DOWN;
+import static javafx.scene.control.skin.TextInputControlSkin.Direction.LEFT;
+import static javafx.scene.control.skin.TextInputControlSkin.Direction.RIGHT;
+import static javafx.scene.control.skin.TextInputControlSkin.Direction.UP;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.ESCAPE;
@@ -56,9 +61,17 @@ public class Play_ScreenController implements Initializable {
     private boolean isPause = false;
     private Snake snake1;
     private Snake snake2;
-
+    private int checkPlayer;// 1 là snake 1 -- 2 là snake 2
     private Food food;
     private GameBoard gameBoard;
+
+    public int getCheckPlayer() {
+        return checkPlayer;
+    }
+
+    public void setCheckPlayer(int checkPlayer) {
+        this.checkPlayer = checkPlayer;
+    }
 
     public void setSnake1(Snake snake1) {
         this.snake1 = snake1;
@@ -169,7 +182,7 @@ public class Play_ScreenController implements Initializable {
         this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc());
 
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
-        this.snake1.HandleSnakeMove(this.gameBoard, this.food, this.snake1);
+        this.snake1.HandleSnakeMove(this.gameBoard, this.food);
     }
 
     // Hàm xử lý run cho chế độ 2 người chơi
@@ -194,9 +207,86 @@ public class Play_ScreenController implements Initializable {
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
         this.snake2.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
 
-        this.snake1.HandleSnakeMove(this.gameBoard, this.food, this.snake1);
-        this.snake2.HandleSnakeMove(this.gameBoard, this.food, this.snake2);
+        HandleSnakeMoveFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
 
+    }
+
+    // Handle Snake Move for 2 player mode
+    public void HandleSnakeMoveFor2Player(GameBoard gameboard, Food food, Snake snake1, Snake snake2) {
+
+        HandleDirectionFor2Player(snake1, snake2);
+
+        // Kiểm tra snake 1 còn sống không
+        if (snake1.isSnakeAlive(gameboard) == true) {
+            snake1.setIsAlive(true);
+        } else {
+            snake1.setIsAlive(false);
+        }
+        // Kiểm tra snake 2 còn sống không
+        if (snake2.isSnakeAlive(gameboard) == true) {
+            snake2.setIsAlive(true);
+        } else {
+            snake2.setIsAlive(false);
+        }
+        // Kiểm tra ran 1 an moi chưa
+        if (snake1.isSnakeEat(food)) {
+            snake1.setScores(snake1.getScores() + 5);
+            snake1.getSnakeBody().add(new Point(-1, -1));
+            food.setExists(false);
+        } else if (snake2.isSnakeEat(food)) {// Kiểm tra ran 2 an moi chưa
+            snake2.setScores(snake2.getScores() + 5);
+            snake2.getSnakeBody().add(new Point(-1, -1));
+            food.setExists(false);
+        } else {
+            food.setExists(true);
+        }
+
+    }
+
+    // Handle direction
+    private void HandleDirectionFor2Player(Snake snake1, Snake snake2) {
+        // Case của snake 1
+        if (snake1.isIsAlive()) {
+            switch (snake1.getCurrentDirection()) {
+                case RIGHT:
+                    // Xử lý khi currentDirection là RIGHT
+                    snake1.getHeadPosition().x++;
+                    break;
+                case LEFT:
+                    // Xử lý khi currentDirection là LEFT
+                    snake1.getHeadPosition().x--;
+                    break;
+                case UP:
+                    // Xử lý khi currentDirection là UP - Theo đồ họa game thì trục y thường đi xuống dưới
+                    snake1.getHeadPosition().y--;
+                    break;
+                case DOWN:
+                    // Xử lý khi currentDirection là DOWN
+                    snake1.getHeadPosition().y++;
+                    break;
+            }
+        }
+        // Case của snake 2
+        if (snake2.isIsAlive()) {
+            switch (snake2.getCurrentDirection()) {
+                case RIGHT:
+                    // Xử lý khi currentDirection là RIGHT
+                    snake2.getHeadPosition().x++;
+                    break;
+                case LEFT:
+                    // Xử lý khi currentDirection là LEFT
+                    snake2.getHeadPosition().x--;
+                    break;
+                case UP:
+                    // Xử lý khi currentDirection là UP - Theo đồ họa game thì trục y thường đi xuống dưới
+                    snake2.getHeadPosition().y--;
+                    break;
+                case DOWN:
+                    // Xử lý khi currentDirection là DOWN
+                    snake2.getHeadPosition().y++;
+                    break;
+            }
+        }
     }
 
     // Nhấn vào button pause

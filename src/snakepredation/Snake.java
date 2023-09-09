@@ -245,7 +245,8 @@ public class Snake {
         }
     }
 
-    public void HandleSnakeMove(GameBoard gameboard, Food food, Snake snake) {
+    /// Handle snake move for 1 player mode
+    public void HandleSnakeMove(GameBoard gameboard, Food food) {
         switch (this.currentDirection) {
             case RIGHT:
                 // Xử lý khi currentDirection là RIGHT
@@ -277,12 +278,13 @@ public class Snake {
             this.scores += 5;
             this.snakeBody.add(new Point(-1, -1));
             food.setExists(false);
-            System.out.println("diem: " + scores);
         } else {
             food.setExists(true);
         }
 
     }
+
+
 
     public boolean isSnakeAlive(GameBoard gameboard) {
         int currentWidthX = this.headPosition.x * gameboard.getSQUARE_SIZE();
