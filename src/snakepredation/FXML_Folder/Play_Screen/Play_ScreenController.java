@@ -133,7 +133,7 @@ public class Play_ScreenController implements Initializable {
         this.setGameBoard(gameBoard);
 
         // Khởi tạo timeline và đặt vòng lặp game
-        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> run()));
+        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> runFor1Player()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
@@ -147,19 +147,41 @@ public class Play_ScreenController implements Initializable {
         this.setGameBoard(gameBoard);
 
         // Khởi tạo timeline và đặt vòng lặp game
-        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> run()));
+        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> runFor1Player()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
 
     // Hàm xử lý run cho chế độ 1 người chơi
-    public void run() {
+    public void runFor1Player() {
         // Kiểm tra game over không -> rắn còn sống? 
-        if (checkGameOver(this.gameBoard, this.snake1)) {
+        if (checkGameOverFor1Player(this.gameBoard)) {
             return;
         }
         this.gameBoard.DrawBackground();
         setHandleScoresLabel("Scrores: " + this.snake1.getScores());
+
+        // Kiểm tra mồi
+        if (this.food.isExists() == false) {
+            this.food.resetFood(this.gameBoard, this.snake1, this.food);
+        } else {
+            this.food.DrawFood(this.gameBoard);
+        }
+        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc());
+
+        this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
+        this.snake1.HandleSnakeMove(this.gameBoard, this.food, this.snake1);
+    }
+
+    // Hàm xử lý run cho chế độ 2 người chơi
+    public void runFor2Player() {
+        // Kiểm tra game over không -> rắn còn sống? 
+        if (checkGameOverFor2Player(this.gameBoard)) {
+            return;
+        }
+        this.gameBoard.DrawBackground();
+        setHandleScoresLabel("Snake 1: " + this.snake1.getScores());
+        setHandleScoresLabel("Snake 2: " + this.snake2.getScores());
 
         // Kiểm tra mồi
         if (this.food.isExists() == false) {
@@ -202,14 +224,39 @@ public class Play_ScreenController implements Initializable {
         this.timeline.play();
     }
 
-    // Kiểm tra rắn còn sống không
-    public boolean checkGameOver(GameBoard gameBoard, Snake snake) {
-        if (snake.isIsAlive() == false) {
+    // Kiểm tra rắn còn sống trong chế độ 1 người chơi
+    public boolean checkGameOverFor1Player(GameBoard gameBoard) {
+        if (this.snake1.isIsAlive() == false) {
             // Xét flow pane
             this.GameOver_FlowPane.setVisible(true);
             // Set label
             setlabelForGameOver(true);
             return true;
+        }
+        return false;
+    }
+
+    // Kiểm tra rắn còn sống trong chế độ 2 người chơi
+    public boolean checkGameOverFor2Player(GameBoard gameBoard) {
+        if (this.snake1.isIsAlive() == false || this.snake2.isIsAlive() == false) {
+            // Xét flow pane
+            this.GameOver_FlowPane.setVisible(true);
+            // Set label
+            setlabelForGameOver(true);
+            return true;
+        }
+        // Kiểm tra 2 con rắn va nhau
+        // Kiểm tra snake 1 bị rắn 2 va vào người không
+        for (int i = 1; i < this.snake1.getBody().size(); i++) {
+            if (this.snake2.getHeadPosition().x == this.snake1.getBody().get(i).getX() && this.snake2.getHeadPosition().y == this.snake1.getBody().get(i).getY()) {
+                return true;
+            }
+        }
+        // Kiểm tra snake 2 bị snake 1 va vào người không
+        for (int i = 1; i < this.snake2.getBody().size(); i++) {
+            if (this.snake1.getHeadPosition().x == this.snake2.getBody().get(i).getX() && this.snake1.getHeadPosition().y == this.snake2.getBody().get(i).getY()) {
+                return true;
+            }
         }
         return false;
     }
@@ -249,7 +296,7 @@ public class Play_ScreenController implements Initializable {
         // Dừng hẳn time line
         this.timeline.stop();
         // Tạo lại rắn và handle move cho rắn
-        Snake snakeReset = new Snake(2, 5, 1);
+        Snake snakeReset = new Snake(2, 5, 5);
         stackPane_Canvas.getScene().setOnKeyPressed(e -> snakeReset.HandeleDirectionFor1Player(e));
         // Tạo lại thức ăn
         this.food.resetFood(this.gameBoard, snakeReset, this.food);
