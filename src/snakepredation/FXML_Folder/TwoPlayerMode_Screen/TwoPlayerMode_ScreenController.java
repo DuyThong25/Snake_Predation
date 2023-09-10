@@ -1,13 +1,17 @@
 package snakepredation.FXML_Folder.TwoPlayerMode_Screen;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,10 +21,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import snakepredation.Food;
 import snakepredation.GameBoard;
+import snakepredation.ScreenUtil;
 import snakepredation.Snake;
+import snakepredation.SnakePredation;
 
 public class TwoPlayerMode_ScreenController implements Initializable {
 
@@ -40,8 +47,6 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     @FXML
     private Label gameoverLabel;
     @FXML
-    private Label totalScoresLabel;
-    @FXML
     private Button homeBtn;
     @FXML
     private Button restartBtn;
@@ -55,16 +60,46 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     private Button continueBtn;
     @FXML
     private ImageView pauseBtn;
+    @FXML
+    private Label handleScores1;
+    @FXML
+    private Label handleScores2;
+    @FXML
+    private Label totalScoresLabel_1;
+    @FXML
+    private Label totalScoresLabel_2;
+    @FXML
+    private Label playerWinLabel;
 
     private boolean isPause = false;
     private Snake snake1;
     private Snake snake2;
     private Food food;
     private GameBoard gameBoard;
-    @FXML
-    private Label handleScores1;
-    @FXML
-    private Label handleScores2;
+
+    public Label getTotalScoresLabel_1() {
+        return totalScoresLabel_1;
+    }
+
+    public void setTotalScoresLabel_1(Label totalScoresLabel_1) {
+        this.totalScoresLabel_1 = totalScoresLabel_1;
+    }
+
+    public Label getTotalScoresLabel_2() {
+        return totalScoresLabel_2;
+    }
+
+    public void setTotalScoresLabel_2(String text) {
+        this.totalScoresLabel_2.setText(text);
+    }
+
+    public Label getPlayerWinLabel() {
+        return playerWinLabel;
+    }
+
+    public void setPlayerWinLabel(String text) {
+        this.playerWinLabel.setText(text);
+    }
 
     public void setSnake1(Snake snake1) {
         this.snake1 = snake1;
@@ -103,13 +138,22 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         return bg__Snake;
     }
 
-    public Label getHandleScoresLabel() {
-        return handleScores;
+    public Label getHandleScoresLabel1() {
+        return handleScores1;
     }
 
     // Phương thức để gán giá trị vào Label
-    public void setHandleScoresLabel(String value) {
-        handleScores.setText(value);
+    public void setHandleScoresLabel1(String value) {
+        handleScores1.setText(value);
+    }
+
+    public Label getHandleScoresLabel2() {
+        return handleScores2;
+    }
+
+    // Phương thức để gán giá trị vào Label
+    public void setHandleScoresLabel2(String value) {
+        handleScores2.setText(value);
     }
 
     /**
@@ -141,8 +185,8 @@ public class TwoPlayerMode_ScreenController implements Initializable {
             return;
         }
         this.gameBoard.DrawBackground();
-//        setHandleScoresLabel("Snake 1: " + this.snake1.getScores());
-        setHandleScoresLabel("Snake 2: " + this.snake2.getScores());
+        setHandleScoresLabel1("PLAYER 1: " + this.snake1.getScores());
+        setHandleScoresLabel2("PLAYER 2: " + this.snake2.getScores());
 
         // Kiểm tra mồi
         if (this.food.isExists() == false) {
@@ -194,31 +238,61 @@ public class TwoPlayerMode_ScreenController implements Initializable {
             this.GameOver_FlowPane.setVisible(true);
             // Set label
             setlabelForGameOver(true);
+            // Kiểm tra rắn nào đập vào tường trước
+            if (this.snake1.isIsAlive() == false) {
+                this.setPlayerWinLabel("SNAKE 2 WIN !!");
+            } else if (this.snake2.isIsAlive() == false) {
+                this.setPlayerWinLabel("SNAKE 1 WIN !!");
+            }
             return true;
         }
         // Kiểm tra 2 con rắn va nhau
         // Kiểm tra snake 1 bị rắn 2 va vào người không
         for (int i = 1; i < this.snake1.getBody().size(); i++) {
             if (this.snake2.getHeadPosition().x == this.snake1.getBody().get(i).getX() && this.snake2.getHeadPosition().y == this.snake1.getBody().get(i).getY()) {
+                this.GameOver_FlowPane.setVisible(true);
+                setlabelForGameOver(true);
+
+                this.setPlayerWinLabel("SNAKE 1 WIN !!");
                 return true;
             }
         }
         // Kiểm tra snake 2 bị snake 1 va vào người không
         for (int i = 1; i < this.snake2.getBody().size(); i++) {
             if (this.snake1.getHeadPosition().x == this.snake2.getBody().get(i).getX() && this.snake1.getHeadPosition().y == this.snake2.getBody().get(i).getY()) {
+                this.GameOver_FlowPane.setVisible(true);
+                setlabelForGameOver(true);
+
+                this.setPlayerWinLabel("SNAKE 2 WIN !!");
                 return true;
             }
         }
+        // Nếu đầu của 2 con va vào nhau thì xét điểm
+        if (this.snake1.getHeadPosition().getX() == this.snake2.getHeadPosition().getX() && this.snake1.getHeadPosition().getY() == this.snake2.getHeadPosition().getY()) {
+            this.GameOver_FlowPane.setVisible(true);
+            setlabelForGameOver(true);
+            if (this.snake1.getScores() > this.snake2.getScores()) {
+                this.setPlayerWinLabel("SNAKE 1 WIN !!");
+            } else if (this.snake1.getScores() < this.snake2.getScores()) {
+                this.setPlayerWinLabel("SNAKE 2 WIN !!");
+            } else {
+                this.setPlayerWinLabel("DRAW !!");
+            }
+            return true;
+        }
         return false;
     }
-
     // Xét label cho game over
+
     public void setlabelForGameOver(boolean check) {
         // Set label Game Over
         this.gameoverLabel.setVisible(check);
         // Set label Total Scores
-        this.totalScoresLabel.setVisible(check);
-        this.totalScoresLabel.setText("Total Scores: " + this.snake1.getScores());
+        this.totalScoresLabel_1.setVisible(check);
+        this.totalScoresLabel_1.setText("PLAYER 1: " + this.snake1.getScores());
+        this.totalScoresLabel_2.setVisible(check);
+        this.totalScoresLabel_2.setText("PLAYER 2: " + this.snake2.getScores());
+        this.playerWinLabel.setVisible(check);
 
         // Hiển thị button reset
         this.restartBtn.setVisible(check);
@@ -230,7 +304,25 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     }
 
     @FXML
-    private void MouseClick_Home(MouseEvent event) {
+    private void MouseClick_Home(MouseEvent event) throws IOException {
+        //Load file fxml của Play_Screen -> scene builder
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Home_Screen/Home_Screen.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        // Lấy file CSS
+        scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/Home_Screen/Home_Screen.css").toExternalForm());
+
+        // Lấy primary stage từ SnakePredation.java
+        Stage home_Stage = SnakePredation.getPrimaryStage();
+        home_Stage.setScene(scene);
+        home_Stage.show();
+
+        // Set cho nằm giữa màn hình
+        ScreenUtil.centerScreen(home_Stage);
+
+        // Set max width/height
+        home_Stage.setMinWidth(home_Stage.getWidth());
+        home_Stage.setMinHeight(home_Stage.getHeight());
     }
 
     @FXML
@@ -247,6 +339,15 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Pause(MouseEvent event) {
+        this.isPause = true;
+        // Xét label
+        Pause_FlowPane.setVisible(true);
+        continueBtn.setVisible(true);
+        homeBtn1.setVisible(true);
+        restartBtn1.setVisible(true);
+
+        // Xét timeline
+        this.timeline.pause();
     }
 
 }
