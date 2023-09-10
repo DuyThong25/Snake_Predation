@@ -61,17 +61,8 @@ public class Play_ScreenController implements Initializable {
     private boolean isPause = false;
     private Snake snake1;
     private Snake snake2;
-    private int checkPlayer;// 1 là snake 1 -- 2 là snake 2
     private Food food;
     private GameBoard gameBoard;
-
-    public int getCheckPlayer() {
-        return checkPlayer;
-    }
-
-    public void setCheckPlayer(int checkPlayer) {
-        this.checkPlayer = checkPlayer;
-    }
 
     public void setSnake1(Snake snake1) {
         this.snake1 = snake1;
@@ -152,18 +143,17 @@ public class Play_ScreenController implements Initializable {
     }
 
     // Khởi tạo Timeline và bắt đầu game chế độ 2 người chơi
-    public void startGameFor2Player(GameBoard gameBoard, Snake snake1, Snake snake2, Food food) {
-        this.setSnake1(snake1);
-        this.setSnake2(snake2);
-        this.setFood(food);
-        this.setGameBoard(gameBoard);
-
-        // Khởi tạo timeline và đặt vòng lặp game
-        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> runFor2Player()));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
-    }
-
+//    public void startGameFor2Player(GameBoard gameBoard, Snake snake1, Snake snake2, Food food) {
+//        this.setSnake1(snake1);
+//        this.setSnake2(snake2);
+//        this.setFood(food);
+//        this.setGameBoard(gameBoard);
+//
+//        // Khởi tạo timeline và đặt vòng lặp game
+//        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> runFor2Player()));
+//        timeline.setCycleCount(Animation.INDEFINITE);
+//        timeline.play();
+//    }
     // Hàm xử lý run cho chế độ 1 người chơi
     public void runFor1Player() {
         if (checkGameOverFor1Player(this.gameBoard)) {
@@ -203,62 +193,60 @@ public class Play_ScreenController implements Initializable {
         }
     }
 
-    // Hàm xử lý run cho chế độ 2 người chơi
-    public void runFor2Player() {
-        // Kiểm tra game over không -> rắn còn sống? 
-        if (checkGameOverFor2Player(this.gameBoard)) {
-            this.timeline.stop();
-            return;
-        }
-        this.gameBoard.DrawBackground();
-//        setHandleScoresLabel("Snake 1: " + this.snake1.getScores());
-        setHandleScoresLabel("Snake 2: " + this.snake2.getScores());
-
-        // Kiểm tra mồi
-        if (this.food.isExists() == false) {
-            this.food.resetFoodFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
-        } else {
-            this.food.DrawFood(this.gameBoard);
-        }
-        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc());
-        this.snake2.DrawSnake(this.gameBoard, this.gameBoard.getGc());
-
-        this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
-        this.snake2.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
-
-//        HandleSnakeMoveFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
-        this.snake1.HandleSnakeMove(this.gameBoard, this.food);
-        this.snake2.HandleSnakeMove(this.gameBoard, this.food);
-
-        // Kiểm tra snake 1 còn sống không
-        if (snake1.isSnakeAlive(gameBoard) == true) {
-            snake1.setIsAlive(true);
-        } else {
-            snake1.setIsAlive(false);
-        }
-        // Kiểm tra snake 2 còn sống không
-        if (snake2.isSnakeAlive(gameBoard) == true) {
-            snake2.setIsAlive(true);
-        } else {
-            snake2.setIsAlive(false);
-        }
-
-        // Kiểm tra ran an moi chưa
-        if (snake1.isSnakeEat(food)) {
-            snake1.setScores(snake1.getScores() + 5);
-            snake1.getSnakeBody().add(new Point(-1, -1));
-            food.setExists(false);
-        } else if (snake2.isSnakeEat(food)) {// Kiểm tra ran 2 an moi chưa
-            snake2.setScores(snake2.getScores() + 5);
-            snake2.getSnakeBody().add(new Point(-1, -1));
-            food.setExists(false);
-        } else {
-            food.setExists(true);
-        }
-
-    }
-
-    // Handle Snake Move for 2 player mode
+//    // Hàm xử lý run cho chế độ 2 người chơi
+//    public void runFor2Player() {
+//        // Kiểm tra game over không -> rắn còn sống? 
+//        if (checkGameOverFor2Player(this.gameBoard)) {
+//            this.timeline.stop();
+//            return;
+//        }
+//        this.gameBoard.DrawBackground();
+////        setHandleScoresLabel("Snake 1: " + this.snake1.getScores());
+//        setHandleScoresLabel("Snake 2: " + this.snake2.getScores());
+//
+//        // Kiểm tra mồi
+//        if (this.food.isExists() == false) {
+//            this.food.resetFoodFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
+//        } else {
+//            this.food.DrawFood(this.gameBoard);
+//        }
+//        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc());
+//        this.snake2.DrawSnake(this.gameBoard, this.gameBoard.getGc());
+//
+//        this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
+//        this.snake2.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
+//
+////        HandleSnakeMoveFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
+//        this.snake1.HandleSnakeMove(this.gameBoard, this.food);
+//        this.snake2.HandleSnakeMove(this.gameBoard, this.food);
+//
+//        // Kiểm tra snake 1 còn sống không
+//        if (snake1.isSnakeAlive(gameBoard) == true) {
+//            snake1.setIsAlive(true);
+//        } else {
+//            snake1.setIsAlive(false);
+//        }
+//        // Kiểm tra snake 2 còn sống không
+//        if (snake2.isSnakeAlive(gameBoard) == true) {
+//            snake2.setIsAlive(true);
+//        } else {
+//            snake2.setIsAlive(false);
+//        }
+//
+//        // Kiểm tra ran an moi chưa
+//        if (snake1.isSnakeEat(food)) {
+//            snake1.setScores(snake1.getScores() + 5);
+//            snake1.getSnakeBody().add(new Point(-1, -1));
+//            food.setExists(false);
+//        } else if (snake2.isSnakeEat(food)) {// Kiểm tra ran 2 an moi chưa
+//            snake2.setScores(snake2.getScores() + 5);
+//            snake2.getSnakeBody().add(new Point(-1, -1));
+//            food.setExists(false);
+//        } else {
+//            food.setExists(true);
+//        }
+//    }
+    // ********* Handle Snake Move for 2 player mode ********
 //    public void HandleSnakeMoveFor2Player(GameBoard gameboard, Food food, Snake snake1, Snake snake2) {
 //
 //        HandleDirectionFor2Player(snake1, snake2);
@@ -288,52 +276,51 @@ public class Play_ScreenController implements Initializable {
 //            food.setExists(true);
 //        }
 //    }
-    // Handle direction
-    private void HandleDirectionFor2Player(Snake snake1, Snake snake2) {
-        // Case của snake 1
-        if (snake1.isIsAlive()) {
-            switch (snake1.getCurrentDirection()) {
-                case RIGHT:
-                    // Xử lý khi currentDirection là RIGHT
-                    snake1.getHeadPosition().x++;
-                    break;
-                case LEFT:
-                    // Xử lý khi currentDirection là LEFT
-                    snake1.getHeadPosition().x--;
-                    break;
-                case UP:
-                    // Xử lý khi currentDirection là UP - Theo đồ họa game thì trục y thường đi xuống dưới
-                    snake1.getHeadPosition().y--;
-                    break;
-                case DOWN:
-                    // Xử lý khi currentDirection là DOWN
-                    snake1.getHeadPosition().y++;
-                    break;
-            }
-        }
-        // Case của snake 2
-        if (snake2.isIsAlive()) {
-            switch (snake2.getCurrentDirection()) {
-                case RIGHT:
-                    // Xử lý khi currentDirection là RIGHT
-                    snake2.getHeadPosition().x++;
-                    break;
-                case LEFT:
-                    // Xử lý khi currentDirection là LEFT
-                    snake2.getHeadPosition().x--;
-                    break;
-                case UP:
-                    // Xử lý khi currentDirection là UP - Theo đồ họa game thì trục y thường đi xuống dưới
-                    snake2.getHeadPosition().y--;
-                    break;
-                case DOWN:
-                    // Xử lý khi currentDirection là DOWN
-                    snake2.getHeadPosition().y++;
-                    break;
-            }
-        }
-    }
-
+//    // ************ Handle direction
+//    private void HandleDirectionFor2Player(Snake snake1, Snake snake2) {
+//        // Case của snake 1
+//        if (snake1.isIsAlive()) {
+//            switch (snake1.getCurrentDirection()) {
+//                case RIGHT:
+//                    // Xử lý khi currentDirection là RIGHT
+//                    snake1.getHeadPosition().x++;
+//                    break;
+//                case LEFT:
+//                    // Xử lý khi currentDirection là LEFT
+//                    snake1.getHeadPosition().x--;
+//                    break;
+//                case UP:
+//                    // Xử lý khi currentDirection là UP - Theo đồ họa game thì trục y thường đi xuống dưới
+//                    snake1.getHeadPosition().y--;
+//                    break;
+//                case DOWN:
+//                    // Xử lý khi currentDirection là DOWN
+//                    snake1.getHeadPosition().y++;
+//                    break;
+//            }
+//        }
+//        // Case của snake 2
+//        if (snake2.isIsAlive()) {
+//            switch (snake2.getCurrentDirection()) {
+//                case RIGHT:
+//                    // Xử lý khi currentDirection là RIGHT
+//                    snake2.getHeadPosition().x++;
+//                    break;
+//                case LEFT:
+//                    // Xử lý khi currentDirection là LEFT
+//                    snake2.getHeadPosition().x--;
+//                    break;
+//                case UP:
+//                    // Xử lý khi currentDirection là UP - Theo đồ họa game thì trục y thường đi xuống dưới
+//                    snake2.getHeadPosition().y--;
+//                    break;
+//                case DOWN:
+//                    // Xử lý khi currentDirection là DOWN
+//                    snake2.getHeadPosition().y++;
+//                    break;
+//            }
+//        }
+//    }
     // Nhấn vào button pause
     @FXML
     private void MouseClick_Pause(MouseEvent event) {
@@ -375,31 +362,30 @@ public class Play_ScreenController implements Initializable {
         return false;
     }
 
-    // Kiểm tra rắn còn sống trong chế độ 2 người chơi
-    public boolean checkGameOverFor2Player(GameBoard gameBoard) {
-        if (this.snake1.isIsAlive() == false || this.snake2.isIsAlive() == false) {
-            // Xét flow pane
-            this.GameOver_FlowPane.setVisible(true);
-            // Set label
-            setlabelForGameOver(true);
-            return true;
-        }
-        // Kiểm tra 2 con rắn va nhau
-        // Kiểm tra snake 1 bị rắn 2 va vào người không
-        for (int i = 1; i < this.snake1.getBody().size(); i++) {
-            if (this.snake2.getHeadPosition().x == this.snake1.getBody().get(i).getX() && this.snake2.getHeadPosition().y == this.snake1.getBody().get(i).getY()) {
-                return true;
-            }
-        }
-        // Kiểm tra snake 2 bị snake 1 va vào người không
-        for (int i = 1; i < this.snake2.getBody().size(); i++) {
-            if (this.snake1.getHeadPosition().x == this.snake2.getBody().get(i).getX() && this.snake1.getHeadPosition().y == this.snake2.getBody().get(i).getY()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
+//    // Kiểm tra rắn còn sống trong chế độ 2 người chơi
+//    public boolean checkGameOverFor2Player(GameBoard gameBoard) {
+//        if (this.snake1.isIsAlive() == false || this.snake2.isIsAlive() == false) {
+//            // Xét flow pane
+//            this.GameOver_FlowPane.setVisible(true);
+//            // Set label
+//            setlabelForGameOver(true);
+//            return true;
+//        }
+//        // Kiểm tra 2 con rắn va nhau
+//        // Kiểm tra snake 1 bị rắn 2 va vào người không
+//        for (int i = 1; i < this.snake1.getBody().size(); i++) {
+//            if (this.snake2.getHeadPosition().x == this.snake1.getBody().get(i).getX() && this.snake2.getHeadPosition().y == this.snake1.getBody().get(i).getY()) {
+//                return true;
+//            }
+//        }
+//        // Kiểm tra snake 2 bị snake 1 va vào người không
+//        for (int i = 1; i < this.snake2.getBody().size(); i++) {
+//            if (this.snake1.getHeadPosition().x == this.snake2.getBody().get(i).getX() && this.snake1.getHeadPosition().y == this.snake2.getBody().get(i).getY()) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
     // Trở về Home Screen
     @FXML
     private void MouseClick_Home(MouseEvent event) throws IOException {
@@ -457,7 +443,6 @@ public class Play_ScreenController implements Initializable {
         this.homeBtn.setVisible(check);
         // Set cho button pause 
         this.pauseBtn.setDisable(check);
-
     }
 
     // Nút nhấn tiếp tục game

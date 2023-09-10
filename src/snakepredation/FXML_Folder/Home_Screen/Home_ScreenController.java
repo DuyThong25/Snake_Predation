@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
+import snakepredation.FXML_Folder.TwoPlayerMode_Screen.TwoPlayerMode_ScreenController;
 import snakepredation.Food;
 import snakepredation.GameBoard;
 import snakepredation.ScreenUtil;
@@ -97,15 +98,15 @@ public class Home_ScreenController implements Initializable {
     @FXML
     private void TwoPlayer_PlayScreen(MouseEvent event) throws IOException {
         // Load file fxml của Play_Screen -> scene builder
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/TwoPlayerMode_Screen/TwoPlayerMode_Screen.fxml"));
         Parent root = loader.load();
 
         // Lấy file controller của Play_Screen
-        Play_ScreenController play_Controller = loader.getController();
+        TwoPlayerMode_ScreenController twoPlayerMode_Controller = loader.getController();
 
         Scene scene = new Scene(root);
         // Lấy file CSS của Play_Screen
-        scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/TwoPlayerMode_Screen/twoplayermode_screen.css").toExternalForm());
 
         // Lấy primary stage từ SnakePredation.java
         Stage play_Stage = SnakePredation.getPrimaryStage();
@@ -119,8 +120,8 @@ public class Home_ScreenController implements Initializable {
         play_Stage.setMinWidth(play_Stage.getWidth());
         play_Stage.setMinHeight(play_Stage.getHeight());
 
-        // Lấy canvas background ra từ Play_Screen controller
-        Canvas bgSnake_Canvas = play_Controller.getBg__Snake();
+//        // Lấy canvas background ra từ Play_Screen controller
+        Canvas bgSnake_Canvas = twoPlayerMode_Controller.getBg__Snake();
 
         // Khởi tạo GameBoard
         GameBoard gameBoard = new GameBoard(700, 700);
@@ -146,14 +147,7 @@ public class Home_ScreenController implements Initializable {
         root.getScene().setOnKeyReleased(e -> {
             keysPressed.remove(e.getCode()); // Xóa phím đã nhả ra khỏi danh sách
         });
-        
-//        // Handle Event for Snakeee move
-//        // Xử lý người chơi 1
-//        root.getScene().setOnKeyPressed(e -> snake1.HandeleDirectionFor2PlayerOfSnake1(e));
-//        // Xử lý người chơi 2
-//        root.getScene().setOnKeyPressed(e -> snake2.HandeleDirectionFor2PlayerOfSnake2(e));
-
-        play_Controller.startGameFor2Player(gameBoard, snake1, snake2, food);
+        twoPlayerMode_Controller.startGameFor2Player(gameBoard, snake1, snake2, food);
     }
 
 }

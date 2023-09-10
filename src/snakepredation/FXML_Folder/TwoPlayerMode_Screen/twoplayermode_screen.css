@@ -5,3 +5,11 @@
 .mainFxmlClass {
 
 }
+#stackPane{
+    -fx-background-color: #7F8487;
+}
+#stackPane_Canvas{
+    -fx-background-color: #DDDDDD ;
+    -fx-background-insets: 0, 20 ;
+    -fx-padding: 5px ;
+}
