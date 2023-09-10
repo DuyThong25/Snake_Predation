@@ -266,21 +266,21 @@ public class Snake {
                 break;
         }
 
-        // Kiểm tra còn sống không
-        if (isSnakeAlive(gameboard) == true) {
-            this.isAlive = true;
-        } else {
-            this.isAlive = false;
-        }
-
-        // Kiểm tra ran an moi chưa
-        if (isSnakeEat(food)) {
-            this.scores += 5;
-            this.snakeBody.add(new Point(-1, -1));
-            food.setExists(false);
-        } else {
-            food.setExists(true);
-        }
+//        // Kiểm tra còn sống không
+//        if (isSnakeAlive(gameboard) == true) {
+//            this.isAlive = true;
+//        } else {
+//            this.isAlive = false;
+//        }
+//
+//        // Kiểm tra ran an moi chưa
+//        if (isSnakeEat(food)) {
+//            this.scores += 5;
+//            this.snakeBody.add(new Point(-1, -1));
+//            food.setExists(false);
+//        } else {
+//            food.setExists(true);
+//        }
 
     }
 

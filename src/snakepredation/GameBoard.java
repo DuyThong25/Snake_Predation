@@ -73,7 +73,6 @@ public class GameBoard extends Canvas {
                     foodX = (int) (Math.random() * ROWS);
                     foodY = (int) (Math.random() * COLUMNS);
                     food.setPosition(new Point((int) foodX, (int) foodY));
-                    continue;
                 }
             }
             break;
@@ -95,7 +94,6 @@ public class GameBoard extends Canvas {
                     foodX = (int) (Math.random() * ROWS);
                     foodY = (int) (Math.random() * COLUMNS);
                     food.setPosition(new Point((int) foodX, (int) foodY));
-                    continue;
                 }
             }
             for (Point snakeBody : snake2.getBody()) {
@@ -107,7 +105,6 @@ public class GameBoard extends Canvas {
                     foodX = (int) (Math.random() * ROWS);
                     foodY = (int) (Math.random() * COLUMNS);
                     food.setPosition(new Point((int) foodX, (int) foodY));
-                    continue;
                 }
             }
             break;
