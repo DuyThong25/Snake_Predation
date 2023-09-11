@@ -3,7 +3,9 @@ package snakepredation.FXML_Folder.TwoPlayerMode_Screen;
 import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,6 +18,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -184,6 +187,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
             this.timeline.stop();
             return;
         }
+        
         this.gameBoard.DrawBackground();
         setHandleScoresLabel1("PLAYER 1: " + this.snake1.getScores());
         setHandleScoresLabel2("PLAYER 2: " + this.snake2.getScores());
@@ -194,8 +198,8 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         } else {
             this.food.DrawFood(this.gameBoard);
         }
-        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc());
-        this.snake2.DrawSnake(this.gameBoard, this.gameBoard.getGc());
+        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1AD9CE", "#000000","#17B3AA");
+        this.snake2.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1F42DB", "#000000","#003DAD");
 
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
         this.snake2.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
@@ -252,7 +256,6 @@ public class TwoPlayerMode_ScreenController implements Initializable {
             if (this.snake2.getHeadPosition().x == this.snake1.getBody().get(i).getX() && this.snake2.getHeadPosition().y == this.snake1.getBody().get(i).getY()) {
                 this.GameOver_FlowPane.setVisible(true);
                 setlabelForGameOver(true);
-
                 this.setPlayerWinLabel("SNAKE 1 WIN !!");
                 return true;
             }
@@ -262,7 +265,6 @@ public class TwoPlayerMode_ScreenController implements Initializable {
             if (this.snake1.getHeadPosition().x == this.snake2.getBody().get(i).getX() && this.snake1.getHeadPosition().y == this.snake2.getBody().get(i).getY()) {
                 this.GameOver_FlowPane.setVisible(true);
                 setlabelForGameOver(true);
-
                 this.setPlayerWinLabel("SNAKE 2 WIN !!");
                 return true;
             }
@@ -327,6 +329,33 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Restart(MouseEvent event) {
+        // Xét flow pane
+        this.Pause_FlowPane.setVisible(false);
+        // Set label
+        setlabelForGameOver(false);
+
+        // Dừng hẳn time line
+        this.timeline.stop();
+        // Tạo lại rắn và handle move cho rắn
+        Snake snakeReset1 = new Snake(2, 5, 5);
+        Snake snakeReset2 = new Snake(2, 2, 2);
+
+        // Handle Event for Snakeee move
+        Set<KeyCode> keysPressed = new HashSet<>(); // Lưu trữ danh sách phím được nhấn
+
+        stackPane_Canvas.getScene().setOnKeyPressed(e -> {
+            keysPressed.add(e.getCode()); // Thêm phím được nhấn vào danh sách
+            snakeReset1.HandeleDirectionFor2PlayerOfSnake1(e);
+            snakeReset2.HandeleDirectionFor2PlayerOfSnake2(e);
+        });
+
+        stackPane_Canvas.getScene().setOnKeyReleased(e -> {
+            keysPressed.remove(e.getCode()); // Xóa phím đã nhả ra khỏi danh sách
+        });
+        // Tạo lại thức ăn
+        this.food.resetFoodFor2Player(this.gameBoard, this.food, snakeReset1, snakeReset2);
+        // Chạy lại game
+        startGameFor2Player(this.gameBoard, snakeReset1, snakeReset2, food);
     }
 
     @FXML
@@ -335,6 +364,16 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Continue(MouseEvent event) {
+        this.isPause = false;
+        // Xét label
+        Pause_FlowPane.setVisible(false);
+        continueBtn.setVisible(false);
+        homeBtn1.setVisible(false);
+        restartBtn1.setVisible(false);
+
+        // Xét timeline
+        this.timeline.setCycleCount(Animation.INDEFINITE);
+        this.timeline.play();
     }
 
     @FXML

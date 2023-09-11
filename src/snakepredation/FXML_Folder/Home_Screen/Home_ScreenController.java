@@ -128,9 +128,9 @@ public class Home_ScreenController implements Initializable {
         gameBoard.setGc(bgSnake_Canvas.getGraphicsContext2D()); // Set cho Canvas = GraphicsContext2D
 
         // Khởi tạo chiều dài và vị trí Snake 1
-        Snake snake1 = new Snake(2, 5, 5);
+        Snake snake1 = new Snake(2, 5, 8);
         // Khởi tạo chiều dài và vị trí Snake 1
-        Snake snake2 = new Snake(2, 2, 2);
+        Snake snake2 = new Snake(2, 5, 10);
 
         // Khởi tạo thức ăn và màu thức ăn
         Food food = gameBoard.GenerateRandomFoodFor2Player(snake1, snake2);

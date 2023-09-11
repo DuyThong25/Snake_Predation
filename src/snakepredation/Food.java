@@ -65,8 +65,6 @@ public class Food {
     public void resetFoodFor2Player(GameBoard gameBoard, Food food, Snake snake1, Snake snake2) {
         Point newPoint = gameBoard.GenerateRandomFoodFor2Player(snake1, snake2).getPosition();
         food.setPosition(newPoint);
-        System.out.println("x: "+newPoint.x);
-        System.out.println("y: "+newPoint.y);
 
     }
 }

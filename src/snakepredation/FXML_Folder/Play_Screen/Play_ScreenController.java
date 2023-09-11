@@ -169,7 +169,7 @@ public class Play_ScreenController implements Initializable {
         } else {
             this.food.DrawFood(this.gameBoard);
         }
-        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc());
+        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#017A26", "#000000","#056622");
 
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
         // Kiểm tra game over không -> rắn còn sống? 

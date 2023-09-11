@@ -94,45 +94,47 @@ public class Snake {
         this.snakeBody = snakeBody;
     }
 
-    public void DrawSnake(GameBoard gameboard, GraphicsContext gc) {
-        // Kích thước đầu con rắn
-        double headSize = gameboard.getSQUARE_SIZE() - 5;
-        // Vị trí x và y cho đầu con rắn
-        double headX = this.headPosition.getX() * gameboard.getSQUARE_SIZE();
-        double headY = this.headPosition.getY() * gameboard.getSQUARE_SIZE();
+    public void DrawSnake(GameBoard gameboard, GraphicsContext gc, String colorHead, String colorEyes, String colorBody) {
+        // Vẽ con rắn
+        for (int i = 0; i < this.snakeBody.size(); i++) {
+            if (i == 0) {
+                // Kích thước đầu con rắn
+                double headSize = gameboard.getSQUARE_SIZE() - 5;
+                // Vị trí x và y cho đầu con rắn
+                double headX = this.headPosition.getX() * gameboard.getSQUARE_SIZE();
+                double headY = this.headPosition.getY() * gameboard.getSQUARE_SIZE();
 
-        // Vẽ đầu con rắn
-        gc.setFill(Color.web("017A26"));
-        gc.fillRoundRect(headX, headY, headSize, headSize, 25, 25);
+                // Vẽ đầu con rắn 
+                gc.setFill(Color.web(colorHead));
+                gc.fillRoundRect(headX, headY, headSize, headSize, 25, 25);
 
-        // Kích thước và vị trí cho mắt
-        double eyeSize = 8; // Kích thước mắt
-        double eyeX = headX + (headSize - eyeSize) / 2; // Vị trí x cho mắt
-        double eyeY = headY + (headSize - eyeSize) / 2; // Vị trí y cho mắt
+                // Kích thước và vị trí cho mắt
+                double eyeSize = 8; // Kích thước mắt
+                double eyeX = headX + (headSize - eyeSize) / 2; // Vị trí x cho mắt
+                double eyeY = headY + (headSize - eyeSize) / 2; // Vị trí y cho mắt
 
-        if (this.currentDirection == Direction.UP || this.currentDirection == Direction.DOWN) {
-            // Vẽ mắt 1
-            gc.setFill(Color.BLACK);
-            gc.fillRoundRect(eyeX - 5, eyeY - 2, eyeSize, eyeSize, 50, 50);
-            // Vẽ mắt 2
-            gc.setFill(Color.BLACK);
-            gc.fillRoundRect(eyeX + 5, eyeY - 2, eyeSize, eyeSize, 50, 50);
-        } else {
-            // Vẽ mắt 1
-            gc.setFill(Color.BLACK);
-            gc.fillRoundRect(eyeX + 2, eyeY + 5, eyeSize, eyeSize, 50, 50);
-            // Vẽ mắt 2
-            gc.setFill(Color.BLACK);
-            gc.fillRoundRect(eyeX + 2, eyeY - 5, eyeSize, eyeSize, 50, 50);
-        }
-
-        // Vẽ thân con rắn
-        for (int i = 1; i < this.snakeBody.size(); i++) {
-            int sizeRect = gameboard.getSQUARE_SIZE() - 4;
-            double positionSnale_X = this.snakeBody.get(i).getX() * gameboard.getSQUARE_SIZE();
-            double positionSnale_Y = this.snakeBody.get(i).getY() * gameboard.getSQUARE_SIZE();
-            gc.setFill(Color.web("056622"));
-            gc.fillRect(positionSnale_X, positionSnale_Y, sizeRect, sizeRect);
+                if (this.currentDirection == Direction.UP || this.currentDirection == Direction.DOWN) {
+                    // Vẽ mắt 1
+                    gc.setFill(Color.web(colorEyes));
+                    gc.fillRoundRect(eyeX - 5, eyeY - 2, eyeSize, eyeSize, 50, 50);
+                    // Vẽ mắt 2
+                    gc.setFill(Color.web(colorEyes));
+                    gc.fillRoundRect(eyeX + 5, eyeY - 2, eyeSize, eyeSize, 50, 50);
+                } else {
+                    // Vẽ mắt 1
+                    gc.setFill(Color.web(colorEyes));
+                    gc.fillRoundRect(eyeX + 2, eyeY + 5, eyeSize, eyeSize, 50, 50);
+                    // Vẽ mắt 2
+                    gc.setFill(Color.web(colorEyes));
+                    gc.fillRoundRect(eyeX + 2, eyeY - 5, eyeSize, eyeSize, 50, 50);
+                }
+            } else {
+                int sizeRect = gameboard.getSQUARE_SIZE() - 4;
+                double positionSnale_X = this.snakeBody.get(i).getX() * gameboard.getSQUARE_SIZE();
+                double positionSnale_Y = this.snakeBody.get(i).getY() * gameboard.getSQUARE_SIZE();
+                gc.setFill(Color.web(colorBody));
+                gc.fillRect(positionSnale_X, positionSnale_Y, sizeRect, sizeRect);
+            }
         }
     }
 
@@ -144,28 +146,28 @@ public class Snake {
             case W:
                 // Xử lý di chuyển lên
                 if (this.currentDirection != Direction.DOWN) {
-                    this.currentDirection = Direction.UP;
+                    this.setCurrentDirection(Direction.UP);
                 }
                 break;
             case DOWN:
             case S:
                 // Xử lý di chuyển xuống
                 if (this.currentDirection != Direction.UP) {
-                    this.currentDirection = Direction.DOWN;
+                    this.setCurrentDirection(Direction.DOWN);
                 }
                 break;
             case LEFT:
             case A:
                 // Xử lý di chuyển qua trái
                 if (this.currentDirection != Direction.RIGHT) {
-                    this.currentDirection = Direction.LEFT;
+                    this.setCurrentDirection(Direction.LEFT);
                 }
                 break;
             case RIGHT:
             case D:
                 // Xử lý di chuyển qua phải
                 if (this.currentDirection != Direction.LEFT) {
-                    this.currentDirection = Direction.RIGHT;
+                    this.setCurrentDirection(Direction.RIGHT);
                 }
                 break;
         }
@@ -281,10 +283,7 @@ public class Snake {
 //        } else {
 //            food.setExists(true);
 //        }
-
     }
-
-
 
     public boolean isSnakeAlive(GameBoard gameboard) {
         int currentWidthX = this.headPosition.x * gameboard.getSQUARE_SIZE();
