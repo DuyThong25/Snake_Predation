@@ -15,10 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.DOWN;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.LEFT;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.RIGHT;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.UP;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.ESCAPE;
@@ -160,6 +156,7 @@ public class Play_ScreenController implements Initializable {
             this.timeline.stop();
             return;
         }
+
         this.gameBoard.DrawBackground();
         setHandleScoresLabel("Scrores: " + this.snake1.getScores());
 
@@ -169,7 +166,7 @@ public class Play_ScreenController implements Initializable {
         } else {
             this.food.DrawFood(this.gameBoard);
         }
-        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#017A26", "#000000","#056622");
+        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#017A26", "#000000", "#056622");
 
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
         // Kiểm tra game over không -> rắn còn sống? 
@@ -422,7 +419,7 @@ public class Play_ScreenController implements Initializable {
         this.timeline.stop();
         // Tạo lại rắn và handle move cho rắn
         Snake snakeReset = new Snake(2, 5, 5);
-        stackPane_Canvas.getScene().setOnKeyPressed(e -> snakeReset.HandeleDirectionFor1Player(e));
+        this.bg__Snake.getScene().setOnKeyReleased(e -> snakeReset.HandeleDirectionFor1Player(e));
         // Tạo lại thức ăn
         this.food.resetFood(this.gameBoard, snakeReset, this.food);
         // Chạy lại game

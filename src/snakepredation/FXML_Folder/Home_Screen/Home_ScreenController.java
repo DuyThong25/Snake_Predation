@@ -85,7 +85,9 @@ public class Home_ScreenController implements Initializable {
 
         // Handle Event for Snakeee move
         // Xử lý 1 người chơi
-        root.getScene().setOnKeyPressed(e -> snake.HandeleDirectionFor1Player(e));
+//        root.getScene().setOnKeyReleased(e -> snake.HandeleDirectionFor1Player(e));
+        bgSnake_Canvas.getScene().setOnKeyPressed(e -> snake.HandeleDirectionFor1Player(e));
+
         play_Controller.startGameFor1Player(gameBoard, snake, food);
 
     }

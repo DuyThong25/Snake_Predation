@@ -3,6 +3,8 @@ package snakepredation;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.skin.TextInputControlSkin.Direction;
 import javafx.scene.input.KeyCode;
@@ -25,6 +27,7 @@ public class Snake {
     private int speed; // Tốc độ di chuyển
     private boolean isAlive; // Trạng thái sống/mất
     private int scores = 0;
+    private boolean canChangeDirection = true; // Biến dùng để set time out khi rắn đổi direction
 
     public Snake(int snakeLength, int x, int y) {
         snakeBody = new ArrayList<>();
@@ -137,40 +140,60 @@ public class Snake {
             }
         }
     }
-
-    // Handle Event của người dùng và cập nhật biến currentDirection
+    // Handle Event của người dùng và cập nhật biến currentDirection **********
     public void HandeleDirectionFor1Player(KeyEvent event) {
         KeyCode keyCode = event.getCode();
-        switch (keyCode) {
-            case UP:
-            case W:
-                // Xử lý di chuyển lên
-                if (this.currentDirection != Direction.DOWN) {
-                    this.setCurrentDirection(Direction.UP);
-                }
-                break;
-            case DOWN:
-            case S:
-                // Xử lý di chuyển xuống
-                if (this.currentDirection != Direction.UP) {
-                    this.setCurrentDirection(Direction.DOWN);
-                }
-                break;
-            case LEFT:
-            case A:
-                // Xử lý di chuyển qua trái
-                if (this.currentDirection != Direction.RIGHT) {
-                    this.setCurrentDirection(Direction.LEFT);
-                }
-                break;
-            case RIGHT:
-            case D:
-                // Xử lý di chuyển qua phải
-                if (this.currentDirection != Direction.LEFT) {
-                    this.setCurrentDirection(Direction.RIGHT);
-                }
-                break;
+        if (canChangeDirection) {
+            switch (keyCode) {
+                case UP:
+                case W:
+                    // Xử lý di chuyển lên
+                    if (this.currentDirection != Direction.DOWN) {
+                        this.currentDirection = Direction.UP;
+                        canChangeDirection = false;
+                        startDirectionChangeTimer();
+                    }
+                    break;
+                case DOWN:
+                case S:
+                    // Xử lý di chuyển xuống
+                    if (this.currentDirection != Direction.UP) {
+                        this.currentDirection = Direction.DOWN;
+                        canChangeDirection = false;
+                        startDirectionChangeTimer();
+                    }
+                    break;
+                case LEFT:
+                case A:
+                    // Xử lý di chuyển qua trái
+                    if (this.currentDirection != Direction.RIGHT) {
+                        this.currentDirection = Direction.LEFT;
+                        canChangeDirection = false;
+                        startDirectionChangeTimer();
+                    }
+                    break;
+                case RIGHT:
+                case D:
+                    // Xử lý di chuyển qua phải
+                    if (this.currentDirection != Direction.LEFT) {
+                        this.currentDirection = Direction.RIGHT;
+                        canChangeDirection = false;
+                        startDirectionChangeTimer();
+                    }
+                    break;
+            }
         }
+    }
+    
+    // Hàm đặt time out khi chuyển hướng rắn
+    private void startDirectionChangeTimer() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                canChangeDirection = true;
+            }
+        }, 110);
     }
 
     // Handle Event của rắn 1 trong chế độ 2 người chơi của người dùng và cập nhật biến currentDirection
