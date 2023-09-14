@@ -23,3 +23,12 @@
 .list-cell:selected, .list-cell:notselected {
     -fx-text-fill: black; /* hoặc màu chữ mặc định của bạn */
 }
+
+#inputName1 {
+/*        -fx-background-color: transparent;*/
+
+    -fx-border-radius: 25px;
+}
+#labelName1, #labelName2 {
+    -fx-text-fill: black;
+}
