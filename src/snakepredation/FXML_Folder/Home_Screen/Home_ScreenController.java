@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,20 +14,30 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 import snakepredation.FXML_Folder.TwoPlayerMode_Screen.TwoPlayerMode_ScreenController;
 import snakepredation.Food;
 import snakepredation.GameBoard;
-import snakepredation.ScreenUtil;
+import snakepredation.Ultil.ScreenUtil;
 import snakepredation.Snake;
 import snakepredation.SnakePredation;
+import snakepredation.jpa_Model.Player;
+import snakepredation.jpa_Model.Scores;
+import snakepredation.jpa_dao.PlayerDAO;
+import snakepredation.jpa_dao.ScoresDAO;
 
 public class Home_ScreenController implements Initializable {
-
+    
     @FXML
     private ImageView background_Home;
     @FXML
@@ -34,13 +46,44 @@ public class Home_ScreenController implements Initializable {
     private Button ratingBtn_Home;
     @FXML
     private Button twoplayerBtn_Home1;
-
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private FlowPane controlBtnPane;
+    @FXML
+    private ListView<Scores> listViewRanking;
+    @FXML
+    private ImageView imageRanking;
+    @FXML
+    private ScrollPane scrollPaneRanking;
+    private final ObservableList<Scores> dataScoresList = FXCollections.observableArrayList();
+    private final ScoresDAO scoresDAO = new ScoresDAO();
+    @FXML
+    private ImageView closeRankingBtn;
+    @FXML
+    private StackPane rankingPane;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        listViewRanking.setItems(dataScoresList);
+        dataScoresList.addAll(scoresDAO.getAllScores());
+        listViewRanking.setCellFactory(new Callback<ListView<Scores>, ListCell<Scores>>() {
+            @Override
+            public ListCell<Scores> call(ListView<Scores> param) {
+                ListCell<Scores> listCell = new ListCell() {
+                    @Override
+                    protected void updateItem(Object item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null) {
+                            Scores scores = (Scores) item;
+                            setText(scores.getPlayerID().getPlayerName() + "  " + scores.getTotalScores());
+                        } else {
+                            return;
+                        }
+                    }
+                };
+                return listCell;
+            }
+        });
     }
 
     // Bấm vào nút play
@@ -53,7 +96,7 @@ public class Home_ScreenController implements Initializable {
 
         // Lấy file controller của Play_Screen
         Play_ScreenController play_Controller = loader.getController();
-
+        
         Scene scene = new Scene(root);
         // Lấy file CSS của Play_Screen
         scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.css").toExternalForm());
@@ -85,18 +128,21 @@ public class Home_ScreenController implements Initializable {
 
         // Handle Event for Snakeee move
         // Xử lý 1 người chơi
-//        root.getScene().setOnKeyReleased(e -> snake.HandeleDirectionFor1Player(e));
         bgSnake_Canvas.getScene().setOnKeyPressed(e -> snake.HandeleDirectionFor1Player(e));
-
+        
         play_Controller.startGameFor1Player(gameBoard, snake, food);
-
+        
     }
-
+    
     @FXML
     private void MoveTo_RatingScreen(MouseEvent event) {
         System.out.println("ok");
+        // Xử lý visible
+        controlBtnPane.setVisible(false);
+        imageRanking.setVisible(true);
+        rankingPane.setVisible(true);
     }
-
+    
     @FXML
     private void TwoPlayer_PlayScreen(MouseEvent event) throws IOException {
         // Load file fxml của Play_Screen -> scene builder
@@ -105,7 +151,7 @@ public class Home_ScreenController implements Initializable {
 
         // Lấy file controller của Play_Screen
         TwoPlayerMode_ScreenController twoPlayerMode_Controller = loader.getController();
-
+        
         Scene scene = new Scene(root);
         // Lấy file CSS của Play_Screen
         scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/TwoPlayerMode_Screen/twoplayermode_screen.css").toExternalForm());
@@ -145,11 +191,18 @@ public class Home_ScreenController implements Initializable {
             snake1.HandeleDirectionFor2PlayerOfSnake1(e);
             snake2.HandeleDirectionFor2PlayerOfSnake2(e);
         });
-
+        
         root.getScene().setOnKeyReleased(e -> {
             keysPressed.remove(e.getCode()); // Xóa phím đã nhả ra khỏi danh sách
         });
         twoPlayerMode_Controller.startGameFor2Player(gameBoard, snake1, snake2, food);
     }
-
+    
+    @FXML
+    private void closeRanking(MouseEvent event) {
+        imageRanking.setVisible(false);
+        rankingPane.setVisible(false);
+        controlBtnPane.setVisible(true);
+    }
+    
 }

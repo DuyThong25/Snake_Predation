@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import snakepredation.Food;
 import snakepredation.GameBoard;
-import snakepredation.ScreenUtil;
+import snakepredation.Ultil.ScreenUtil;
 import snakepredation.Snake;
 import snakepredation.SnakePredation;
 

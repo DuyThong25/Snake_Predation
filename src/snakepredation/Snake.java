@@ -30,7 +30,7 @@ public class Snake {
     private boolean canChangeDirection = true; // Biến dùng để set time out khi rắn đổi direction
 
     public Snake(int snakeLength, int x, int y) {
-        snakeBody = new ArrayList<>();
+        this.snakeBody = new ArrayList<>();
         for (int i = 0; i < snakeLength; i++) {
             snakeBody.add(new Point(x, y));
         }

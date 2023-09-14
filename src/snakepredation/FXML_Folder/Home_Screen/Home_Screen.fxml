@@ -3,7 +3,10 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -15,17 +18,22 @@
         <URL value="@home_screen.css" />
     </stylesheets>
    <children>
-      <StackPane prefHeight="150.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <StackPane prefHeight="150.0" prefWidth="700.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ImageView fx:id="background_Home" fitHeight="700.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER">
+            <ImageView fx:id="background_Home" fitHeight="700.0" fitWidth="700.0" pickOnBounds="true" preserveRatio="true">
                <viewport>
                   <Rectangle2D />
                </viewport>
                <image>
-                  <Image url="@../../../asset/image/background.jpg" />
+                  <Image url="@../../../asset/image/background2.jpg" />
                </image>
             </ImageView>
-            <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" StackPane.alignment="CENTER">
+            <ImageView fx:id="imageRanking" fitHeight="438.0" fitWidth="522.0" pickOnBounds="true" preserveRatio="true" visible="false">
+               <image>
+                  <Image url="@../../../asset/image/ranking.png" />
+               </image>
+            </ImageView>
+            <FlowPane fx:id="controlBtnPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="490.0" prefWidth="746.0" StackPane.alignment="CENTER">
                <children>
                   <Button fx:id="startBtn_Home" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#MoveTo_PlayScreen" prefHeight="45.0" prefWidth="110.0" text="START" textAlignment="CENTER">
                      <FlowPane.margin>
@@ -40,6 +48,26 @@
                   <Button fx:id="ratingBtn_Home" alignment="CENTER" mnemonicParsing="false" onMouseClicked="#MoveTo_RatingScreen" prefHeight="45.0" prefWidth="110.0" text="RATING" textAlignment="CENTER" />
                </children>
             </FlowPane>
+         </children>
+      </StackPane>
+      <StackPane fx:id="rankingPane" layoutX="120.0" layoutY="49.0" prefHeight="374.0" prefWidth="414.0" visible="false" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="140.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="50.0">
+         <children>
+            <ImageView fx:id="closeRankingBtn" fitHeight="46.0" fitWidth="46.0" onMouseClicked="#closeRanking" pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_RIGHT">
+               <image>
+                  <Image url="@../../../asset/image/back.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </ImageView>
+            <ScrollPane fx:id="scrollPaneRanking" prefHeight="276.0" prefWidth="284.0" StackPane.alignment="CENTER">
+               <content>
+                  <ListView fx:id="listViewRanking" prefHeight="280.0" prefWidth="278.0" />
+               </content>
+               <StackPane.margin>
+                  <Insets bottom="30.0" left="40.0" right="50.0" top="60.0" />
+               </StackPane.margin>
+            </ScrollPane>
          </children>
       </StackPane>
    </children>
