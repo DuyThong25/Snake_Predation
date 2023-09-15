@@ -33,8 +33,10 @@ import snakepredation.GameBoard;
 import snakepredation.Ultil.ScreenUtil;
 import snakepredation.Snake;
 import snakepredation.SnakePredation;
+import snakepredation.jpa_Model.Gamemode;
 import snakepredation.jpa_Model.Player;
 import snakepredation.jpa_Model.Scores;
+import snakepredation.jpa_dao.GamemodeDAO;
 import snakepredation.jpa_dao.PlayerDAO;
 import snakepredation.jpa_dao.ScoresDAO;
 
@@ -78,6 +80,8 @@ public class Home_ScreenController implements Initializable {
     @FXML
     private StackPane InputPane;
     private int checkMode;
+
+    private PlayerDAO playerDAO = new PlayerDAO();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -126,6 +130,12 @@ public class Home_ScreenController implements Initializable {
         controlBtnPane.setVisible(false);
         imageRanking.setVisible(true);
         InputPane.setVisible(true);
+        labelName2.setDisable(false);
+        inputName2.setDisable(false);
+        labelName2.setVisible(true);
+        inputName2.setVisible(true);
+        inputName2.setText("");
+
     }
 
     @FXML
@@ -145,13 +155,40 @@ public class Home_ScreenController implements Initializable {
     }
 
     @FXML
-    private void PlayGame_Screen(MouseEvent event) throws IOException {
+    private void PlayGame_Screen(MouseEvent event) throws IOException, Exception {
         if (inputName1.getText().isBlank() || inputName2.getText().isBlank()) {
             System.out.println("khong duoc de trong");
         } else {
+            Player newPlayer1 = new Player();
+            GamemodeDAO gamemodeDAO = new GamemodeDAO();
+
             if (this.checkMode == 1) {
+                // set dữ liệu của player mới vào database
+                newPlayer1.setPlayerID(playerDAO.getNextPlayerID());
+                newPlayer1.setPlayerName(inputName1.getText());
+                newPlayer1.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+                // Thêm vào player mới vào database
+                playerDAO.addPlayer(newPlayer1);
+                // Chạy chế độ 1 người chơi
                 onePlayerMode();
             } else {
+                Player newPlayer2 = new Player();
+
+                // set dữ liệu của player 1 vào database
+                newPlayer1.setPlayerID(playerDAO.getNextPlayerID());
+                newPlayer1.setPlayerName(inputName1.getText());
+                newPlayer1.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+                // Thêm player 1 mới vào database
+                playerDAO.addPlayer(newPlayer1);
+
+                // set dữ liệu của player 2 vào database
+                newPlayer2.setPlayerID(playerDAO.getNextPlayerID());
+                newPlayer2.setPlayerName(inputName2.getText());
+                newPlayer2.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+
+                // Thêm  player 2 mới vào database
+                playerDAO.addPlayer(newPlayer2);
+
                 twoPlayerMode();
             }
         }

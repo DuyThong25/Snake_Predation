@@ -35,4 +35,7 @@ public class PlayerDAO {
     public Player getPlayerById(int playerID) {
         return playerController.findPlayer(playerID);
     }
+    public int getNextPlayerID() {
+        return playerController.findNextPlayerID();
+    }
 }

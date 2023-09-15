@@ -1,22 +1,24 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package snakepredation.jpa_Model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ *
+ * @author duyth
+ */
 @Entity
 @Table(name = "player")
 @NamedQueries({
@@ -27,15 +29,12 @@ public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "PlayerID")
     private Integer playerID;
     @Basic(optional = false)
     @Column(name = "PlayerName")
     private String playerName;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerID")
-    private Collection<Scores> scoresCollection;
     @JoinColumn(name = "GameModeID", referencedColumnName = "GameModeID")
     @ManyToOne(optional = false)
     private Gamemode gameModeID;
@@ -68,14 +67,6 @@ public class Player implements Serializable {
         this.playerName = playerName;
     }
 
-    public Collection<Scores> getScoresCollection() {
-        return scoresCollection;
-    }
-
-    public void setScoresCollection(Collection<Scores> scoresCollection) {
-        this.scoresCollection = scoresCollection;
-    }
-
     public Gamemode getGameModeID() {
         return gameModeID;
     }
@@ -106,7 +97,7 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return "snakepredation.Model.Player[ playerID=" + playerID + " ]";
+        return "snakepredation.jpa_Model.Player[ playerID=" + playerID + " ]";
     }
     
 }

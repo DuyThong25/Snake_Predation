@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import snakepredation.jpa_dao.PlayerDAO;
 
 public class SnakePredation extends Application {
 
@@ -47,6 +48,7 @@ public class SnakePredation extends Application {
     }
 
     public static void main(String[] args) {    
+
             launch(args);
     }
 }

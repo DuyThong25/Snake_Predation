@@ -1,22 +1,27 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package snakepredation.jpa_controller;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import snakepredation.jpa_Model.Gamemode;
-import snakepredation.jpa_Model.Scores;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import snakepredation.jpa_Model.Player;
-import snakepredation.jpa_controller.exceptions.IllegalOrphanException;
 import snakepredation.jpa_controller.exceptions.NonexistentEntityException;
+import snakepredation.jpa_controller.exceptions.PreexistingEntityException;
 
+/**
+ *
+ * @author duyth
+ */
 public class PlayerJpaController implements Serializable {
 
     public PlayerJpaController(EntityManagerFactory emf) {
@@ -28,10 +33,7 @@ public class PlayerJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Player player) {
-        if (player.getScoresCollection() == null) {
-            player.setScoresCollection(new ArrayList<Scores>());
-        }
+    public void create(Player player) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -41,27 +43,17 @@ public class PlayerJpaController implements Serializable {
                 gameModeID = em.getReference(gameModeID.getClass(), gameModeID.getGameModeID());
                 player.setGameModeID(gameModeID);
             }
-            Collection<Scores> attachedScoresCollection = new ArrayList<Scores>();
-            for (Scores scoresCollectionScoresToAttach : player.getScoresCollection()) {
-                scoresCollectionScoresToAttach = em.getReference(scoresCollectionScoresToAttach.getClass(), scoresCollectionScoresToAttach.getScoresPK());
-                attachedScoresCollection.add(scoresCollectionScoresToAttach);
-            }
-            player.setScoresCollection(attachedScoresCollection);
             em.persist(player);
             if (gameModeID != null) {
                 gameModeID.getPlayerCollection().add(player);
                 gameModeID = em.merge(gameModeID);
             }
-            for (Scores scoresCollectionScores : player.getScoresCollection()) {
-                Player oldPlayerIDOfScoresCollectionScores = scoresCollectionScores.getPlayerID();
-                scoresCollectionScores.setPlayerID(player);
-                scoresCollectionScores = em.merge(scoresCollectionScores);
-                if (oldPlayerIDOfScoresCollectionScores != null) {
-                    oldPlayerIDOfScoresCollectionScores.getScoresCollection().remove(scoresCollectionScores);
-                    oldPlayerIDOfScoresCollectionScores = em.merge(oldPlayerIDOfScoresCollectionScores);
-                }
-            }
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findPlayer(player.getPlayerID()) != null) {
+                throw new PreexistingEntityException("Player " + player + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -69,7 +61,7 @@ public class PlayerJpaController implements Serializable {
         }
     }
 
-    public void edit(Player player) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Player player) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -77,31 +69,10 @@ public class PlayerJpaController implements Serializable {
             Player persistentPlayer = em.find(Player.class, player.getPlayerID());
             Gamemode gameModeIDOld = persistentPlayer.getGameModeID();
             Gamemode gameModeIDNew = player.getGameModeID();
-            Collection<Scores> scoresCollectionOld = persistentPlayer.getScoresCollection();
-            Collection<Scores> scoresCollectionNew = player.getScoresCollection();
-            List<String> illegalOrphanMessages = null;
-            for (Scores scoresCollectionOldScores : scoresCollectionOld) {
-                if (!scoresCollectionNew.contains(scoresCollectionOldScores)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Scores " + scoresCollectionOldScores + " since its playerID field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
             if (gameModeIDNew != null) {
                 gameModeIDNew = em.getReference(gameModeIDNew.getClass(), gameModeIDNew.getGameModeID());
                 player.setGameModeID(gameModeIDNew);
             }
-            Collection<Scores> attachedScoresCollectionNew = new ArrayList<Scores>();
-            for (Scores scoresCollectionNewScoresToAttach : scoresCollectionNew) {
-                scoresCollectionNewScoresToAttach = em.getReference(scoresCollectionNewScoresToAttach.getClass(), scoresCollectionNewScoresToAttach.getScoresPK());
-                attachedScoresCollectionNew.add(scoresCollectionNewScoresToAttach);
-            }
-            scoresCollectionNew = attachedScoresCollectionNew;
-            player.setScoresCollection(scoresCollectionNew);
             player = em.merge(player);
             if (gameModeIDOld != null && !gameModeIDOld.equals(gameModeIDNew)) {
                 gameModeIDOld.getPlayerCollection().remove(player);
@@ -110,17 +81,6 @@ public class PlayerJpaController implements Serializable {
             if (gameModeIDNew != null && !gameModeIDNew.equals(gameModeIDOld)) {
                 gameModeIDNew.getPlayerCollection().add(player);
                 gameModeIDNew = em.merge(gameModeIDNew);
-            }
-            for (Scores scoresCollectionNewScores : scoresCollectionNew) {
-                if (!scoresCollectionOld.contains(scoresCollectionNewScores)) {
-                    Player oldPlayerIDOfScoresCollectionNewScores = scoresCollectionNewScores.getPlayerID();
-                    scoresCollectionNewScores.setPlayerID(player);
-                    scoresCollectionNewScores = em.merge(scoresCollectionNewScores);
-                    if (oldPlayerIDOfScoresCollectionNewScores != null && !oldPlayerIDOfScoresCollectionNewScores.equals(player)) {
-                        oldPlayerIDOfScoresCollectionNewScores.getScoresCollection().remove(scoresCollectionNewScores);
-                        oldPlayerIDOfScoresCollectionNewScores = em.merge(oldPlayerIDOfScoresCollectionNewScores);
-                    }
-                }
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -139,7 +99,7 @@ public class PlayerJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -150,17 +110,6 @@ public class PlayerJpaController implements Serializable {
                 player.getPlayerID();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The player with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            Collection<Scores> scoresCollectionOrphanCheck = player.getScoresCollection();
-            for (Scores scoresCollectionOrphanCheckScores : scoresCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Player (" + player + ") cannot be destroyed since the Scores " + scoresCollectionOrphanCheckScores + " in its scoresCollection field has a non-nullable playerID field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             Gamemode gameModeID = player.getGameModeID();
             if (gameModeID != null) {
@@ -221,5 +170,28 @@ public class PlayerJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    public int findNextPlayerID() {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT p.playerID FROM Player p");
+            List<Integer> existingPlayerIDs = query.getResultList();
+
+            if (existingPlayerIDs.isEmpty()) {
+                return 1; // Nếu không có playerID nào trong cơ sở dữ liệu, bắt đầu từ 1
+            } else {
+                Collections.sort(existingPlayerIDs);
+
+                for (int i = 1; i <= existingPlayerIDs.size(); i++) {
+                    if (!existingPlayerIDs.contains(i)) {
+                        return i;
+                    }
+                }
+
+                return existingPlayerIDs.get(existingPlayerIDs.size() - 1) + 1; // Nếu tất cả số đã sử dụng, thêm 1 lên số cuối cùng
+            }
+        } finally {
+            em.close();
+        }
+    }
 }

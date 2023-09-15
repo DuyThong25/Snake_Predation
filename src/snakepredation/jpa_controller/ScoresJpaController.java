@@ -12,7 +12,6 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import snakepredation.jpa_Model.Player;
 import snakepredation.jpa_Model.Scores;
 import snakepredation.jpa_Model.ScoresPK;
 import snakepredation.jpa_controller.exceptions.NonexistentEntityException;
@@ -41,16 +40,7 @@ public class ScoresJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Player playerID = scores.getPlayerID();
-            if (playerID != null) {
-                playerID = em.getReference(playerID.getClass(), playerID.getPlayerID());
-                scores.setPlayerID(playerID);
-            }
             em.persist(scores);
-            if (playerID != null) {
-                playerID.getScoresCollection().add(scores);
-                playerID = em.merge(playerID);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findScores(scores.getScoresPK()) != null) {
@@ -69,22 +59,7 @@ public class ScoresJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Scores persistentScores = em.find(Scores.class, scores.getScoresPK());
-            Player playerIDOld = persistentScores.getPlayerID();
-            Player playerIDNew = scores.getPlayerID();
-            if (playerIDNew != null) {
-                playerIDNew = em.getReference(playerIDNew.getClass(), playerIDNew.getPlayerID());
-                scores.setPlayerID(playerIDNew);
-            }
             scores = em.merge(scores);
-            if (playerIDOld != null && !playerIDOld.equals(playerIDNew)) {
-                playerIDOld.getScoresCollection().remove(scores);
-                playerIDOld = em.merge(playerIDOld);
-            }
-            if (playerIDNew != null && !playerIDNew.equals(playerIDOld)) {
-                playerIDNew.getScoresCollection().add(scores);
-                playerIDNew = em.merge(playerIDNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -113,11 +88,6 @@ public class ScoresJpaController implements Serializable {
                 scores.getScoresPK();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The scores with id " + id + " no longer exists.", enfe);
-            }
-            Player playerID = scores.getPlayerID();
-            if (playerID != null) {
-                playerID.getScoresCollection().remove(scores);
-                playerID = em.merge(playerID);
             }
             em.remove(scores);
             em.getTransaction().commit();
