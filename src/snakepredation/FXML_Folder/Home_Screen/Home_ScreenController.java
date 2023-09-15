@@ -26,6 +26,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import snakepredation.DataHolder_Singleton.DataHolder;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 import snakepredation.FXML_Folder.TwoPlayerMode_Screen.TwoPlayerMode_ScreenController;
 import snakepredation.Food;
@@ -167,6 +168,11 @@ public class Home_ScreenController implements Initializable {
                 newPlayer1.setPlayerID(playerDAO.getNextPlayerID());
                 newPlayer1.setPlayerName(inputName1.getText());
                 newPlayer1.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+
+                // Thêm id vào dataholder để lưu id mới tạo 
+                // Lấy id khi người chơi khi bấm play truyền vào class Dataholder để tương tác dữ liệu với controller khác
+                DataHolder.getInstance().setPlayerID(newPlayer1.getPlayerID());
+
                 // Thêm vào player mới vào database
                 playerDAO.addPlayer(newPlayer1);
                 // Chạy chế độ 1 người chơi

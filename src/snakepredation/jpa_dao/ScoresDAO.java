@@ -1,6 +1,8 @@
 package snakepredation.jpa_dao;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import snakepredation.jpa_Model.Scores;
@@ -19,8 +21,12 @@ public class ScoresDAO {
         this.scoresController = new ScoresJpaController(emf);
     }
 
-    public void addScores(Scores scores) throws Exception {
-        scoresController.create(scores);
+    public void addScores(Scores scores)  {
+        try {
+            scoresController.create(scores);
+        } catch (Exception ex) {
+            Logger.getLogger(ScoresDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void editScores(Scores scores) throws Exception {
