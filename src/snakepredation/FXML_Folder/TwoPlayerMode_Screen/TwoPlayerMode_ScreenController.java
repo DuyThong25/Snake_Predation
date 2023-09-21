@@ -3,6 +3,9 @@ package snakepredation.FXML_Folder.TwoPlayerMode_Screen;
 import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -26,11 +29,17 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import snakepredation.DataHolder_Singleton.DataHolder;
 import snakepredation.Food;
 import snakepredation.GameBoard;
 import snakepredation.Ultil.ScreenUtil;
 import snakepredation.Snake;
 import snakepredation.SnakePredation;
+import snakepredation.jpa_Model.Player;
+import snakepredation.jpa_Model.Scores;
+import snakepredation.jpa_Model.ScoresPK;
+import snakepredation.jpa_dao.PlayerDAO;
+import snakepredation.jpa_dao.ScoresDAO;
 
 public class TwoPlayerMode_ScreenController implements Initializable {
 
@@ -79,6 +88,8 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     private Snake snake2;
     private Food food;
     private GameBoard gameBoard;
+    private ScoresDAO scoresDAO = new ScoresDAO();
+    private PlayerDAO playerDAO = new PlayerDAO();
 
     public Label getTotalScoresLabel_1() {
         return totalScoresLabel_1;
@@ -185,9 +196,10 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         // Kiểm tra game over không -> rắn còn sống? 
         if (checkGameOverFor2Player(this.gameBoard)) {
             this.timeline.stop();
+            InsertDBScoresFor2Player();
             return;
         }
-        
+
         this.gameBoard.DrawBackground();
         setHandleScoresLabel1("PLAYER 1: " + this.snake1.getScores());
         setHandleScoresLabel2("PLAYER 2: " + this.snake2.getScores());
@@ -198,13 +210,13 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         } else {
             this.food.DrawFood(this.gameBoard);
         }
-        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1AD9CE", "#000000","#17B3AA");
-        this.snake2.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1F42DB", "#000000","#003DAD");
+        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1AD9CE", "#000000", "#17B3AA");
+        this.snake2.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1F42DB", "#000000", "#003DAD");
 
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
         this.snake2.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
 
-//        HandleSnakeMoveFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
+        //HandleSnakeMoveFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
         this.snake1.HandleSnakeMove(this.gameBoard, this.food);
         this.snake2.HandleSnakeMove(this.gameBoard, this.food);
 
@@ -387,6 +399,45 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
         // Xét timeline
         this.timeline.pause();
+    }
+    // Insert database of Scores when gameover
+
+    public void InsertDBScoresFor2Player() {
+        // Xử lý cập nhật vào database
+        LocalDateTime myDateObj = LocalDateTime.now();
+        Date today = Date.from(myDateObj.atZone(ZoneId.systemDefault()).toInstant()); // Chuyển từ LocalDateTime sang Date
+
+        // Lấy id người chơi được lưu trong class dataholder
+        int playerID = DataHolder.getInstance().getPlayerID();
+        int playerID2 = DataHolder.getInstance2().getPlayerID2();
+
+        /* Xet diem cho player 1 */
+        Scores newScores = new Scores();
+        ScoresPK newScoresPK = new ScoresPK();
+
+        newScoresPK.setScoresID(playerID);
+        // Lấy ngày hiện tại chuyển từ Calendar sang Date
+        newScoresPK.setScoresDate(today);
+        newScores.setScoresPK(newScoresPK);
+        newScores.setTotalScores(this.snake1.getScores());
+        // Tìm player mới được thêm vào
+        Player existPlayer = playerDAO.getPlayerById(playerID);
+        newScores.setPlayerID(existPlayer);
+        scoresDAO.addScores(newScores);
+
+        /* Xet diem cho player 2 */
+        Scores newScores2 = new Scores();
+        ScoresPK newScoresPK2 = new ScoresPK();
+
+        newScoresPK2.setScoresID(playerID2);
+        // Lấy ngày hiện tại chuyển từ Calendar sang Date
+        newScoresPK2.setScoresDate(today);
+        newScores2.setScoresPK(newScoresPK2);
+        newScores2.setTotalScores(this.snake2.getScores());
+        // Tìm player mới được thêm vào
+        Player existPlayer2 = playerDAO.getPlayerById(playerID2);
+        newScores2.setPlayerID(existPlayer2);
+        scoresDAO.addScores(newScores2);
     }
 
 }

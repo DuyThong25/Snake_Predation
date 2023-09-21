@@ -5,7 +5,9 @@
 package snakepredation.jpa_Model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -26,6 +29,15 @@ import javax.persistence.Table;
     @NamedQuery(name = "Player.findByPlayerID", query = "SELECT p FROM Player p WHERE p.playerID = :playerID"),
     @NamedQuery(name = "Player.findByPlayerName", query = "SELECT p FROM Player p WHERE p.playerName = :playerName")})
 public class Player implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerID")
+    private Collection<Scores> scoresCollection;
+    @JoinColumn(name = "GameID", referencedColumnName = "GameID")
+    @ManyToOne(optional = false)
+    private Gamedetail gameID;
+    @JoinColumn(name = "SnakeID", referencedColumnName = "SnakeID")
+    @ManyToOne(optional = false)
+    private Snake snakeID;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -98,6 +110,30 @@ public class Player implements Serializable {
     @Override
     public String toString() {
         return "snakepredation.jpa_Model.Player[ playerID=" + playerID + " ]";
+    }
+
+    public Collection<Scores> getScoresCollection() {
+        return scoresCollection;
+    }
+
+    public void setScoresCollection(Collection<Scores> scoresCollection) {
+        this.scoresCollection = scoresCollection;
+    }
+
+    public Gamedetail getGameID() {
+        return gameID;
+    }
+
+    public void setGameID(Gamedetail gameID) {
+        this.gameID = gameID;
+    }
+
+    public Snake getSnakeID() {
+        return snakeID;
+    }
+
+    public void setSnakeID(Snake snakeID) {
+        this.snakeID = snakeID;
     }
     
 }

@@ -5,11 +5,16 @@ public class DataHolder {
     private static DataHolder instance = new DataHolder();
 
     private int playerID;
+    private int playerID2;
 
     private DataHolder() {
     }
 
     public static DataHolder getInstance() {
+        return instance;
+    }
+
+    public static DataHolder getInstance2() {
         return instance;
     }
 
@@ -19,5 +24,13 @@ public class DataHolder {
 
     public void setPlayerID(int playerID) {
         this.playerID = playerID;
+    }
+
+    public int getPlayerID2() {
+        return playerID2;
+    }
+
+    public void setPlayerID2(int playerID2) {
+        this.playerID2 = playerID2;
     }
 }

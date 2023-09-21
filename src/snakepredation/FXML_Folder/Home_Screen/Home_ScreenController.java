@@ -34,7 +34,6 @@ import snakepredation.GameBoard;
 import snakepredation.Ultil.ScreenUtil;
 import snakepredation.Snake;
 import snakepredation.SnakePredation;
-import snakepredation.jpa_Model.Gamemode;
 import snakepredation.jpa_Model.Player;
 import snakepredation.jpa_Model.Scores;
 import snakepredation.jpa_dao.GamemodeDAO;
@@ -86,7 +85,7 @@ public class Home_ScreenController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        // Tạo bảng ranking 
         listViewRanking.setItems(dataScoresList);
         dataScoresList.addAll(scoresDAO.getAllScores());
         listViewRanking.setCellFactory(new Callback<ListView<Scores>, ListCell<Scores>>() {
@@ -184,6 +183,8 @@ public class Home_ScreenController implements Initializable {
                 newPlayer1.setPlayerID(playerDAO.getNextPlayerID());
                 newPlayer1.setPlayerName(inputName1.getText());
                 newPlayer1.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+                // Lấy id khi người chơi khi bấm play truyền vào class Dataholder để tương tác dữ liệu với controller khác
+                DataHolder.getInstance().setPlayerID(newPlayer1.getPlayerID());
                 // Thêm player 1 mới vào database
                 playerDAO.addPlayer(newPlayer1);
 
@@ -191,7 +192,8 @@ public class Home_ScreenController implements Initializable {
                 newPlayer2.setPlayerID(playerDAO.getNextPlayerID());
                 newPlayer2.setPlayerName(inputName2.getText());
                 newPlayer2.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
-
+                // Lấy id khi người chơi khi bấm play truyền vào class Dataholder để tương tác dữ liệu với controller khác
+                DataHolder.getInstance2().setPlayerID2(newPlayer2.getPlayerID());
                 // Thêm  player 2 mới vào database
                 playerDAO.addPlayer(newPlayer2);
 
@@ -290,6 +292,7 @@ public class Home_ScreenController implements Initializable {
             keysPressed.add(e.getCode()); // Thêm phím được nhấn vào danh sách
             snake1.HandeleDirectionFor2PlayerOfSnake1(e);
             snake2.HandeleDirectionFor2PlayerOfSnake2(e);
+
         });
 
         root.getScene().setOnKeyReleased(e -> {

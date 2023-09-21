@@ -258,13 +258,7 @@ public class Play_ScreenController implements Initializable {
     // Restar game
     @FXML
     private void MouseClick_Restart(MouseEvent event) throws Exception {
-        int playerID = DataHolder.getInstance().getPlayerID();
-        Player existPlayer = playerDAO.getPlayerById(playerID);
 
-        if (existPlayer != null) {
-            // Cập nhật lại DataHolder
-            DataHolder.getInstance().setPlayerID(existPlayer.getPlayerID());
-            
             // Xét flow pane
             this.Pause_FlowPane.setVisible(false);
             // Set label
@@ -278,29 +272,27 @@ public class Play_ScreenController implements Initializable {
             this.food.resetFood(this.gameBoard, snakeReset, this.food);
             // Chạy lại game
             startGameFor1Player(this.gameBoard, snakeReset, this.food);
-        }
+        
     }
 
     // Insert database of Scores when gameover
     public void InsertDBScoresFor1Player() {
         // Xử lý cập nhật vào database
-        
         LocalDateTime myDateObj = LocalDateTime.now();
         Date today = Date.from(myDateObj.atZone(ZoneId.systemDefault()).toInstant()); // Chuyển từ LocalDateTime sang Date
 
-//        Calendar today = Calendar.getInstance();
-//        today.set(Calendar.HOUR_OF_DAY, 0);
         Scores newScores = new Scores();
         ScoresPK newScoresPK = new ScoresPK();
         // Lấy id người chơi được lưu trong class dataholder
         int playerID = DataHolder.getInstance().getPlayerID();
+        
         newScoresPK.setScoresID(playerID);
-        // Tìm player mới được thêm vào
-        Player existPlayer = playerDAO.getPlayerById(playerID);
         // Lấy ngày hiện tại chuyển từ Calendar sang Date
         newScoresPK.setScoresDate(today);
         newScores.setScoresPK(newScoresPK);
         newScores.setTotalScores(this.snake1.getScores());
+        // Tìm player mới được thêm vào
+        Player existPlayer = playerDAO.getPlayerById(playerID);
         newScores.setPlayerID(existPlayer);
         scoresDAO.addScores(newScores);
     }

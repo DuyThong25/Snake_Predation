@@ -28,6 +28,9 @@ import javax.persistence.Table;
     @NamedQuery(name = "Gamemode.findByGameModeName", query = "SELECT g FROM Gamemode g WHERE g.gameModeName = :gameModeName")})
 public class Gamemode implements Serializable {
 
+    @OneToMany(mappedBy = "gameModeID")
+    private Collection<Gamedetail> gamedetailCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -98,6 +101,14 @@ public class Gamemode implements Serializable {
     @Override
     public String toString() {
         return "snakepredation.Model.Gamemode[ gameModeID=" + gameModeID + " ]";
+    }
+
+    public Collection<Gamedetail> getGamedetailCollection() {
+        return gamedetailCollection;
+    }
+
+    public void setGamedetailCollection(Collection<Gamedetail> gamedetailCollection) {
+        this.gamedetailCollection = gamedetailCollection;
     }
     
 }

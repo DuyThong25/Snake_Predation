@@ -5,6 +5,8 @@
     <class>snakepredation.jpa_Model.Scores</class>
     <class>snakepredation.jpa_Model.Gamemode</class>
     <class>snakepredation.jpa_Model.Player</class>
+    <class>snakepredation.jpa_Model.Gamedetail</class>
+    <class>snakepredation.jpa_Model.Snake</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/snakepredation?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="root"/>
