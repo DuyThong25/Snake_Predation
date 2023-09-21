@@ -193,7 +193,7 @@ public class Snake {
             public void run() {
                 canChangeDirection = true;
             }
-        }, 110);
+        }, 150);
     }
 
     // Handle Event của rắn 1 trong chế độ 2 người chơi của người dùng và cập nhật biến currentDirection

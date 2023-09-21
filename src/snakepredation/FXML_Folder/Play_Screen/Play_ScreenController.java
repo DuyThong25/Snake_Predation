@@ -3,7 +3,9 @@ package snakepredation.FXML_Folder.Play_Screen;
 import java.awt.Point;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -258,17 +260,10 @@ public class Play_ScreenController implements Initializable {
     private void MouseClick_Restart(MouseEvent event) throws Exception {
         int playerID = DataHolder.getInstance().getPlayerID();
         Player existPlayer = playerDAO.getPlayerById(playerID);
-        Player newPlayer = new Player();
 
         if (existPlayer != null) {
-            // Tạo một player mới với tên cũ
-            newPlayer.setPlayerID(playerDAO.getNextPlayerID()); // Tạo id player mới
-            newPlayer.setGameModeID(existPlayer.getGameModeID()); // Lấy chế độ chơi đang chơi
-            newPlayer.setPlayerName(existPlayer.getPlayerName()); // Lấy tên cũ
-            playerDAO.addPlayer(newPlayer);
-
             // Cập nhật lại DataHolder
-            DataHolder.getInstance().setPlayerID(newPlayer.getPlayerID());
+            DataHolder.getInstance().setPlayerID(existPlayer.getPlayerID());
             
             // Xét flow pane
             this.Pause_FlowPane.setVisible(false);
@@ -289,17 +284,21 @@ public class Play_ScreenController implements Initializable {
     // Insert database of Scores when gameover
     public void InsertDBScoresFor1Player() {
         // Xử lý cập nhật vào database
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0);
+        
+        LocalDateTime myDateObj = LocalDateTime.now();
+        Date today = Date.from(myDateObj.atZone(ZoneId.systemDefault()).toInstant()); // Chuyển từ LocalDateTime sang Date
+
+//        Calendar today = Calendar.getInstance();
+//        today.set(Calendar.HOUR_OF_DAY, 0);
         Scores newScores = new Scores();
         ScoresPK newScoresPK = new ScoresPK();
-        // Lấy id khi người chơi khi bấm play được lưu trong class dataholder
+        // Lấy id người chơi được lưu trong class dataholder
         int playerID = DataHolder.getInstance().getPlayerID();
         newScoresPK.setScoresID(playerID);
         // Tìm player mới được thêm vào
         Player existPlayer = playerDAO.getPlayerById(playerID);
         // Lấy ngày hiện tại chuyển từ Calendar sang Date
-        newScoresPK.setScoresDate(today.getTime());
+        newScoresPK.setScoresDate(today);
         newScores.setScoresPK(newScoresPK);
         newScores.setTotalScores(this.snake1.getScores());
         newScores.setPlayerID(existPlayer);
