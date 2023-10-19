@@ -30,14 +30,8 @@ import javax.persistence.Table;
     @NamedQuery(name = "Player.findByPlayerName", query = "SELECT p FROM Player p WHERE p.playerName = :playerName")})
 public class Player implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "playerID")
-    private Collection<Scores> scoresCollection;
-    @JoinColumn(name = "GameID", referencedColumnName = "GameID")
-    @ManyToOne(optional = false)
-    private Gamedetail gameID;
-    @JoinColumn(name = "SnakeID", referencedColumnName = "SnakeID")
-    @ManyToOne(optional = false)
-    private Snake snakeID;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+    private Collection<Gamedetail> gamedetailCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -47,9 +41,9 @@ public class Player implements Serializable {
     @Basic(optional = false)
     @Column(name = "PlayerName")
     private String playerName;
-    @JoinColumn(name = "GameModeID", referencedColumnName = "GameModeID")
+    @JoinColumn(name = "SnakeID", referencedColumnName = "SnakeID")
     @ManyToOne(optional = false)
-    private Gamemode gameModeID;
+    private Snake snakeID;
 
     public Player() {
     }
@@ -79,12 +73,12 @@ public class Player implements Serializable {
         this.playerName = playerName;
     }
 
-    public Gamemode getGameModeID() {
-        return gameModeID;
+    public Snake getSnakeID() {
+        return snakeID;
     }
 
-    public void setGameModeID(Gamemode gameModeID) {
-        this.gameModeID = gameModeID;
+    public void setSnakeID(Snake snakeID) {
+        this.snakeID = snakeID;
     }
 
     @Override
@@ -112,28 +106,12 @@ public class Player implements Serializable {
         return "snakepredation.jpa_Model.Player[ playerID=" + playerID + " ]";
     }
 
-    public Collection<Scores> getScoresCollection() {
-        return scoresCollection;
+    public Collection<Gamedetail> getGamedetailCollection() {
+        return gamedetailCollection;
     }
 
-    public void setScoresCollection(Collection<Scores> scoresCollection) {
-        this.scoresCollection = scoresCollection;
-    }
-
-    public Gamedetail getGameID() {
-        return gameID;
-    }
-
-    public void setGameID(Gamedetail gameID) {
-        this.gameID = gameID;
-    }
-
-    public Snake getSnakeID() {
-        return snakeID;
-    }
-
-    public void setSnakeID(Snake snakeID) {
-        this.snakeID = snakeID;
+    public void setGamedetailCollection(Collection<Gamedetail> gamedetailCollection) {
+        this.gamedetailCollection = gamedetailCollection;
     }
     
 }

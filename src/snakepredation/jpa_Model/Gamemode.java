@@ -39,8 +39,6 @@ public class Gamemode implements Serializable {
     @Basic(optional = false)
     @Column(name = "GameModeName")
     private String gameModeName;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gameModeID")
-    private Collection<Player> playerCollection;
 
     public Gamemode() {
     }
@@ -68,14 +66,6 @@ public class Gamemode implements Serializable {
 
     public void setGameModeName(String gameModeName) {
         this.gameModeName = gameModeName;
-    }
-
-    public Collection<Player> getPlayerCollection() {
-        return playerCollection;
-    }
-
-    public void setPlayerCollection(Collection<Player> playerCollection) {
-        this.playerCollection = playerCollection;
     }
 
     @Override

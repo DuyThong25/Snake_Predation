@@ -5,7 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import snakepredation.Food;
-import snakepredation.Snake;
+import snakepredation.jpa_Model.Snake;
 
 public class GameBoard extends Canvas {
 
@@ -64,7 +64,7 @@ public class GameBoard extends Canvas {
         double foodY = (int) (Math.random() * COLUMNS);
         Food food = new Food(new Point((int) foodX, (int) foodY));
         while (true) {
-            for (Point snakeBody : snake.getBody()) {
+            for (Point snakeBody : snake.getSnakeBody()) {
                 /*
                     Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
                      => Không tạo ra thức ăn ngay vị trí của con rắn đang nằm 
@@ -85,7 +85,7 @@ public class GameBoard extends Canvas {
         double foodY = (int) (Math.random() * COLUMNS);
         Food food = new Food(new Point((int) foodX, (int) foodY));
         while (true) {
-            for (Point snakeBody : snake1.getBody()) {
+            for (Point snakeBody : snake1.getSnakeBody()) {
                 /*
                     Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
                      => Không tạo ra thức ăn ngay vị trí của con rắn đang nằm 
@@ -96,7 +96,7 @@ public class GameBoard extends Canvas {
                     food.setPosition(new Point((int) foodX, (int) foodY));
                 }
             }
-            for (Point snakeBody : snake2.getBody()) {
+            for (Point snakeBody : snake2.getSnakeBody()) {
                 /*
                     Nếu vị trí x và y của rắn bằng vị trí x và y của thức ăn 
                      => Không tạo ra thức ăn ngay vị trí của con rắn đang nằm 

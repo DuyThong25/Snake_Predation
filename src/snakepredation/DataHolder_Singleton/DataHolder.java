@@ -6,6 +6,7 @@ public class DataHolder {
 
     private int playerID;
     private int playerID2;
+    private int gameID;
 
     private DataHolder() {
     }
@@ -32,5 +33,13 @@ public class DataHolder {
 
     public void setPlayerID2(int playerID2) {
         this.playerID2 = playerID2;
+    }
+    
+     public int getGameID() {
+        return gameID;
+    }
+
+    public void setGameID(int gameID) {
+        this.gameID = gameID;
     }
 }

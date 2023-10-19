@@ -33,11 +33,15 @@ import snakepredation.DataHolder_Singleton.DataHolder;
 import snakepredation.Food;
 import snakepredation.GameBoard;
 import snakepredation.Ultil.ScreenUtil;
-import snakepredation.Snake;
 import snakepredation.SnakePredation;
+import snakepredation.jpa_Model.Gamedetail;
+import snakepredation.jpa_Model.GamedetailPK;
 import snakepredation.jpa_Model.Player;
 import snakepredation.jpa_Model.Scores;
 import snakepredation.jpa_Model.ScoresPK;
+import snakepredation.jpa_Model.Snake;
+import snakepredation.jpa_dao.GamedetailDAO;
+import snakepredation.jpa_dao.GamemodeDAO;
 import snakepredation.jpa_dao.PlayerDAO;
 import snakepredation.jpa_dao.ScoresDAO;
 
@@ -186,7 +190,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         this.setGameBoard(gameBoard);
 
         // Khởi tạo timeline và đặt vòng lặp game
-        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> runFor2Player()));
+        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSnakeSpeed()), e -> runFor2Player()));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
     }
@@ -222,15 +226,15 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
         // Kiểm tra snake 1 còn sống không
         if (snake1.isSnakeAlive(gameBoard) == true) {
-            snake1.setIsAlive(true);
+            snake1.setIsAlive((short) 1);
         } else {
-            snake1.setIsAlive(false);
+            snake1.setIsAlive((short) 0);
         }
         // Kiểm tra snake 2 còn sống không
         if (snake2.isSnakeAlive(gameBoard) == true) {
-            snake2.setIsAlive(true);
+            snake2.setIsAlive((short) 1);
         } else {
-            snake2.setIsAlive(false);
+            snake2.setIsAlive((short) 0);
         }
 
         // Kiểm tra ran an moi chưa
@@ -249,23 +253,23 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     // Kiểm tra rắn còn sống trong chế độ 2 người chơi
     public boolean checkGameOverFor2Player(GameBoard gameBoard) {
-        if (this.snake1.isIsAlive() == false || this.snake2.isIsAlive() == false) {
+        if (this.snake1.getIsAlive() == 0 || this.snake2.getIsAlive() == 0) {
             // Xét flow pane
             this.GameOver_FlowPane.setVisible(true);
             // Set label
             setlabelForGameOver(true);
             // Kiểm tra rắn nào đập vào tường trước
-            if (this.snake1.isIsAlive() == false) {
+            if (this.snake1.getIsAlive() == 0) {
                 this.setPlayerWinLabel("SNAKE 2 WIN !!");
-            } else if (this.snake2.isIsAlive() == false) {
+            } else if (this.snake2.getIsAlive() == 0) {
                 this.setPlayerWinLabel("SNAKE 1 WIN !!");
             }
             return true;
         }
         // Kiểm tra 2 con rắn va nhau
         // Kiểm tra snake 1 bị rắn 2 va vào người không
-        for (int i = 1; i < this.snake1.getBody().size(); i++) {
-            if (this.snake2.getHeadPosition().x == this.snake1.getBody().get(i).getX() && this.snake2.getHeadPosition().y == this.snake1.getBody().get(i).getY()) {
+        for (int i = 1; i < this.snake1.getSnakeBody().size(); i++) {
+            if (this.snake2.getHeadPosition().x == this.snake1.getSnakeBody().get(i).getX() && this.snake2.getHeadPosition().y == this.snake1.getSnakeBody().get(i).getY()) {
                 this.GameOver_FlowPane.setVisible(true);
                 setlabelForGameOver(true);
                 this.setPlayerWinLabel("SNAKE 1 WIN !!");
@@ -273,8 +277,8 @@ public class TwoPlayerMode_ScreenController implements Initializable {
             }
         }
         // Kiểm tra snake 2 bị snake 1 va vào người không
-        for (int i = 1; i < this.snake2.getBody().size(); i++) {
-            if (this.snake1.getHeadPosition().x == this.snake2.getBody().get(i).getX() && this.snake1.getHeadPosition().y == this.snake2.getBody().get(i).getY()) {
+        for (int i = 1; i < this.snake2.getSnakeBody().size(); i++) {
+            if (this.snake1.getHeadPosition().x == this.snake2.getSnakeBody().get(i).getX() && this.snake1.getHeadPosition().y == this.snake2.getSnakeBody().get(i).getY()) {
                 this.GameOver_FlowPane.setVisible(true);
                 setlabelForGameOver(true);
                 this.setPlayerWinLabel("SNAKE 2 WIN !!");
@@ -340,7 +344,46 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     }
 
     @FXML
-    private void MouseClick_Restart(MouseEvent event) {
+    private void MouseClick_Restart(MouseEvent event) throws Exception {
+        Gamedetail gameDetail = new Gamedetail();
+        GamedetailPK gameDetailPK = new GamedetailPK();
+
+        Gamedetail gameDetail2 = new Gamedetail();
+        GamedetailPK gameDetailPK2 = new GamedetailPK();
+
+        GamemodeDAO gameModeDAO = new GamemodeDAO();
+        GamedetailDAO gameDetailDAO = new GamedetailDAO();
+
+        // Lấy giờ hiện tại
+        LocalDateTime myDateObj = LocalDateTime.now();
+        Date today = Date.from(myDateObj.atZone(ZoneId.systemDefault()).toInstant()); // Chuyển từ LocalDateTime sang Date
+
+        int playerID = DataHolder.getInstance().getPlayerID();
+        int playerID2 = DataHolder.getInstance2().getPlayerID2();
+
+        // Thêm game detail 1 o day
+        gameDetailPK.setGameID(DataHolder.getInstance().getGameID());
+        gameDetailPK.setGameDate(today);
+        gameDetailPK.setPlayerID(playerID);
+
+        gameDetail.setGameName("2 Người chơi");
+        gameDetail.setGameModeID(gameModeDAO.getGamemodeById(2));
+        gameDetail.setGamedetailPK(gameDetailPK);
+
+        gameDetailDAO.addGamedetail(gameDetail);
+
+        // Thêm game detail 2 o day
+        gameDetailPK2.setPlayerID(playerID2);
+        gameDetailPK2.setGameID(gameDetailPK.getGameID());
+        gameDetailPK2.setGameDate(today);
+
+        gameDetail2.setGameName(gameDetail.getGameName());
+        gameDetail2.setGameModeID(gameDetail.getGameModeID());
+        gameDetail2.setGamedetailPK(gameDetailPK2);
+
+        gameDetailDAO.addGamedetail(gameDetail2);
+        
+        
         // Xét flow pane
         this.Pause_FlowPane.setVisible(false);
         // Set label

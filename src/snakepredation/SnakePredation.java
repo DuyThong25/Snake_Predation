@@ -1,15 +1,11 @@
 package snakepredation;
 
 import snakepredation.Ultil.ScreenUtil;
-import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import snakepredation.jpa_dao.PlayerDAO;
 
 public class SnakePredation extends Application {
 

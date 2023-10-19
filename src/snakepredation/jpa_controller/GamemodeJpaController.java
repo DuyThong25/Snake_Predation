@@ -5,18 +5,14 @@
 package snakepredation.jpa_controller;
 
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import snakepredation.jpa_Model.Player;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import snakepredation.jpa_Model.Gamemode;
-import snakepredation.jpa_controller.exceptions.IllegalOrphanException;
 import snakepredation.jpa_controller.exceptions.NonexistentEntityException;
 import snakepredation.jpa_controller.exceptions.PreexistingEntityException;
 
@@ -36,29 +32,11 @@ public class GamemodeJpaController implements Serializable {
     }
 
     public void create(Gamemode gamemode) throws PreexistingEntityException, Exception {
-        if (gamemode.getPlayerCollection() == null) {
-            gamemode.setPlayerCollection(new ArrayList<Player>());
-        }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Player> attachedPlayerCollection = new ArrayList<Player>();
-            for (Player playerCollectionPlayerToAttach : gamemode.getPlayerCollection()) {
-                playerCollectionPlayerToAttach = em.getReference(playerCollectionPlayerToAttach.getClass(), playerCollectionPlayerToAttach.getPlayerID());
-                attachedPlayerCollection.add(playerCollectionPlayerToAttach);
-            }
-            gamemode.setPlayerCollection(attachedPlayerCollection);
             em.persist(gamemode);
-            for (Player playerCollectionPlayer : gamemode.getPlayerCollection()) {
-                Gamemode oldGameModeIDOfPlayerCollectionPlayer = playerCollectionPlayer.getGameModeID();
-                playerCollectionPlayer.setGameModeID(gamemode);
-                playerCollectionPlayer = em.merge(playerCollectionPlayer);
-                if (oldGameModeIDOfPlayerCollectionPlayer != null) {
-                    oldGameModeIDOfPlayerCollectionPlayer.getPlayerCollection().remove(playerCollectionPlayer);
-                    oldGameModeIDOfPlayerCollectionPlayer = em.merge(oldGameModeIDOfPlayerCollectionPlayer);
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             if (findGamemode(gamemode.getGameModeID()) != null) {
@@ -72,45 +50,12 @@ public class GamemodeJpaController implements Serializable {
         }
     }
 
-    public void edit(Gamemode gamemode) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Gamemode gamemode) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Gamemode persistentGamemode = em.find(Gamemode.class, gamemode.getGameModeID());
-            Collection<Player> playerCollectionOld = persistentGamemode.getPlayerCollection();
-            Collection<Player> playerCollectionNew = gamemode.getPlayerCollection();
-            List<String> illegalOrphanMessages = null;
-            for (Player playerCollectionOldPlayer : playerCollectionOld) {
-                if (!playerCollectionNew.contains(playerCollectionOldPlayer)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain Player " + playerCollectionOldPlayer + " since its gameModeID field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Collection<Player> attachedPlayerCollectionNew = new ArrayList<Player>();
-            for (Player playerCollectionNewPlayerToAttach : playerCollectionNew) {
-                playerCollectionNewPlayerToAttach = em.getReference(playerCollectionNewPlayerToAttach.getClass(), playerCollectionNewPlayerToAttach.getPlayerID());
-                attachedPlayerCollectionNew.add(playerCollectionNewPlayerToAttach);
-            }
-            playerCollectionNew = attachedPlayerCollectionNew;
-            gamemode.setPlayerCollection(playerCollectionNew);
             gamemode = em.merge(gamemode);
-            for (Player playerCollectionNewPlayer : playerCollectionNew) {
-                if (!playerCollectionOld.contains(playerCollectionNewPlayer)) {
-                    Gamemode oldGameModeIDOfPlayerCollectionNewPlayer = playerCollectionNewPlayer.getGameModeID();
-                    playerCollectionNewPlayer.setGameModeID(gamemode);
-                    playerCollectionNewPlayer = em.merge(playerCollectionNewPlayer);
-                    if (oldGameModeIDOfPlayerCollectionNewPlayer != null && !oldGameModeIDOfPlayerCollectionNewPlayer.equals(gamemode)) {
-                        oldGameModeIDOfPlayerCollectionNewPlayer.getPlayerCollection().remove(playerCollectionNewPlayer);
-                        oldGameModeIDOfPlayerCollectionNewPlayer = em.merge(oldGameModeIDOfPlayerCollectionNewPlayer);
-                    }
-                }
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -128,7 +73,7 @@ public class GamemodeJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -139,17 +84,6 @@ public class GamemodeJpaController implements Serializable {
                 gamemode.getGameModeID();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The gamemode with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            Collection<Player> playerCollectionOrphanCheck = gamemode.getPlayerCollection();
-            for (Player playerCollectionOrphanCheckPlayer : playerCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Gamemode (" + gamemode + ") cannot be destroyed since the Player " + playerCollectionOrphanCheckPlayer + " in its playerCollection field has a non-nullable gameModeID field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             em.remove(gamemode);
             em.getTransaction().commit();

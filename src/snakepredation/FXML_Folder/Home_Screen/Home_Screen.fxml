@@ -59,9 +59,7 @@
                <image>
                   <Image url="@../../../asset/image/back.png" />
                </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
+
             </ImageView>
             <ScrollPane fx:id="scrollPaneRanking" prefHeight="276.0" prefWidth="284.0" StackPane.alignment="CENTER">
                <content>
@@ -109,9 +107,7 @@
                <image>
                   <Image url="@../../../asset/image/back.png" />
                </image>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
+
             </ImageView>
          </children>
       </StackPane>

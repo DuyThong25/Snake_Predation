@@ -1,4 +1,7 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package snakepredation.jpa_Model;
 
 import java.awt.Point;
@@ -10,15 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.skin.TextInputControlSkin;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.DOWN;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.LEFT;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.RIGHT;
-import static javafx.scene.control.skin.TextInputControlSkin.Direction.UP;
 import javafx.scene.input.KeyCode;
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.D;
-import static javafx.scene.input.KeyCode.S;
-import static javafx.scene.input.KeyCode.W;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javax.persistence.Basic;
@@ -32,9 +27,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import snakepredation.Food;
 import snakepredation.GameBoard;
 
+/**
+ *
+ * @author duyth
+ */
 @Entity
 @Table(name = "snake")
 @NamedQueries({
@@ -42,13 +42,11 @@ import snakepredation.GameBoard;
     @NamedQuery(name = "Snake.findBySnakeID", query = "SELECT s FROM Snake s WHERE s.snakeID = :snakeID"),
     @NamedQuery(name = "Snake.findBySnakeName", query = "SELECT s FROM Snake s WHERE s.snakeName = :snakeName"),
     @NamedQuery(name = "Snake.findByColorHead", query = "SELECT s FROM Snake s WHERE s.colorHead = :colorHead"),
+    @NamedQuery(name = "Snake.findByColorEyes", query = "SELECT s FROM Snake s WHERE s.colorEyes = :colorEyes"),
     @NamedQuery(name = "Snake.findBySnakeSpeed", query = "SELECT s FROM Snake s WHERE s.snakeSpeed = :snakeSpeed"),
     @NamedQuery(name = "Snake.findByIsAlive", query = "SELECT s FROM Snake s WHERE s.isAlive = :isAlive"),
-    @NamedQuery(name = "Snake.findByColorEyes", query = "SELECT s FROM Snake s WHERE s.colorEyes = :colorEyes")})
+    @NamedQuery(name = "Snake.findByColorBody", query = "SELECT s FROM Snake s WHERE s.colorBody = :colorBody")})
 public class Snake implements Serializable {
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "snakeID")
-    private Collection<Player> playerCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -61,20 +59,31 @@ public class Snake implements Serializable {
     private String snakeName;
     @Column(name = "ColorHead")
     private String colorHead;
+    @Column(name = "ColorEyes")
+    private String colorEyes;
     @Basic(optional = false)
     @Column(name = "SnakeSpeed")
     private int snakeSpeed;
     @Basic(optional = false)
     @Column(name = "isAlive")
     private short isAlive;
-    @Column(name = "ColorEyes")
-    private String colorEyes;
+    @Column(name = "ColorBody")
+    private String colorBody;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "snakeID")
+    private Collection<Player> playerCollection;
 
+    @Transient
     private List<Point> snakeBody; // Danh sách các phần của con rắn
+    @Transient
     private TextInputControlSkin.Direction currentDirection;// Hướng di chuyển hiện tại
+    @Transient
     private Point headPosition; // Tọa độ của đầu con rắn
+    @Transient
     private int scores = 0;
+    @Transient
     private boolean canChangeDirection = true; // Biến dùng để set time out khi rắn đổi direction
+    @Transient
+    private boolean canChangeDirection2 = true; // Biến dùng để set time out khi rắn đổi direction
 
     public Snake() {
     }
@@ -151,6 +160,14 @@ public class Snake implements Serializable {
         this.colorHead = colorHead;
     }
 
+    public String getColorEyes() {
+        return colorEyes;
+    }
+
+    public void setColorEyes(String colorEyes) {
+        this.colorEyes = colorEyes;
+    }
+
     public int getSnakeSpeed() {
         return snakeSpeed;
     }
@@ -167,12 +184,20 @@ public class Snake implements Serializable {
         this.isAlive = isAlive;
     }
 
-    public String getColorEyes() {
-        return colorEyes;
+    public String getColorBody() {
+        return colorBody;
     }
 
-    public void setColorEyes(String colorEyes) {
-        this.colorEyes = colorEyes;
+    public void setColorBody(String colorBody) {
+        this.colorBody = colorBody;
+    }
+
+    public Collection<Player> getPlayerCollection() {
+        return playerCollection;
+    }
+
+    public void setPlayerCollection(Collection<Player> playerCollection) {
+        this.playerCollection = playerCollection;
     }
 
     @Override
@@ -198,14 +223,6 @@ public class Snake implements Serializable {
     @Override
     public String toString() {
         return "snakepredation.jpa_Model.Snake[ snakeID=" + snakeID + " ]";
-    }
-
-    public Collection<Player> getPlayerCollection() {
-        return playerCollection;
-    }
-
-    public void setPlayerCollection(Collection<Player> playerCollection) {
-        this.playerCollection = playerCollection;
     }
 
     public void DrawSnake(GameBoard gameboard, GraphicsContext gc, String colorHead, String colorEyes, String colorBody) {
@@ -262,6 +279,8 @@ public class Snake implements Serializable {
                     // Xử lý di chuyển lên
                     if (this.currentDirection != TextInputControlSkin.Direction.DOWN) {
                         this.currentDirection = TextInputControlSkin.Direction.UP;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
                 case DOWN:
@@ -269,6 +288,8 @@ public class Snake implements Serializable {
                     // Xử lý di chuyển xuống
                     if (this.currentDirection != TextInputControlSkin.Direction.UP) {
                         this.currentDirection = TextInputControlSkin.Direction.DOWN;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
                 case LEFT:
@@ -276,6 +297,8 @@ public class Snake implements Serializable {
                     // Xử lý di chuyển qua trái
                     if (this.currentDirection != TextInputControlSkin.Direction.RIGHT) {
                         this.currentDirection = TextInputControlSkin.Direction.LEFT;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
                 case RIGHT:
@@ -283,11 +306,11 @@ public class Snake implements Serializable {
                     // Xử lý di chuyển qua phải
                     if (this.currentDirection != TextInputControlSkin.Direction.LEFT) {
                         this.currentDirection = TextInputControlSkin.Direction.RIGHT;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
             }
-            canChangeDirection = false;
-            setTimeOut();
         }
     }
 
@@ -302,6 +325,17 @@ public class Snake implements Serializable {
         }, 110);
     }
 
+    // Hàm đặt time out khi chuyển hướng rắn
+    private void setTimeOut_2() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                canChangeDirection2 = true;
+            }
+        }, 110);
+    }
+
     // Handle Event của rắn 1 trong chế độ 2 người chơi của người dùng và cập nhật biến currentDirection
     public void HandeleDirectionFor2PlayerOfSnake2(KeyEvent event) {
         KeyCode keyCode = event.getCode();
@@ -311,64 +345,76 @@ public class Snake implements Serializable {
                     // Xử lý di chuyển lên
                     if (this.currentDirection != TextInputControlSkin.Direction.DOWN) {
                         this.currentDirection = TextInputControlSkin.Direction.UP;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
                 case DOWN:
                     // Xử lý di chuyển xuống
                     if (this.currentDirection != TextInputControlSkin.Direction.UP) {
                         this.currentDirection = TextInputControlSkin.Direction.DOWN;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
                 case LEFT:
                     // Xử lý di chuyển qua trái
                     if (this.currentDirection != TextInputControlSkin.Direction.RIGHT) {
                         this.currentDirection = TextInputControlSkin.Direction.LEFT;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
                 case RIGHT:
                     // Xử lý di chuyển qua phải
                     if (this.currentDirection != TextInputControlSkin.Direction.LEFT) {
                         this.currentDirection = TextInputControlSkin.Direction.RIGHT;
+                        canChangeDirection = false;
+                        setTimeOut();
                     }
                     break;
             }
-            canChangeDirection = false;
-            setTimeOut();
         }
     }
     // Handle Event của rắn 2 trong chế độ 2 người chơi của người dùng và cập nhật biến currentDirection
 
     public void HandeleDirectionFor2PlayerOfSnake1(KeyEvent event) {
         KeyCode keyCode = event.getCode();
-        if (canChangeDirection) {
+        if (canChangeDirection2) {
             switch (keyCode) {
                 case W:
                     // Xử lý di chuyển lên
                     if (this.currentDirection != TextInputControlSkin.Direction.DOWN) {
                         this.currentDirection = TextInputControlSkin.Direction.UP;
+                        canChangeDirection2 = false;
+                        setTimeOut_2();
                     }
                     break;
                 case S:
                     // Xử lý di chuyển xuống
                     if (this.currentDirection != TextInputControlSkin.Direction.UP) {
                         this.currentDirection = TextInputControlSkin.Direction.DOWN;
+                        canChangeDirection2 = false;
+                        setTimeOut_2();
                     }
                     break;
                 case A:
                     // Xử lý di chuyển qua trái
                     if (this.currentDirection != TextInputControlSkin.Direction.RIGHT) {
                         this.currentDirection = TextInputControlSkin.Direction.LEFT;
+                        canChangeDirection2 = false;
+                        setTimeOut_2();
                     }
                     break;
                 case D:
                     // Xử lý di chuyển qua phải
                     if (this.currentDirection != TextInputControlSkin.Direction.LEFT) {
                         this.currentDirection = TextInputControlSkin.Direction.RIGHT;
+                        canChangeDirection2 = false;
+                        setTimeOut_2();
                     }
                     break;
             }
-            canChangeDirection = false;
-            setTimeOut();
         }
     }
     // Find and update the snake's previous position

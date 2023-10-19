@@ -2,6 +2,9 @@ package snakepredation.FXML_Folder.Home_Screen;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -32,13 +35,17 @@ import snakepredation.FXML_Folder.TwoPlayerMode_Screen.TwoPlayerMode_ScreenContr
 import snakepredation.Food;
 import snakepredation.GameBoard;
 import snakepredation.Ultil.ScreenUtil;
-import snakepredation.Snake;
 import snakepredation.SnakePredation;
+import snakepredation.jpa_Model.Gamedetail;
+import snakepredation.jpa_Model.GamedetailPK;
 import snakepredation.jpa_Model.Player;
 import snakepredation.jpa_Model.Scores;
+import snakepredation.jpa_Model.Snake;
+import snakepredation.jpa_dao.GamedetailDAO;
 import snakepredation.jpa_dao.GamemodeDAO;
 import snakepredation.jpa_dao.PlayerDAO;
 import snakepredation.jpa_dao.ScoresDAO;
+import snakepredation.jpa_dao.SnakeDAO;
 
 public class Home_ScreenController implements Initializable {
 
@@ -160,29 +167,51 @@ public class Home_ScreenController implements Initializable {
             System.out.println("khong duoc de trong");
         } else {
             Player newPlayer1 = new Player();
+            Gamedetail gameDetail = new Gamedetail();
+            SnakeDAO snakeDAO = new SnakeDAO();
+            GamedetailDAO gamedetailDAO = new GamedetailDAO();
             GamemodeDAO gamemodeDAO = new GamemodeDAO();
 
+            // Lấy giờ hiện tại
+            LocalDateTime myDateObj = LocalDateTime.now();
+            Date today = Date.from(myDateObj.atZone(ZoneId.systemDefault()).toInstant()); // Chuyển từ LocalDateTime sang Date
             if (this.checkMode == 1) {
+
                 // set dữ liệu của player mới vào database
                 newPlayer1.setPlayerID(playerDAO.getNextPlayerID());
                 newPlayer1.setPlayerName(inputName1.getText());
-                newPlayer1.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+                newPlayer1.setSnakeID(snakeDAO.getSnakeById(1));
 
-                // Thêm id vào dataholder để lưu id mới tạo 
-                // Lấy id khi người chơi khi bấm play truyền vào class Dataholder để tương tác dữ liệu với controller khác
-                DataHolder.getInstance().setPlayerID(newPlayer1.getPlayerID());
-
-                // Thêm vào player mới vào database
                 playerDAO.addPlayer(newPlayer1);
+
+                // Thêm game detail o day
+                gameDetail.setGameName("1 người chơi");
+                gameDetail.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+
+                GamedetailPK gamedetailPK = new GamedetailPK();
+
+                gamedetailPK.setPlayerID(newPlayer1.getPlayerID());
+                gamedetailPK.setGameID(gamedetailDAO.getNextGamedetailID());
+                gamedetailPK.setGameDate(today);
+                gameDetail.setGamedetailPK(gamedetailPK);
+
+                gamedetailDAO.addGamedetail(gameDetail);
+
+                // Truyền dữ liệu vào data holder
+                DataHolder.getInstance().setPlayerID(newPlayer1.getPlayerID());
+                DataHolder.getInstance().setGameID(gamedetailPK.getGameID()); // lưu game id
+
                 // Chạy chế độ 1 người chơi
                 onePlayerMode();
             } else {
                 Player newPlayer2 = new Player();
+                Gamedetail gameDetail2 = new Gamedetail();
 
                 // set dữ liệu của player 1 vào database
                 newPlayer1.setPlayerID(playerDAO.getNextPlayerID());
                 newPlayer1.setPlayerName(inputName1.getText());
-                newPlayer1.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+                newPlayer1.setSnakeID(snakeDAO.getSnakeById(2));
+
                 // Lấy id khi người chơi khi bấm play truyền vào class Dataholder để tương tác dữ liệu với controller khác
                 DataHolder.getInstance().setPlayerID(newPlayer1.getPlayerID());
                 // Thêm player 1 mới vào database
@@ -191,12 +220,41 @@ public class Home_ScreenController implements Initializable {
                 // set dữ liệu của player 2 vào database
                 newPlayer2.setPlayerID(playerDAO.getNextPlayerID());
                 newPlayer2.setPlayerName(inputName2.getText());
-                newPlayer2.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+                newPlayer2.setSnakeID(snakeDAO.getSnakeById(2));
                 // Lấy id khi người chơi khi bấm play truyền vào class Dataholder để tương tác dữ liệu với controller khác
                 DataHolder.getInstance2().setPlayerID2(newPlayer2.getPlayerID());
                 // Thêm  player 2 mới vào database
                 playerDAO.addPlayer(newPlayer2);
 
+                // Thêm game detail 1 o day
+                gameDetail.setGameName("2 người chơi");
+                gameDetail.setGameModeID(gamemodeDAO.getGamemodeById(this.checkMode));
+                GamedetailPK gamedetailPK = new GamedetailPK();
+
+                gamedetailPK.setPlayerID(newPlayer1.getPlayerID());
+                gamedetailPK.setGameID(gamedetailDAO.getNextGamedetailID());
+                gamedetailPK.setGameDate(today);
+
+                gameDetail.setGamedetailPK(gamedetailPK);
+
+                gamedetailDAO.addGamedetail(gameDetail);
+
+                // Thêm game detail 2 o day
+                gameDetail2.setGameName(gameDetail.getGameName());
+                gameDetail2.setGameModeID(gameDetail.getGameModeID());
+                GamedetailPK gamedetailPK2 = new GamedetailPK();
+
+                gamedetailPK2.setPlayerID(newPlayer2.getPlayerID());
+                gamedetailPK2.setGameID(gamedetailPK.getGameID());
+                gamedetailPK2.setGameDate(today);
+                gameDetail2.setGamedetailPK(gamedetailPK2);
+
+                gamedetailDAO.addGamedetail(gameDetail2);
+
+                // Lưu vào dataholder
+                DataHolder.getInstance().setGameID(gamedetailPK.getGameID()); // lưu game id
+
+                // chạy
                 twoPlayerMode();
             }
         }

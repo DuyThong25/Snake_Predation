@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
+import javafx.animation.AnimationTimer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -32,13 +33,18 @@ import snakepredation.DataHolder_Singleton.DataHolder;
 import snakepredation.Food;
 import snakepredation.GameBoard;
 import snakepredation.Ultil.ScreenUtil;
-import snakepredation.Snake;
 import snakepredation.SnakePredation;
+import snakepredation.jpa_Model.Gamedetail;
+import snakepredation.jpa_Model.GamedetailPK;
 import snakepredation.jpa_Model.Player;
 import snakepredation.jpa_Model.Scores;
 import snakepredation.jpa_Model.ScoresPK;
+import snakepredation.jpa_Model.Snake;
+import snakepredation.jpa_dao.GamedetailDAO;
+import snakepredation.jpa_dao.GamemodeDAO;
 import snakepredation.jpa_dao.PlayerDAO;
 import snakepredation.jpa_dao.ScoresDAO;
+import snakepredation.jpa_dao.SnakeDAO;
 
 public class Play_ScreenController implements Initializable {
 
@@ -145,9 +151,14 @@ public class Play_ScreenController implements Initializable {
         this.setGameBoard(gameBoard);
 
         // Khởi tạo timeline và đặt vòng lặp game
-        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSpeed()), e -> runFor1Player()));
+        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSnakeSpeed()), e -> {
+            runFor1Player();
+        }));
+       
+
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+
     }
 
     // Hàm xử lý run cho chế độ 1 người chơi
@@ -170,15 +181,15 @@ public class Play_ScreenController implements Initializable {
         this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#017A26", "#000000", "#056622");
 
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
-        // Kiểm tra game over không -> rắn còn sống? 
 
+        // Kiểm tra game over không -> rắn còn sống? 
         this.snake1.HandleSnakeMove(this.gameBoard, this.food);
 
         // Kiểm tra snake 1 còn sống không
         if (this.snake1.isSnakeAlive(this.gameBoard) == true) {
-            this.snake1.setIsAlive(true);
+            this.snake1.setIsAlive((short) 1);
         } else {
-            this.snake1.setIsAlive(false);
+            this.snake1.setIsAlive((short) 0);
         }
 
         // Kiểm tra ran an moi chua
@@ -189,6 +200,15 @@ public class Play_ScreenController implements Initializable {
         } else {
             this.food.setExists(true);
         }
+        if (this.snake1.isSnakeEat(this.food)) {// Kiểm tra ran an moi chưa
+            this.snake1.setScores(this.snake1.getScores() + 5);
+            this.snake1.getSnakeBody().add(new Point(-1, -1));
+                       
+            this.food.setExists(false);
+        } else {
+            this.food.setExists(true);
+        }
+        
     }
 
     // Nhấn vào button pause
@@ -222,7 +242,7 @@ public class Play_ScreenController implements Initializable {
 
     // Kiểm tra rắn còn sống trong chế độ 1 người chơi
     public boolean checkGameOverFor1Player(GameBoard gameBoard) {
-        if (this.snake1.isIsAlive() == false) {
+        if (this.snake1.getIsAlive() == 0) {
             // Xét flow pane
             this.GameOver_FlowPane.setVisible(true);
             // Set label
@@ -258,21 +278,39 @@ public class Play_ScreenController implements Initializable {
     // Restar game
     @FXML
     private void MouseClick_Restart(MouseEvent event) throws Exception {
+        Gamedetail gameDetail = new Gamedetail();
+        GamemodeDAO gamemodeDAO = new GamemodeDAO();
+        GamedetailDAO gameDetailDAO = new GamedetailDAO();
+        int playerID = DataHolder.getInstance().getPlayerID();
 
-            // Xét flow pane
-            this.Pause_FlowPane.setVisible(false);
-            // Set label
-            setlabelForGameOver(false);
-            // Dừng hẳn time line
-            this.timeline.stop();
-            // Tạo lại rắn và handle move cho rắn
-            Snake snakeReset = new Snake(2, 5, 5);
-            this.bg__Snake.getScene().setOnKeyReleased(e -> snakeReset.HandeleDirectionFor1Player(e));
-            // Tạo lại thức ăn
-            this.food.resetFood(this.gameBoard, snakeReset, this.food);
-            // Chạy lại game
-            startGameFor1Player(this.gameBoard, snakeReset, this.food);
-        
+        // Lấy giờ hiện tại
+        LocalDateTime myDateObj = LocalDateTime.now();
+        Date today = Date.from(myDateObj.atZone(ZoneId.systemDefault()).toInstant()); // Chuyển từ LocalDateTime sang Date
+
+        GamedetailPK gamedetailPK = new GamedetailPK();
+        gamedetailPK.setGameID(DataHolder.getInstance().getGameID());
+        gamedetailPK.setGameDate(today);
+        gamedetailPK.setPlayerID(playerID);
+
+        gameDetail.setGamedetailPK(gamedetailPK);
+        gameDetail.setGameName("1 Người chơi");
+        gameDetail.setGameModeID(gamemodeDAO.getGamemodeById(1));
+
+        gameDetailDAO.addGamedetail(gameDetail);
+        // Xét flow pane
+        this.Pause_FlowPane.setVisible(false);
+        // Set label
+        setlabelForGameOver(false);
+        // Dừng hẳn time line
+        this.timeline.stop();
+        // Tạo lại rắn và handle move cho rắn
+        Snake snakeReset = new Snake(2, 5, 5);
+        this.bg__Snake.getScene().setOnKeyReleased(e -> snakeReset.HandeleDirectionFor1Player(e));
+        // Tạo lại thức ăn
+        this.food.resetFood(this.gameBoard, snakeReset, this.food);
+        // Chạy lại game
+        startGameFor1Player(this.gameBoard, snakeReset, this.food);
+
     }
 
     // Insert database of Scores when gameover
@@ -285,7 +323,7 @@ public class Play_ScreenController implements Initializable {
         ScoresPK newScoresPK = new ScoresPK();
         // Lấy id người chơi được lưu trong class dataholder
         int playerID = DataHolder.getInstance().getPlayerID();
-        
+
         newScoresPK.setScoresID(playerID);
         // Lấy ngày hiện tại chuyển từ Calendar sang Date
         newScoresPK.setScoresDate(today);

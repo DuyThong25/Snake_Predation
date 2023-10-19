@@ -13,8 +13,8 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import snakepredation.jpa_Model.Gamemode;
 import snakepredation.jpa_Model.Player;
+import snakepredation.jpa_Model.Snake;
 import snakepredation.jpa_controller.exceptions.NonexistentEntityException;
 import snakepredation.jpa_controller.exceptions.PreexistingEntityException;
 
@@ -38,15 +38,15 @@ public class PlayerJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Gamemode gameModeID = player.getGameModeID();
-            if (gameModeID != null) {
-                gameModeID = em.getReference(gameModeID.getClass(), gameModeID.getGameModeID());
-                player.setGameModeID(gameModeID);
+            Snake snakeID = player.getSnakeID();
+            if (snakeID != null) {
+                snakeID = em.getReference(snakeID.getClass(), snakeID.getSnakeID());
+                player.setSnakeID(snakeID);
             }
             em.persist(player);
-            if (gameModeID != null) {
-                gameModeID.getPlayerCollection().add(player);
-                gameModeID = em.merge(gameModeID);
+            if (snakeID != null) {
+                snakeID.getPlayerCollection().add(player);
+                snakeID = em.merge(snakeID);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -67,20 +67,20 @@ public class PlayerJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Player persistentPlayer = em.find(Player.class, player.getPlayerID());
-            Gamemode gameModeIDOld = persistentPlayer.getGameModeID();
-            Gamemode gameModeIDNew = player.getGameModeID();
-            if (gameModeIDNew != null) {
-                gameModeIDNew = em.getReference(gameModeIDNew.getClass(), gameModeIDNew.getGameModeID());
-                player.setGameModeID(gameModeIDNew);
+            Snake snakeIDOld = persistentPlayer.getSnakeID();
+            Snake snakeIDNew = player.getSnakeID();
+            if (snakeIDNew != null) {
+                snakeIDNew = em.getReference(snakeIDNew.getClass(), snakeIDNew.getSnakeID());
+                player.setSnakeID(snakeIDNew);
             }
             player = em.merge(player);
-            if (gameModeIDOld != null && !gameModeIDOld.equals(gameModeIDNew)) {
-                gameModeIDOld.getPlayerCollection().remove(player);
-                gameModeIDOld = em.merge(gameModeIDOld);
+            if (snakeIDOld != null && !snakeIDOld.equals(snakeIDNew)) {
+                snakeIDOld.getPlayerCollection().remove(player);
+                snakeIDOld = em.merge(snakeIDOld);
             }
-            if (gameModeIDNew != null && !gameModeIDNew.equals(gameModeIDOld)) {
-                gameModeIDNew.getPlayerCollection().add(player);
-                gameModeIDNew = em.merge(gameModeIDNew);
+            if (snakeIDNew != null && !snakeIDNew.equals(snakeIDOld)) {
+                snakeIDNew.getPlayerCollection().add(player);
+                snakeIDNew = em.merge(snakeIDNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -111,10 +111,10 @@ public class PlayerJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The player with id " + id + " no longer exists.", enfe);
             }
-            Gamemode gameModeID = player.getGameModeID();
-            if (gameModeID != null) {
-                gameModeID.getPlayerCollection().remove(player);
-                gameModeID = em.merge(gameModeID);
+            Snake snakeID = player.getSnakeID();
+            if (snakeID != null) {
+                snakeID.getPlayerCollection().remove(player);
+                snakeID = em.merge(snakeID);
             }
             em.remove(player);
             em.getTransaction().commit();

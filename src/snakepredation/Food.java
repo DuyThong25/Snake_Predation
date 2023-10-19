@@ -3,6 +3,7 @@ package snakepredation;
 import java.awt.Point;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import snakepredation.jpa_Model.Snake;
 
 public class Food {
 

@@ -1,57 +1,71 @@
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package snakepredation.jpa_Model;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+/**
+ *
+ * @author duyth
+ */
 @Entity
 @Table(name = "gamedetail")
 @NamedQueries({
     @NamedQuery(name = "Gamedetail.findAll", query = "SELECT g FROM Gamedetail g"),
-    @NamedQuery(name = "Gamedetail.findByGameID", query = "SELECT g FROM Gamedetail g WHERE g.gameID = :gameID"),
+    @NamedQuery(name = "Gamedetail.findByGameID", query = "SELECT g FROM Gamedetail g WHERE g.gamedetailPK.gameID = :gameID"),
+    @NamedQuery(name = "Gamedetail.findByGameDate", query = "SELECT g FROM Gamedetail g WHERE g.gamedetailPK.gameDate = :gameDate"),
+    @NamedQuery(name = "Gamedetail.findByPlayerID", query = "SELECT g FROM Gamedetail g WHERE g.gamedetailPK.playerID = :playerID"),
     @NamedQuery(name = "Gamedetail.findByGameName", query = "SELECT g FROM Gamedetail g WHERE g.gameName = :gameName")})
 public class Gamedetail implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "GameID")
-    private Integer gameID;
-    @Column(name = "GameName")
-    private String gameName;
     @JoinColumn(name = "GameModeID", referencedColumnName = "GameModeID")
     @ManyToOne
     private Gamemode gameModeID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gameID")
-    private Collection<Player> playerCollection;
+
+    private static final long serialVersionUID = 1L;
+    @EmbeddedId
+    protected GamedetailPK gamedetailPK;
+    @Basic(optional = false)
+    @Column(name = "GameName")
+    private String gameName;
+    @JoinColumn(name = "PlayerID", referencedColumnName = "PlayerID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Player player;
 
     public Gamedetail() {
     }
 
-    public Gamedetail(Integer gameID) {
-        this.gameID = gameID;
+    public Gamedetail(GamedetailPK gamedetailPK) {
+        this.gamedetailPK = gamedetailPK;
     }
 
-    public Integer getGameID() {
-        return gameID;
+    public Gamedetail(GamedetailPK gamedetailPK, String gameName) {
+        this.gamedetailPK = gamedetailPK;
+        this.gameName = gameName;
     }
 
-    public void setGameID(Integer gameID) {
-        this.gameID = gameID;
+    public Gamedetail(int gameID, Date gameDate, int playerID) {
+        this.gamedetailPK = new GamedetailPK(gameID, gameDate, playerID);
+    }
+
+    public GamedetailPK getGamedetailPK() {
+        return gamedetailPK;
+    }
+
+    public void setGamedetailPK(GamedetailPK gamedetailPK) {
+        this.gamedetailPK = gamedetailPK;
     }
 
     public String getGameName() {
@@ -62,26 +76,18 @@ public class Gamedetail implements Serializable {
         this.gameName = gameName;
     }
 
-    public Gamemode getGameModeID() {
-        return gameModeID;
+    public Player getPlayer() {
+        return player;
     }
 
-    public void setGameModeID(Gamemode gameModeID) {
-        this.gameModeID = gameModeID;
-    }
-
-    public Collection<Player> getPlayerCollection() {
-        return playerCollection;
-    }
-
-    public void setPlayerCollection(Collection<Player> playerCollection) {
-        this.playerCollection = playerCollection;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (gameID != null ? gameID.hashCode() : 0);
+        hash += (gamedetailPK != null ? gamedetailPK.hashCode() : 0);
         return hash;
     }
 
@@ -92,7 +98,7 @@ public class Gamedetail implements Serializable {
             return false;
         }
         Gamedetail other = (Gamedetail) object;
-        if ((this.gameID == null && other.gameID != null) || (this.gameID != null && !this.gameID.equals(other.gameID))) {
+        if ((this.gamedetailPK == null && other.gamedetailPK != null) || (this.gamedetailPK != null && !this.gamedetailPK.equals(other.gamedetailPK))) {
             return false;
         }
         return true;
@@ -100,7 +106,15 @@ public class Gamedetail implements Serializable {
 
     @Override
     public String toString() {
-        return "snakepredation.jpa_Model.Gamedetail[ gameID=" + gameID + " ]";
+        return "snakepredation.jpa_Model.Gamedetail[ gamedetailPK=" + gamedetailPK + " ]";
+    }
+
+    public Gamemode getGameModeID() {
+        return gameModeID;
+    }
+
+    public void setGameModeID(Gamemode gameModeID) {
+        this.gameModeID = gameModeID;
     }
     
 }
