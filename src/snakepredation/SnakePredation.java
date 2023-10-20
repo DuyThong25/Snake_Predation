@@ -45,18 +45,9 @@ public class SnakePredation extends Application {
         // Set max width/height
         this.primaryStage.setMinWidth(this.primaryStage.getWidth());
         this.primaryStage.setMinHeight(this.primaryStage.getHeight());
-
-        //Chạy nhạc   
-//        String path = getClass().getResource("/asset/music/eat.mp3").getPath();
-//        System.out.println("Path: " +  path);
-//        Media media = new Media(new File(path).toURI().toString());
-//        MediaPlayer mediaPlayer = new MediaPlayer(media);
-//        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-//        mediaPlayer.play();
     }
 
     public static void main(String[] args) {
-
         launch(args);
     }
 }

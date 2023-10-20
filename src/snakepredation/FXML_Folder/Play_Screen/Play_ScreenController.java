@@ -49,15 +49,11 @@ import snakepredation.jpa_dao.SnakeDAO;
 public class Play_ScreenController implements Initializable {
 
     @FXML
-    private AnchorPane anchorPane;
-    @FXML
     private StackPane stackPane;
     @FXML
     private Canvas bg__Snake;
     @FXML
     private StackPane stackPane_Canvas;
-    @FXML
-    private AnchorPane HandleScoresLabel;
     @FXML
     private Label handleScores;
     @FXML

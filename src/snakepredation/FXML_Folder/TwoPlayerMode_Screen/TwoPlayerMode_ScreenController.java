@@ -96,7 +96,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     private ScoresDAO scoresDAO = new ScoresDAO();
     private PlayerDAO playerDAO = new PlayerDAO();
     private Sound sound = new Sound();
-    
+
     public Label getTotalScoresLabel_1() {
         return totalScoresLabel_1;
     }
@@ -245,10 +245,12 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         if (snake1.isSnakeEat(food)) {
             snake1.setScores(snake1.getScores() + 5);
             snake1.getSnakeBody().add(new Point(-1, -1));
+            this.sound.EatSound("/asset/music/eat.mp3");
             food.setExists(false);
         } else if (snake2.isSnakeEat(food)) {// Kiểm tra ran 2 an moi chưa
             snake2.setScores(snake2.getScores() + 5);
             snake2.getSnakeBody().add(new Point(-1, -1));
+            this.sound.EatSound("/asset/music/eat.mp3");
             food.setExists(false);
         } else {
             food.setExists(true);
@@ -258,6 +260,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     // Kiểm tra rắn còn sống trong chế độ 2 người chơi
     public boolean checkGameOverFor2Player(GameBoard gameBoard) {
         if (this.snake1.getIsAlive() == 0 || this.snake2.getIsAlive() == 0) {
+            this.sound.GameoverSound("/asset/music/gameover.mp3");
             // Xét flow pane
             this.GameOver_FlowPane.setVisible(true);
             // Set label
@@ -420,7 +423,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void KeyPress_Continue(KeyEvent event) {
-        
+
     }
 
     @FXML
