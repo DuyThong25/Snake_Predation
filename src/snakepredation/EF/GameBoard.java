@@ -1,10 +1,10 @@
-package snakepredation;
+package snakepredation.EF;
 
 import java.awt.Point;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import snakepredation.Food;
+import snakepredation.EF.Food;
 import snakepredation.jpa_Model.Snake;
 
 public class GameBoard extends Canvas {

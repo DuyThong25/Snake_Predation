@@ -28,8 +28,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import snakepredation.Food;
-import snakepredation.GameBoard;
+import snakepredation.EF.Food;
+import snakepredation.EF.GameBoard;
 
 /**
  *

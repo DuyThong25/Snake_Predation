@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import snakepredation.EF.Sound;
 
 public class SnakePredation extends Application {
 
@@ -46,12 +47,12 @@ public class SnakePredation extends Application {
         this.primaryStage.setMinHeight(this.primaryStage.getHeight());
 
         //Chạy nhạc   
-        String path = getClass().getResource("/asset/music/eat.mp3").getPath();
-        System.out.println("Path: " +  path);
-        Media media = new Media(new File(path).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        mediaPlayer.play();
+//        String path = getClass().getResource("/asset/music/eat.mp3").getPath();
+//        System.out.println("Path: " +  path);
+//        Media media = new Media(new File(path).toURI().toString());
+//        MediaPlayer mediaPlayer = new MediaPlayer(media);
+//        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+//        mediaPlayer.play();
     }
 
     public static void main(String[] args) {

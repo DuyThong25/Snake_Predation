@@ -32,8 +32,9 @@ import javafx.util.Callback;
 import snakepredation.DataHolder_Singleton.DataHolder;
 import snakepredation.FXML_Folder.Play_Screen.Play_ScreenController;
 import snakepredation.FXML_Folder.TwoPlayerMode_Screen.TwoPlayerMode_ScreenController;
-import snakepredation.Food;
-import snakepredation.GameBoard;
+import snakepredation.EF.Food;
+import snakepredation.EF.GameBoard;
+import snakepredation.EF.Sound;
 import snakepredation.Ultil.ScreenUtil;
 import snakepredation.SnakePredation;
 import snakepredation.jpa_Model.Gamedetail;
@@ -87,7 +88,7 @@ public class Home_ScreenController implements Initializable {
     @FXML
     private StackPane InputPane;
     private int checkMode;
-
+    private Sound sound = new Sound();
     private PlayerDAO playerDAO = new PlayerDAO();
 
     @Override
@@ -118,6 +119,7 @@ public class Home_ScreenController implements Initializable {
     // Bấm vào nút play
     @FXML
     private void MoveTo_PlayScreen(MouseEvent event) throws Exception {
+        this.sound.ClickSound("/asset/music/click.mp3");
         this.checkMode = 1;
         // Xử lý visible
         controlBtnPane.setVisible(false);
@@ -132,6 +134,7 @@ public class Home_ScreenController implements Initializable {
 
     @FXML
     private void MoveTo2Player_PlayScreen(MouseEvent event) {
+        this.sound.ClickSound("/asset/music/click.mp3");
         this.checkMode = 2;
         // Xử lý visible
         controlBtnPane.setVisible(false);
@@ -147,6 +150,7 @@ public class Home_ScreenController implements Initializable {
 
     @FXML
     private void MoveTo_RatingScreen(MouseEvent event) {
+        this.sound.ClickSound("/asset/music/click.mp3");
         // Xử lý visible
         controlBtnPane.setVisible(false);
         imageRanking.setVisible(true);
@@ -155,6 +159,7 @@ public class Home_ScreenController implements Initializable {
 
     @FXML
     private void closeRanking(MouseEvent event) {
+        this.sound.ClickSound("/asset/music/click.mp3");
         imageRanking.setVisible(false);
         rankingPane.setVisible(false);
         controlBtnPane.setVisible(true);
@@ -163,6 +168,7 @@ public class Home_ScreenController implements Initializable {
 
     @FXML
     private void PlayGame_Screen(MouseEvent event) throws IOException, Exception {
+        this.sound.ClickSound("/asset/music/click.mp3");
         if (inputName1.getText().isBlank() || inputName2.getText().isBlank()) {
             System.out.println("khong duoc de trong");
         } else {

@@ -30,8 +30,9 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import snakepredation.DataHolder_Singleton.DataHolder;
-import snakepredation.Food;
-import snakepredation.GameBoard;
+import snakepredation.EF.Food;
+import snakepredation.EF.GameBoard;
+import snakepredation.EF.Sound;
 import snakepredation.Ultil.ScreenUtil;
 import snakepredation.SnakePredation;
 import snakepredation.jpa_Model.Gamedetail;
@@ -94,7 +95,8 @@ public class TwoPlayerMode_ScreenController implements Initializable {
     private GameBoard gameBoard;
     private ScoresDAO scoresDAO = new ScoresDAO();
     private PlayerDAO playerDAO = new PlayerDAO();
-
+    private Sound sound = new Sound();
+    
     public Label getTotalScoresLabel_1() {
         return totalScoresLabel_1;
     }
@@ -325,6 +327,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Home(MouseEvent event) throws IOException {
+        this.sound.ClickSound("/asset/music/click.mp3");
         //Load file fxml của Play_Screen -> scene builder
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Home_Screen/Home_Screen.fxml"));
         Parent root = loader.load();
@@ -347,6 +350,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Restart(MouseEvent event) throws Exception {
+        this.sound.ClickSound("/asset/music/click.mp3");
         Gamedetail gameDetail = new Gamedetail();
         GamedetailPK gameDetailPK = new GamedetailPK();
 
@@ -421,6 +425,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Continue(MouseEvent event) {
+        this.sound.ClickSound("/asset/music/click.mp3");
         this.isPause = false;
         // Xét label
         Pause_FlowPane.setVisible(false);
@@ -435,6 +440,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
     private void MouseClick_Pause(MouseEvent event) {
+        this.sound.ClickSound("/asset/music/click.mp3");
         this.isPause = true;
         // Xét label
         Pause_FlowPane.setVisible(true);

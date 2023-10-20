@@ -1,4 +1,4 @@
-package snakepredation;
+package snakepredation.EF;
 
 import java.awt.Point;
 import javafx.scene.canvas.GraphicsContext;
