@@ -294,7 +294,7 @@ public class Home_ScreenController implements Initializable {
         // Khởi tạo chiều dài và vị trí Snake
         Snake snake = new Snake(2, 5, 5);
 
-        // Khởi tạo thức ăn và màu thức ăn
+        // Khởi tạo vị trí thức ăn và màu thức ăn ngẫu nhiên
         Food food = gameBoard.GenerateRandomFood(snake);
 
         // Handle Event for Snakeee move

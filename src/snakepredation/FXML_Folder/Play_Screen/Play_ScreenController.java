@@ -1,6 +1,7 @@
 package snakepredation.FXML_Folder.Play_Screen;
 
 import java.awt.Point;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -27,6 +28,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import snakepredation.DataHolder_Singleton.DataHolder;
@@ -47,7 +50,7 @@ import snakepredation.jpa_dao.ScoresDAO;
 import snakepredation.jpa_dao.SnakeDAO;
 
 public class Play_ScreenController implements Initializable {
-
+    
     @FXML
     private AnchorPane anchorPane;
     @FXML
@@ -68,25 +71,25 @@ public class Play_ScreenController implements Initializable {
     private FlowPane GameOver_FlowPane;
     @FXML
     private FlowPane Pause_FlowPane;
-
+    
     private boolean isPause = false;
     private Snake snake1;
     private Snake snake2;
     private Food food;
     private GameBoard gameBoard;
-
+    
     public void setSnake1(Snake snake1) {
         this.snake1 = snake1;
     }
-
+    
     public void setSnake2(Snake snake2) {
         this.snake2 = snake2;
     }
-
+    
     public void setFood(Food food) {
         this.food = food;
     }
-
+    
     public void setGameBoard(GameBoard gameBoard) {
         this.gameBoard = gameBoard;
     }
@@ -103,30 +106,30 @@ public class Play_ScreenController implements Initializable {
     private Label totalScoresLabel;
     @FXML
     private Button homeBtn;
-
+    
     private ScoresDAO scoresDAO = new ScoresDAO();
     private PlayerDAO playerDAO = new PlayerDAO();
-
+    
     public boolean isIsPause() {
         return isPause;
     }
-
+    
     public void setIsPause(boolean isPause) {
         this.isPause = isPause;
     }
-
+    
     public Timeline getTimeline() {
         return timeline;
     }
-
+    
     public void setTimeline(Timeline timeline) {
         this.timeline = timeline;
     }
-
+    
     public Canvas getBg__Snake() {
         return bg__Snake;
     }
-
+    
     public Label getHandleScoresLabel() {
         return handleScores;
     }
@@ -141,7 +144,7 @@ public class Play_ScreenController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        
     }
 
     // Khởi tạo Timeline và bắt đầu game chế độ 1 người chơi
@@ -154,11 +157,10 @@ public class Play_ScreenController implements Initializable {
         timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSnakeSpeed()), e -> {
             runFor1Player();
         }));
-       
-
+        
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
-
+        
     }
 
     // Hàm xử lý run cho chế độ 1 người chơi
@@ -168,18 +170,19 @@ public class Play_ScreenController implements Initializable {
             InsertDBScoresFor1Player();
             return;
         }
-
+        
         this.gameBoard.DrawBackground();
         setHandleScoresLabel("Scrores: " + this.snake1.getScores());
 
         // Kiểm tra mồi
-        if (this.food.isExists() == false) {
-            this.food.resetFood(this.gameBoard, this.snake1, this.food);
-        } else {
-            this.food.DrawFood(this.gameBoard);
-        }
+//        if (this.food.isExists() == false) {
+//            this.food.resetFood(this.gameBoard, this.snake1);
+//        } else {
+//            this.food.DrawFood(this.gameBoard);
+//        }
+        this.food.DrawFood(gameBoard, snake1);
         this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#017A26", "#000000", "#056622");
-
+        
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
 
         // Kiểm tra game over không -> rắn còn sống? 
@@ -196,19 +199,11 @@ public class Play_ScreenController implements Initializable {
         if (this.snake1.isSnakeEat(this.food)) {// Kiểm tra ran an moi chưa
             this.snake1.setScores(this.snake1.getScores() + 5);
             this.snake1.getSnakeBody().add(new Point(-1, -1));
+            
             this.food.setExists(false);
         } else {
             this.food.setExists(true);
         }
-        if (this.snake1.isSnakeEat(this.food)) {// Kiểm tra ran an moi chưa
-            this.snake1.setScores(this.snake1.getScores() + 5);
-            this.snake1.getSnakeBody().add(new Point(-1, -1));
-                       
-            this.food.setExists(false);
-        } else {
-            this.food.setExists(true);
-        }
-        
     }
 
     // Nhấn vào button pause
@@ -291,11 +286,11 @@ public class Play_ScreenController implements Initializable {
         gamedetailPK.setGameID(DataHolder.getInstance().getGameID());
         gamedetailPK.setGameDate(today);
         gamedetailPK.setPlayerID(playerID);
-
+        
         gameDetail.setGamedetailPK(gamedetailPK);
         gameDetail.setGameName("1 Người chơi");
         gameDetail.setGameModeID(gamemodeDAO.getGamemodeById(1));
-
+        
         gameDetailDAO.addGamedetail(gameDetail);
         // Xét flow pane
         this.Pause_FlowPane.setVisible(false);
@@ -307,10 +302,10 @@ public class Play_ScreenController implements Initializable {
         Snake snakeReset = new Snake(2, 5, 5);
         this.bg__Snake.getScene().setOnKeyReleased(e -> snakeReset.HandeleDirectionFor1Player(e));
         // Tạo lại thức ăn
-        this.food.resetFood(this.gameBoard, snakeReset, this.food);
+        this.food.resetFood(gameBoard, snakeReset);
         // Chạy lại game
         startGameFor1Player(this.gameBoard, snakeReset, this.food);
-
+        
     }
 
     // Insert database of Scores when gameover
@@ -323,7 +318,7 @@ public class Play_ScreenController implements Initializable {
         ScoresPK newScoresPK = new ScoresPK();
         // Lấy id người chơi được lưu trong class dataholder
         int playerID = DataHolder.getInstance().getPlayerID();
-
+        
         newScoresPK.setScoresID(playerID);
         // Lấy ngày hiện tại chuyển từ Calendar sang Date
         newScoresPK.setScoresDate(today);
@@ -370,5 +365,5 @@ public class Play_ScreenController implements Initializable {
                 break;
         }
     }
-
+    
 }

@@ -209,11 +209,13 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         setHandleScoresLabel2("PLAYER 2: " + this.snake2.getScores());
 
         // Kiểm tra mồi
-        if (this.food.isExists() == false) {
-            this.food.resetFoodFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
-        } else {
-            this.food.DrawFood(this.gameBoard);
-        }
+//        if (this.food.isExists() == false) {
+//            this.food.resetFoodFor2Player(this.gameBoard, this.food, this.snake1, this.snake2);
+//        } else {
+//            this.food.DrawFood(this.gameBoard);
+//        }
+        this.food.DrawFood(this.gameBoard, this.snake1, this.snake2);
+
         this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1AD9CE", "#000000", "#17B3AA");
         this.snake2.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#1F42DB", "#000000", "#003DAD");
 
@@ -382,8 +384,7 @@ public class TwoPlayerMode_ScreenController implements Initializable {
         gameDetail2.setGamedetailPK(gameDetailPK2);
 
         gameDetailDAO.addGamedetail(gameDetail2);
-        
-        
+
         // Xét flow pane
         this.Pause_FlowPane.setVisible(false);
         // Set label
@@ -408,13 +409,14 @@ public class TwoPlayerMode_ScreenController implements Initializable {
             keysPressed.remove(e.getCode()); // Xóa phím đã nhả ra khỏi danh sách
         });
         // Tạo lại thức ăn
-        this.food.resetFoodFor2Player(this.gameBoard, this.food, snakeReset1, snakeReset2);
+        this.food.resetFoodFor2Player(this.gameBoard, snakeReset1, snakeReset2);
         // Chạy lại game
         startGameFor2Player(this.gameBoard, snakeReset1, snakeReset2, food);
     }
 
     @FXML
     private void KeyPress_Continue(KeyEvent event) {
+        
     }
 
     @FXML

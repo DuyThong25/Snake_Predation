@@ -14,7 +14,7 @@ public class Food {
     public Food(Point position) {
         this.position = position;
         this.RandomColor_FOOD = generateRandomColor(); // Tạo ra màu ngẫu nhiên
-        this.exists = false; // Moi chua xuat hien
+        this.exists = true; // Moi xuat hien
     }
 
     public Point getPosition() {
@@ -52,20 +52,45 @@ public class Food {
         return randomColor;
     }
 
-    public void DrawFood(GameBoard gameboard) {
-        gameboard.getGc().setFill(getRandomColor_FOOD());
-        gameboard.getGc().fillRect(getPosition().getX() * gameboard.getSQUARE_SIZE(), getPosition().getY() * gameboard.getSQUARE_SIZE(),
-                gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5);
+    public void DrawFood(GameBoard gameboard, Snake snake) {
+
+        if (this.isExists() == false) {
+            resetFood(gameboard, snake);
+        } else {
+            gameboard.getGc().setFill(getRandomColor_FOOD());
+            gameboard.getGc().fillRect(getPosition().getX() * gameboard.getSQUARE_SIZE(), getPosition().getY() * gameboard.getSQUARE_SIZE(),
+                    gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5);
+        }
     }
 
-    public void resetFood(GameBoard gameBoard, Snake snake, Food food) {
+    public void DrawFood(GameBoard gameboard, Snake snake1, Snake snake2) {
+        if (this.isExists() == false) {
+            resetFoodFor2Player(gameboard, snake1, snake2);
+        } else {
+            gameboard.getGc().setFill(getRandomColor_FOOD());
+            gameboard.getGc().fillRect(getPosition().getX() * gameboard.getSQUARE_SIZE(), getPosition().getY() * gameboard.getSQUARE_SIZE(),
+                    gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5);
+        }
+    }
+
+    public void resetFood(GameBoard gameBoard, Snake snake) {
         Point newPoint = gameBoard.GenerateRandomFood(snake).getPosition();
-        food.setPosition(newPoint);
+        setPosition(newPoint);
     }
 
-    public void resetFoodFor2Player(GameBoard gameBoard, Food food, Snake snake1, Snake snake2) {
+    public void resetFoodFor2Player(GameBoard gameBoard, Snake snake1, Snake snake2) {
         Point newPoint = gameBoard.GenerateRandomFoodFor2Player(snake1, snake2).getPosition();
-        food.setPosition(newPoint);
-
+        setPosition(newPoint);
     }
+//    public void resetFood(GameBoard gameBoard, Snake snake) {
+//        Point newPoint = gameBoard.GenerateRandomFood(snake).getPosition();
+//        this.setPosition(newPoint);
+//    }
+//    public void DrawFood(GameBoard gameboard) {
+//        gameboard.getGc().setFill(getRandomColor_FOOD());
+//        gameboard.getGc().fillRect(getPosition().getX() * gameboard.getSQUARE_SIZE(), getPosition().getY() * gameboard.getSQUARE_SIZE(),
+//                gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5);
+//
+//    }
+
 }

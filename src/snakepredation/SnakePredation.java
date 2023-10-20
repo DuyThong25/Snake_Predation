@@ -1,11 +1,14 @@
 package snakepredation;
 
+import java.io.File;
 import snakepredation.Ultil.ScreenUtil;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class SnakePredation extends Application {
 
@@ -41,10 +44,18 @@ public class SnakePredation extends Application {
         // Set max width/height
         this.primaryStage.setMinWidth(this.primaryStage.getWidth());
         this.primaryStage.setMinHeight(this.primaryStage.getHeight());
+
+        //Chạy nhạc   
+        String path = getClass().getResource("/asset/music/eat.mp3").getPath();
+        System.out.println("Path: " +  path);
+        Media media = new Media(new File(path).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.play();
     }
 
-    public static void main(String[] args) {    
+    public static void main(String[] args) {
 
-            launch(args);
+        launch(args);
     }
 }
