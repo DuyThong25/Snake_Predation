@@ -49,12 +49,8 @@ import snakepredation.jpa_dao.ScoresDAO;
 public class TwoPlayerMode_ScreenController implements Initializable {
 
     @FXML
-    private AnchorPane anchorPane;
-    @FXML
     private StackPane stackPane;
     private Label handleScores;
-    @FXML
-    private AnchorPane HandleScoresLabel;
     @FXML
     private StackPane stackPane_Canvas;
     @FXML

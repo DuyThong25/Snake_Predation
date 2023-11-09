@@ -182,6 +182,7 @@ public class Play_ScreenController implements Initializable {
         if (this.snake1.isSnakeEat(this.food)) {// Kiểm tra ran an moi chưa
             this.snake1.setScores(this.snake1.getScores() + 5);
             this.snake1.getSnakeBody().add(new Point(-1, -1));
+            
             this.sound.EatSound("/asset/music/eat.mp3");
             this.food.setExists(false);
         } else {

@@ -50,10 +50,24 @@ public class GameBoard extends Canvas {
     public static void DrawBackground() {
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
-                gc.setFill(Color.web("7F8487"));
+//                if ((i + j) % 2 == 0) {
+//                    gc.setFill(Color.web("7F8487")); // 7F8487 557A46
+//
+//                } else {
+//                    gc.setFill(Color.web("413F42")); // 413F42
+//                }
+//                    gc.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE - 5, SQUARE_SIZE - 5);
+
+                gc.setFill(Color.web("#557A46")); // 7F8487 557A46
                 gc.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
-                gc.setFill(Color.web("413F42"));
-                gc.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE - 5, SQUARE_SIZE - 5);
+//                gc.setFill(Color.web("413F42")); // 413F42
+//                gc.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE - 5, SQUARE_SIZE - 5);
+                 if ((i + j) % 2 == 0) {
+                    gc.setFill(Color.web("557A46")); // 7F8487 557A46
+                } else {
+                    gc.setFill(Color.web("7A9D54")); // 413F42
+                }
+                    gc.fillRect(i * SQUARE_SIZE, j * SQUARE_SIZE, SQUARE_SIZE - 5, SQUARE_SIZE - 5);
             }
         }
     }
@@ -79,6 +93,7 @@ public class GameBoard extends Canvas {
         }
         return food;
     }
+
     // Generate food for 2 player
     public static Food GenerateRandomFoodFor2Player(Snake snake1, Snake snake2) {
         double foodX = (int) (Math.random() * ROWS);

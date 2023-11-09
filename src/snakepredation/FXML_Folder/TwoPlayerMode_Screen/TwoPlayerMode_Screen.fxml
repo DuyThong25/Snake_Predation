@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-
 <StackPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snakepredation.FXML_Folder.TwoPlayerMode_Screen.TwoPlayerMode_ScreenController">
    <children>
        <StackPane fx:id="stackPane" maxHeight="800.0" maxWidth="800.0" minHeight="800.0" minWidth="800.0" prefHeight="800.0" prefWidth="800.0">
@@ -28,7 +27,7 @@
                   <Insets left="30.0" />
                </padding>
                <font>
-                  <Font name="Segoe UI Semibold" size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
             </Label>
             <Label fx:id="handleScores2" prefHeight="52.0" prefWidth="234.0" text="PLAYER 2:" textAlignment="CENTER" StackPane.alignment="TOP_CENTER">
@@ -36,7 +35,7 @@
                   <Insets left="30.0" />
                </padding>
                <font>
-                  <Font name="Segoe UI Semibold" size="20.0" />
+                  <Font name="System Bold" size="20.0" />
                </font>
                <StackPane.margin>
                   <Insets right="20.0" />
@@ -49,7 +48,7 @@
                      <children>
                         <Label fx:id="gameoverLabel" text="Game Over :D" textAlignment="CENTER" textFill="#d40000" visible="false">
                            <font>
-                              <Font name="Comic Sans MS" size="80.0" />
+                              <Font name="Comic Sans MS Bold" size="80.0" />
                            </font>
                            <FlowPane.margin>
                               <Insets bottom="10.0" />

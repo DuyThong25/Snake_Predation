@@ -2,12 +2,15 @@ package snakepredation.FXML_Folder.Home_Screen;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -21,7 +24,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -39,8 +46,10 @@ import snakepredation.Ultil.ScreenUtil;
 import snakepredation.SnakePredation;
 import snakepredation.jpa_Model.Gamedetail;
 import snakepredation.jpa_Model.GamedetailPK;
+import snakepredation.jpa_Model.Gamemode;
 import snakepredation.jpa_Model.Player;
 import snakepredation.jpa_Model.Scores;
+import snakepredation.jpa_Model.ScoresPK;
 import snakepredation.jpa_Model.Snake;
 import snakepredation.jpa_dao.GamedetailDAO;
 import snakepredation.jpa_dao.GamemodeDAO;
@@ -61,13 +70,10 @@ public class Home_ScreenController implements Initializable {
     @FXML
     private FlowPane controlBtnPane;
     @FXML
-    private ListView<Scores> listViewRanking;
-    @FXML
     private ImageView imageRanking;
     @FXML
     private ScrollPane scrollPaneRanking;
-    private final ObservableList<Scores> dataScoresList = FXCollections.observableArrayList();
-    private final ScoresDAO scoresDAO = new ScoresDAO();
+
     @FXML
     private ImageView closeRankingBtn;
     @FXML
@@ -90,30 +96,81 @@ public class Home_ScreenController implements Initializable {
     private int checkMode;
     private Sound sound = new Sound();
     private PlayerDAO playerDAO = new PlayerDAO();
+    @FXML
+    private TableView<Scores> tableRanking;
+    @FXML
+    private TableColumn<Scores, String> columnStt;
+    @FXML
+    private TableColumn<Scores, String> columnDate;
+    @FXML
+    private TableColumn<Scores, String> columnName;
+    @FXML
+    private TableColumn<Scores, Integer> columnScores;
+    @FXML
+    private TableColumn<Scores, String> columnMode;
+
+    private final ObservableList<Scores> dataScoresList = FXCollections.observableArrayList();
+    private final ScoresDAO scoresDAO = new ScoresDAO();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Tạo bảng ranking 
-        listViewRanking.setItems(dataScoresList);
+        // Table View cho
         dataScoresList.addAll(scoresDAO.getAllScores());
-        listViewRanking.setCellFactory(new Callback<ListView<Scores>, ListCell<Scores>>() {
+        columnScores.setCellValueFactory(new PropertyValueFactory<Scores, Integer>("totalScores"));
+
+        columnStt.setCellValueFactory(new Callback<CellDataFeatures<Scores, String>, ObservableValue<String>>() {
             @Override
-            public ListCell<Scores> call(ListView<Scores> param) {
-                ListCell<Scores> listCell = new ListCell() {
-                    @Override
-                    protected void updateItem(Object item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            Scores scores = (Scores) item;
-                            setText(scores.getPlayerID().getPlayerName() + "  " + scores.getTotalScores());
-                        } else {
-                            return;
-                        }
-                    }
-                };
-                return listCell;
+            public ObservableValue<String> call(CellDataFeatures<Scores, String> value) {
+                Integer index = value.getTableView().getItems().indexOf(value.getValue());
+                String newIndex = String.valueOf(index + 1);
+                return new SimpleStringProperty(newIndex);
             }
         });
+
+        columnName.setCellValueFactory(new Callback<CellDataFeatures<Scores, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(CellDataFeatures<Scores, String> value) {
+                return new SimpleStringProperty(value.getValue().getPlayerID().getPlayerName());
+            }
+        });
+
+        columnDate.setCellValueFactory(new Callback<CellDataFeatures<Scores, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(CellDataFeatures<Scores, String> value) {
+                Date date = value.getValue().getScoresPK().getScoresDate();
+                String formattedDate = formatDate(date);
+                return new SimpleStringProperty(formattedDate);
+            }
+        });
+
+        columnMode.setCellValueFactory(new Callback<CellDataFeatures<Scores, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(CellDataFeatures<Scores, String> value) {
+                Player player = playerDAO.getPlayerById(value.getValue().getPlayerID().getPlayerID());
+                String nameMode = "";
+                for (Gamedetail gamedetail : player.getGamedetailCollection()) {
+                    int id = gamedetail.getGameModeID().getGameModeID();
+                    if(id == 1) {
+                        nameMode = "1 Player";
+                    }else{
+                        nameMode = "2 Player";
+                    }
+                }
+                return new SimpleStringProperty(nameMode);
+            }
+        });
+
+        tableRanking.setItems(dataScoresList);
+    }
+
+    // Chuyển ngày thành chuỗi
+    private String formatDate(Date date) {
+        if (date != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            return sdf.format(date);
+        } else {
+            return null;
+        }
     }
 
     // Bấm vào nút play
@@ -153,7 +210,6 @@ public class Home_ScreenController implements Initializable {
         this.sound.ClickSound("/asset/music/click.mp3");
         // Xử lý visible
         controlBtnPane.setVisible(false);
-        imageRanking.setVisible(true);
         rankingPane.setVisible(true);
     }
 

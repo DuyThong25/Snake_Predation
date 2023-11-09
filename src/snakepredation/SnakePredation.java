@@ -45,6 +45,8 @@ public class SnakePredation extends Application {
         // Set max width/height
         this.primaryStage.setMinWidth(this.primaryStage.getWidth());
         this.primaryStage.setMinHeight(this.primaryStage.getHeight());
+        
+        this.primaryStage.setResizable(false);
     }
 
     public static void main(String[] args) {
