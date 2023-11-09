@@ -111,6 +111,10 @@ public class Home_ScreenController implements Initializable {
 
     private final ObservableList<Scores> dataScoresList = FXCollections.observableArrayList();
     private final ScoresDAO scoresDAO = new ScoresDAO();
+    @FXML
+    private Label lbErrorMessage1;
+    @FXML
+    private Label lbErrorMessage2;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -150,9 +154,9 @@ public class Home_ScreenController implements Initializable {
                 String nameMode = "";
                 for (Gamedetail gamedetail : player.getGamedetailCollection()) {
                     int id = gamedetail.getGameModeID().getGameModeID();
-                    if(id == 1) {
+                    if (id == 1) {
                         nameMode = "1 Player";
-                    }else{
+                    } else {
                         nameMode = "2 Player";
                     }
                 }
@@ -220,20 +224,39 @@ public class Home_ScreenController implements Initializable {
         rankingPane.setVisible(false);
         controlBtnPane.setVisible(true);
         InputPane.setVisible(false);
+        lbErrorMessage1.setText("");
+        lbErrorMessage2.setText("");
     }
 
     @FXML
     private void PlayGame_Screen(MouseEvent event) throws IOException, Exception {
         this.sound.ClickSound("/asset/music/click.mp3");
         if (inputName1.getText().isBlank() || inputName2.getText().isBlank()) {
-            System.out.println("khong duoc de trong");
+            if (this.checkMode == 1) {
+                lbErrorMessage1.setText("Vui lòng không để trống");
+                lbErrorMessage2.setText("");
+
+            } else {
+                if (inputName1.getText().isBlank() && inputName2.getText().isBlank()) {
+                    lbErrorMessage1.setText("Vui lòng không để trống");
+                    lbErrorMessage2.setText("Vui lòng không để trống");
+
+                } else if (inputName2.getText().isBlank()) {
+                    lbErrorMessage1.setText("");
+                    lbErrorMessage2.setText("Vui lòng không để trống");
+                } else {
+                    lbErrorMessage1.setText("Vui lòng không để trống");
+                    lbErrorMessage2.setText("");
+                }
+            }
         } else {
             Player newPlayer1 = new Player();
             Gamedetail gameDetail = new Gamedetail();
             SnakeDAO snakeDAO = new SnakeDAO();
             GamedetailDAO gamedetailDAO = new GamedetailDAO();
             GamemodeDAO gamemodeDAO = new GamemodeDAO();
-
+            lbErrorMessage1.setText("");
+            lbErrorMessage2.setText("");
             // Lấy giờ hiện tại
             LocalDateTime myDateObj = LocalDateTime.now();
             Date today = Date.from(myDateObj.atZone(ZoneId.systemDefault()).toInstant()); // Chuyển từ LocalDateTime sang Date
