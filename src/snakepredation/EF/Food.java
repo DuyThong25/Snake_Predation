@@ -58,7 +58,8 @@ public class Food {
             resetFood(gameboard, snake);
         } else {
             gameboard.getGc().setFill(getRandomColor_FOOD());
-            gameboard.getGc().fillRect(getPosition().getX() * gameboard.getSQUARE_SIZE(), getPosition().getY() * gameboard.getSQUARE_SIZE(),
+            gameboard.getGc().fillRect(getPosition().getX() * gameboard.getSQUARE_SIZE(),
+                    getPosition().getY() * gameboard.getSQUARE_SIZE(),
                     gameboard.getSQUARE_SIZE() - 5, gameboard.getSQUARE_SIZE() - 5);
         }
     }

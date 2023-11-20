@@ -19,16 +19,86 @@
     -fx-font-size: 20px;
     font-family: cursive;
 }
+
+#closeRankingBtn{
+    -fx-cursor: hand;
+}
 /* Màu chữ khi item được chọn */
 .list-cell:selected, .list-cell:notselected {
     -fx-text-fill: black; /* hoặc màu chữ mặc định của bạn */
 }
 
 #inputName1 {
-/*        -fx-background-color: transparent;*/
+    /*        -fx-background-color: transparent;*/
 
     -fx-border-radius: 25px;
 }
 #labelName1, #labelName2 {
     -fx-text-fill: black;
+}
+
+/*table view*/
+.table-view{
+    -fx-background-color: linear-gradient(to bottom, rgba(234, 245, 235, 1), rgba(40, 97, 54, 1));   /*rgb(234, 245, 235)  rgb(40, 97, 54)*/
+    -fx-background-radius: 15 ;
+}
+
+/*.table-view:focused{
+    -fx-background-color: transparent;
+}*/
+
+.table-view .column-header-background{
+    /*    -fx-background-color: linear-gradient(to bottom, rgba(132, 163, 163, 1), rgba(0, 128, 0, 1));*/
+    -fx-background-radius: 10  ;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 0 10 0;
+
+
+}
+
+.table-view .column-header .label{
+    -fx-text-fill: black;
+
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-size: 50px;
+    -fx-border-width: 0 0 10 0;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent
+}
+
+.table-view .table-cell{
+    -fx-text-fill: black;
+}
+
+/*.table-row-cell{
+    -fx-background-color: whitesmoke;
+    -fx-padding: 5px 0 5px 0;
+}*/
+
+.table-row-cell:odd{
+    -fx-background-color: linear-gradient(to right, rgba(234, 245, 235, 1), rgba(40, 97, 54, 1));   /*rgb(234, 245, 235)  rgb(40, 97, 54)*/
+    -fx-background-radius: 5px;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 5px 0 5px 0;
+
+
+
+
+}
+
+.table-row-cell:even{
+    -fx-background-color: linear-gradient(to left, rgba(234, 245, 235, 1), rgba(40, 97, 54, 1));   /*rgb(234, 245, 235)  rgb(40, 97, 54)*/
+    -fx-background-radius: 5px;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-padding: 5px 0 5px 0;
+
+}
+
+
+.table-row-cell:selected {
+    -fx-background-color: #227334;
+    -fx-background-radius: 5px;
+    -fx-background-insets: 0, 0 0 1 0;
 }

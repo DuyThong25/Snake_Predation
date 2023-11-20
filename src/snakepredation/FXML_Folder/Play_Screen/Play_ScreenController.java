@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javafx.animation.Animation;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -23,7 +24,6 @@ import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.ESCAPE;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -70,6 +70,10 @@ public class Play_ScreenController implements Initializable {
     private Food food;
     private GameBoard gameBoard;
     private Sound sound = new Sound();
+    @FXML
+    private Label lbLevel;
+    @FXML
+    private Label lbPopupLevelup;
 
     public void setSnake1(Snake snake1) {
         this.snake1 = snake1;
@@ -142,8 +146,9 @@ public class Play_ScreenController implements Initializable {
         this.setFood(food);
         this.setGameBoard(gameBoard);
 
+        newSpeedSnake = this.snake1.getSnakeSpeed();
         // Khởi tạo timeline và đặt vòng lặp game
-        timeline = new Timeline(new KeyFrame(Duration.millis(snake1.getSnakeSpeed()), e -> {
+        timeline = new Timeline(new KeyFrame(Duration.millis(newSpeedSnake), e -> {
             runFor1Player();
         }));
 
@@ -152,8 +157,33 @@ public class Play_ScreenController implements Initializable {
 
     }
 
+   
+    private int scoresOld = 0;
+    private int scoresNew = 0;
+    private int newSpeedSnake;
+    private int countLevel = 1;
+
     // Hàm xử lý run cho chế độ 1 người chơi
     public void runFor1Player() {
+        scoresNew = this.snake1.getScores();
+        // Level up
+        if (Math.abs(scoresNew - scoresOld) == 20) { // Tính khoảng cách điểm
+            scoresOld = scoresNew;
+            newSpeedSnake -= 5; // set lại tốc độ mới
+            if (newSpeedSnake < 0) { // nếu âm thì sẽ cộng lên lại để tránh th âm
+                newSpeedSnake += 5;
+            }
+            this.timeline.stop();
+            this.timeline = new Timeline(new KeyFrame(Duration.millis(newSpeedSnake), e -> {
+                runFor1Player();
+            }));
+            this.timeline.setCycleCount(Animation.INDEFINITE);
+            this.timeline.play();
+            // Popup thông báo
+            PopupLevelUp();
+            countLevel++;
+            lbLevel.setText("Level: " + countLevel);
+        }
         if (checkGameOverFor1Player(this.gameBoard)) {
             this.timeline.stop();
             InsertDBScoresFor1Player();
@@ -164,7 +194,8 @@ public class Play_ScreenController implements Initializable {
         setHandleScoresLabel("Scrores: " + this.snake1.getScores());
 
         this.food.DrawFood(gameBoard, snake1);
-        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(), "#017A26", "#000000", "#056622");
+        this.snake1.DrawSnake(this.gameBoard, this.gameBoard.getGc(),
+                this.snake1.getColorHead(), this.snake1.getColorEyes(), this.snake1.getColorBody());
 
         this.snake1.FindPreviousPosition(this.gameBoard.getGc(), this.gameBoard);
 
@@ -182,12 +213,35 @@ public class Play_ScreenController implements Initializable {
         if (this.snake1.isSnakeEat(this.food)) {// Kiểm tra ran an moi chưa
             this.snake1.setScores(this.snake1.getScores() + 5);
             this.snake1.getSnakeBody().add(new Point(-1, -1));
-            
+
+            // Chuyển màu rắn thành màu thức ăn
+            this.snake1.setColorBody(this.food.getRandomColor_FOOD().toString());
+            this.snake1.setColorHead(this.food.getRandomColor_FOOD().toString());
+
             this.sound.EatSound("/asset/music/eat.mp3");
             this.food.setExists(false);
+
         } else {
             this.food.setExists(true);
         }
+    }
+
+     public void PopupLevelUp() {
+        lbPopupLevelup.setVisible(true);
+        // Tạo một Transition để làm mờ nút
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(1000), lbPopupLevelup);
+        // Thiết lập giá trị mờ từ 1 (đầy đủ sáng) xuống 0 (hoàn toàn mờ)
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.0);
+        // Tạo KeyFrame với sự kiện làm mờ
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(100), event -> {
+            // Thực hiện sự kiện khi keyframe được kích hoạt
+            // Ở đây, chúng ta sẽ bắt đầu làm mờ nút
+            fadeTransition.play();
+        });
+        // Tạo Timeline với keyframe
+        Timeline timeline = new Timeline(keyFrame);
+        timeline.play();
     }
 
     // Nhấn vào button pause
@@ -200,6 +254,7 @@ public class Play_ScreenController implements Initializable {
         continueBtn.setVisible(true);
         homeBtn1.setVisible(true);
         restartBtn1.setVisible(true);
+        lbPopupLevelup.setVisible(false);
         // Xét timeline
         this.timeline.pause();
     }
@@ -289,6 +344,20 @@ public class Play_ScreenController implements Initializable {
         this.timeline.stop();
         // Tạo lại rắn và handle move cho rắn
         Snake snakeReset = new Snake(2, 5, 5);
+        //Set màu cho rắn
+        snakeReset.setColorBody("#056622");
+        snakeReset.setColorEyes("#000000");
+        snakeReset.setColorHead("#017A26");
+
+        //set label level
+        countLevel = 1;
+        lbLevel.setText("Level: " + countLevel);
+        //set diểm lại 
+//        scoresOld = 0;
+//        scoresNew = 0;
+        //set tốc độ rắn lại
+        newSpeedSnake = snakeReset.getSnakeSpeed();
+
         this.bg__Snake.getScene().setOnKeyReleased(e -> snakeReset.HandeleDirectionFor1Player(e));
         // Tạo lại thức ăn
         this.food.resetFood(gameBoard, snakeReset);

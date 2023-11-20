@@ -2,13 +2,16 @@ package snakepredation.FXML_Folder.Home_Screen;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -26,6 +29,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -100,6 +104,7 @@ public class Home_ScreenController implements Initializable {
     private TableView<Scores> tableRanking;
     @FXML
     private TableColumn<Scores, String> columnStt;
+
     @FXML
     private TableColumn<Scores, String> columnDate;
     @FXML
@@ -122,9 +127,10 @@ public class Home_ScreenController implements Initializable {
         dataScoresList.addAll(scoresDAO.getAllScores());
         columnScores.setCellValueFactory(new PropertyValueFactory<Scores, Integer>("totalScores"));
 
+        
         columnStt.setCellValueFactory(new Callback<CellDataFeatures<Scores, String>, ObservableValue<String>>() {
             @Override
-            public ObservableValue<String> call(CellDataFeatures<Scores, String> value) {
+            public ObservableValue<String> call(CellDataFeatures<Scores, String> value) {   
                 Integer index = value.getTableView().getItems().indexOf(value.getValue());
                 String newIndex = String.valueOf(index + 1);
                 return new SimpleStringProperty(newIndex);
@@ -146,6 +152,16 @@ public class Home_ScreenController implements Initializable {
                 return new SimpleStringProperty(formattedDate);
             }
         });
+        // Set a comparator for the column to sort as dates
+        columnDate.setComparator(Comparator.comparing(o -> {
+            try {
+                // Parse the date string and return a Comparable representation
+                return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse(o);
+            } catch (ParseException e) {
+                e.printStackTrace(); // Handle parsing exception
+                return null;
+            }
+        }));
 
         columnMode.setCellValueFactory(new Callback<CellDataFeatures<Scores, String>, ObservableValue<String>>() {
             @Override
@@ -165,6 +181,25 @@ public class Home_ScreenController implements Initializable {
         });
 
         tableRanking.setItems(dataScoresList);
+        // gộp 2 row lại
+//        tableRanking.setRowFactory(tv -> new TableRow<Scores>() {
+//            @Override
+//            protected void updateItem(Scores item, boolean empty) {
+//                super.updateItem(item, empty);
+//
+//                if (!empty) {
+//                    String nameMode = columnMode.getCellData(getIndex());
+//                    if ("2 Player".equals(nameMode)) {
+//                        // Apply merging logic here
+//                        setStyle("-fx-background-color: lightgray;"); // Set the background color for merged rows
+//                    } else {
+//                        setStyle(""); // Reset style for other rows
+//                    }
+//                } else {
+//                    setStyle(""); // Reset style for empty rows
+//                }
+//            }
+//        });
     }
 
     // Chuyển ngày thành chuỗi
@@ -347,7 +382,8 @@ public class Home_ScreenController implements Initializable {
 
     public void onePlayerMode() throws IOException {
         // Load file fxml của Play_Screen -> scene builder
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.fxml"));
         Parent root = loader.load();
 
         // Lấy file controller của Play_Screen
@@ -355,7 +391,8 @@ public class Home_ScreenController implements Initializable {
 
         Scene scene = new Scene(root);
         // Lấy file CSS của Play_Screen
-        scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.css").toExternalForm());
+        scene.getStylesheets().add(getClass()
+                .getResource("/snakepredation/FXML_Folder/Play_Screen/Play_Screen.css").toExternalForm());
 
         // Lấy primary stage từ SnakePredation.java
         Stage play_Stage = SnakePredation.getPrimaryStage();
@@ -378,6 +415,10 @@ public class Home_ScreenController implements Initializable {
 
         // Khởi tạo chiều dài và vị trí Snake
         Snake snake = new Snake(2, 5, 5);
+        //Set màu cho rắn
+        snake.setColorBody("#056622");
+        snake.setColorEyes("#000000");
+        snake.setColorHead("#017A26");
 
         // Khởi tạo vị trí thức ăn và màu thức ăn ngẫu nhiên
         Food food = gameBoard.GenerateRandomFood(snake);
@@ -391,7 +432,8 @@ public class Home_ScreenController implements Initializable {
 
     public void twoPlayerMode() throws IOException {
 // Load file fxml của Play_Screen -> scene builder
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/snakepredation/FXML_Folder/TwoPlayerMode_Screen/TwoPlayerMode_Screen.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("/snakepredation/FXML_Folder/TwoPlayerMode_Screen/TwoPlayerMode_Screen.fxml"));
         Parent root = loader.load();
 
         // Lấy file controller của Play_Screen
@@ -399,7 +441,8 @@ public class Home_ScreenController implements Initializable {
 
         Scene scene = new Scene(root);
         // Lấy file CSS của Play_Screen
-        scene.getStylesheets().add(getClass().getResource("/snakepredation/FXML_Folder/TwoPlayerMode_Screen/twoplayermode_screen.css").toExternalForm());
+        scene.getStylesheets().add(getClass()
+                .getResource("/snakepredation/FXML_Folder/TwoPlayerMode_Screen/twoplayermode_screen.css").toExternalForm());
 
         // Lấy primary stage từ SnakePredation.java
         Stage play_Stage = SnakePredation.getPrimaryStage();
@@ -435,7 +478,6 @@ public class Home_ScreenController implements Initializable {
             keysPressed.add(e.getCode()); // Thêm phím được nhấn vào danh sách
             snake1.HandeleDirectionFor2PlayerOfSnake1(e);
             snake2.HandeleDirectionFor2PlayerOfSnake2(e);
-
         });
 
         root.getScene().setOnKeyReleased(e -> {

@@ -15,12 +15,12 @@
 
 <StackPane xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="snakepredation.FXML_Folder.Play_Screen.Play_ScreenController">
    <children>
-       <StackPane fx:id="stackPane" maxHeight="800.0" maxWidth="800.0" minHeight="800.0" minWidth="800.0" prefHeight="800.0" prefWidth="800.0" StackPane.alignment="CENTER">
+       <StackPane fx:id="stackPane" maxHeight="805.0" maxWidth="800.0" minHeight="800.0" minWidth="800.0" prefHeight="805.0" prefWidth="823.0" StackPane.alignment="CENTER">
            <stylesheets>
                <URL value="@play_screen.css" />
            </stylesheets>
          <children>
-            <Label fx:id="handleScores" prefHeight="59.0" prefWidth="461.0" text="SCORE: 0" textAlignment="CENTER" StackPane.alignment="TOP_LEFT">
+            <Label fx:id="handleScores" prefHeight="48.0" prefWidth="302.0" text="SCORE: 0" textAlignment="CENTER" StackPane.alignment="TOP_LEFT">
                <StackPane.margin>
                   <Insets bottom="5.0" left="20.0" />
                </StackPane.margin>
@@ -119,7 +119,20 @@
                   <Insets right="45.0" />
                </StackPane.margin>
             </ImageView>
+            <Label fx:id="lbLevel" alignment="TOP_LEFT" contentDisplay="TOP" prefHeight="46.0" prefWidth="99.0" text="Level: 1" textFill="#00137e" StackPane.alignment="TOP_RIGHT">
+               <StackPane.margin>
+                  <Insets right="45.0" top="60.0" />
+               </StackPane.margin>
+               <font>
+                  <Font name="Segoe UI Bold" size="20.0" />
+               </font>
+            </Label>
          </children>
        </StackPane>
+      <Label fx:id="lbPopupLevelup" alignment="CENTER" contentDisplay="CENTER" opacity="0.0" prefHeight="178.0" prefWidth="438.0" text="Level Up !!!" textAlignment="CENTER" textFill="#c1d400">
+         <font>
+            <Font name="Comic Sans MS Bold" size="70.0" />
+         </font>
+      </Label>
    </children>
 </StackPane>

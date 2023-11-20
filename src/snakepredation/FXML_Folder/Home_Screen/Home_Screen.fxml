@@ -69,13 +69,13 @@
                   <Insets bottom="10.0" top="45.0" />
                </StackPane.margin>
                <content>
-                  <TableView fx:id="tableRanking" prefHeight="381.0" prefWidth="418.0">
+                  <TableView fx:id="tableRanking" prefHeight="381.0" prefWidth="520.0">
                     <columns>
-                        <TableColumn fx:id="columnStt" prefWidth="41.59998399019241" resizable="false" text="STT" />
-                        <TableColumn fx:id="columnDate" prefWidth="140.00005722045898" text="Date" />
+                        <TableColumn fx:id="columnStt" prefWidth="56.00000840425491" resizable="false" text="STT" />
+                        <TableColumn fx:id="columnDate" prefWidth="135.99999618530273" text="Date" />
                       <TableColumn fx:id="columnName" prefWidth="135.19996643066406" text="Name" />
                       <TableColumn fx:id="columnScores" prefWidth="91.199951171875" text="Scores" />
-                        <TableColumn fx:id="columnMode" prefWidth="79.19992065429688" resizable="false" text="Mode" />
+                        <TableColumn fx:id="columnMode" prefWidth="79.20001220703125" resizable="false" text="Mode" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

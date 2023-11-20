@@ -244,7 +244,8 @@ public class Snake implements Serializable {
                 double eyeX = headX + (headSize - eyeSize) / 2; // Vị trí x cho mắt
                 double eyeY = headY + (headSize - eyeSize) / 2; // Vị trí y cho mắt
 
-                if (this.currentDirection == TextInputControlSkin.Direction.UP || this.currentDirection == TextInputControlSkin.Direction.DOWN) {
+                if (this.currentDirection == TextInputControlSkin.Direction.UP ||
+                        this.currentDirection == TextInputControlSkin.Direction.DOWN) {
                     // Vẽ mắt 1
                     gc.setFill(Color.web(colorEyes));
                     gc.fillRoundRect(eyeX - 5, eyeY - 2, eyeSize, eyeSize, 50, 50);

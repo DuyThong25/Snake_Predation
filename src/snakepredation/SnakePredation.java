@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import snakepredation.EF.Sound;
@@ -45,7 +46,8 @@ public class SnakePredation extends Application {
         // Set max width/height
         this.primaryStage.setMinWidth(this.primaryStage.getWidth());
         this.primaryStage.setMinHeight(this.primaryStage.getHeight());
-        
+        this.primaryStage.getIcons().add(new Image("/asset/image/logo.jpg"));
+
         this.primaryStage.setResizable(false);
     }
 
